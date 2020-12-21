@@ -1,4 +1,5 @@
 PODS:
+  - AmazonIVSPlayer (1.2.0)
   - boost-for-react-native (1.63.0)
   - CocoaAsyncSocket (7.6.4)
   - CocoaLibEvent (1.0.0)
@@ -237,6 +238,7 @@ PODS:
     - React-jsi (= 0.63.4)
   - React-jsinspector (0.63.4)
   - react-native-amazon-ivs (0.1.0):
+    - AmazonIVSPlayer
     - React-Core
   - React-RCTActionSheet (0.63.4):
     - React-Core/RCTActionSheetHeaders (= 0.63.4)
@@ -354,6 +356,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - AmazonIVSPlayer
     - boost-for-react-native
     - CocoaAsyncSocket
     - CocoaLibEvent
@@ -424,6 +427,7 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
+  AmazonIVSPlayer: d0f971e303558c04bbe70692292db7378650f8ad
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
   CocoaAsyncSocket: 694058e7c0ed05a9e217d1b3c7ded962f4180845
   CocoaLibEvent: 2fab71b8bd46dd33ddb959f7928ec5909f838e3f
@@ -450,7 +454,7 @@ SPEC CHECKSUMS:
   React-jsi: a0418934cf48f25b485631deb27c64dc40fb4c31
   React-jsiexecutor: 93bd528844ad21dc07aab1c67cb10abae6df6949
   React-jsinspector: 58aef7155bc9a9683f5b60b35eccea8722a4f53a
-  react-native-amazon-ivs: 327426bd35e5e6703349267b6f3d4dce23294fc9
+  react-native-amazon-ivs: 8c931b7441d14fe713e5099c24a7ba58024252d8
   React-RCTActionSheet: 89a0ca9f4a06c1f93c26067af074ccdce0f40336
   React-RCTAnimation: 1bde3ecc0c104c55df246eda516e0deb03c4e49b
   React-RCTBlob: a97d378b527740cc667e03ebfa183a75231ab0f0

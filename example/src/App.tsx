@@ -1,18 +1,11 @@
 import * as React from 'react';
-
-import { StyleSheet, View, Text } from 'react-native';
-import AmazonIvs from 'react-native-amazon-ivs';
+import { StyleSheet, View } from 'react-native';
+import MediaPlayer from 'react-native-amazon-ivs';
 
 export default function App() {
-  const [result, setResult] = React.useState<number | undefined>();
-
-  React.useEffect(() => {
-    AmazonIvs.multiply(3, 7).then(setResult);
-  }, []);
-
   return (
     <View style={styles.container}>
-      <Text>Result: {result}</Text>
+      <MediaPlayer style={styles.player} />
     </View>
   );
 }
@@ -23,9 +16,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  box: {
-    width: 60,
-    height: 60,
-    marginVertical: 20,
+  player: {
+    width: '100%',
+    height: '100%',
   },
 });

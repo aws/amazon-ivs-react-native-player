@@ -7,10 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-
-		5E555C0D2413F4C50049A1A2 /* AmazonIvs.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* AmazonIvs.m */; };
-		F4FF95D7245B92E800C19C63 /*  AmazonIvs.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4FF95D6245B92E800C19C63 /*  AmazonIvs.swift */; };
-
+		F4FF95D7245B92E800C19C63 /* AmazonIvsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4FF95D6245B92E800C19C63 /* AmazonIvsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -27,11 +24,10 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libAmazonIvs.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libAmazonIvs.a; sourceTree = BUILT_PRODUCTS_DIR; };
-
-		B3E7B5891CC2AC0600A0062D /* AmazonIvs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AmazonIvs.m; sourceTree = "<group>"; };
+		96A1233B2590DC1600C29F92 /* AmazonIvsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmazonIvsManager.swift; sourceTree = "<group>"; };
+		B3E7B5891CC2AC0600A0062D /* AmazonIvsManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AmazonIvsManager.m; sourceTree = "<group>"; };
 		F4FF95D5245B92E700C19C63 /* AmazonIvs-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AmazonIvs-Bridging-Header.h"; sourceTree = "<group>"; };
-		F4FF95D6245B92E800C19C63 /* AmazonIvs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmazonIvs.swift; sourceTree = "<group>"; };
-
+		F4FF95D6245B92E800C19C63 /* AmazonIvsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmazonIvsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,11 +52,10 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
-
-				F4FF95D6245B92E800C19C63 /* AmazonIvs.swift */,
-				B3E7B5891CC2AC0600A0062D /* AmazonIvs.m */,
+				96A1233B2590DC1600C29F92 /* AmazonIvsManager.swift */,
+				F4FF95D6245B92E800C19C63 /* AmazonIvsView.swift */,
+				B3E7B5891CC2AC0600A0062D /* AmazonIvsManager.m */,
 				F4FF95D5245B92E700C19C63 /* AmazonIvs-Bridging-Header.h */,
-
 				134814211AA4EA7D00B7C361 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -122,10 +117,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-
-				F4FF95D7245B92E800C19C63 /* AmazonIvs.swift in Sources */,
-				B3E7B58A1CC2AC0600A0062D /* AmazonIvs.m in Sources */,
-
+				F4FF95D7245B92E800C19C63 /* AmazonIvsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -179,6 +171,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "AmazonIvs-Bridging-Header.h";
 			};
 			name = Debug;
 		};
@@ -221,6 +214,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "AmazonIvs-Bridging-Header.h";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -238,11 +232,9 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = AmazonIvs;
 				SKIP_INSTALL = YES;
-
 				SWIFT_OBJC_BRIDGING_HEADER = "AmazonIvs-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
-
 			};
 			name = Debug;
 		};
@@ -259,10 +251,8 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = AmazonIvs;
 				SKIP_INSTALL = YES;
-
 				SWIFT_OBJC_BRIDGING_HEADER = "AmazonIvs-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
-
 			};
 			name = Release;
 		};

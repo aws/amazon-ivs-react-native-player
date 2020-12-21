@@ -1,9 +1,9 @@
-import { NativeModules } from 'react-native';
+import { requireNativeComponent, ViewStyle } from 'react-native';
 
-type AmazonIvsType = {
-  multiply(a: number, b: number): Promise<number>;
+type AmazonIvsProps = {
+  style?: ViewStyle;
 };
 
-const { AmazonIvs } = NativeModules;
+export const MediaPlayer = requireNativeComponent<AmazonIvsProps>('AmazonIvs');
 
-export default AmazonIvs as AmazonIvsType;
+export default MediaPlayer;
