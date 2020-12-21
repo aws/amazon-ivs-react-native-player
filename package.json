@@ -37,7 +37,7 @@
     "android"
   ],
   "repository": "https://github.com/callstack-internal/react-native-amazon-ivs",
-  "author": "callstack <jaworek3211@gmail.com> (https://github.com/jaworek)",
+  "author": "callstack",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/callstack-internal/react-native-amazon-ivs/issues"
