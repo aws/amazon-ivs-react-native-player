@@ -1,9 +1,69 @@
-import { requireNativeComponent, ViewStyle } from 'react-native';
+import React, { useCallback, useImperativeHandle, useRef } from 'react';
+import {
+  requireNativeComponent,
+  ViewStyle,
+  StyleSheet,
+  UIManager,
+  findNodeHandle,
+  View,
+} from 'react-native';
 
-type AmazonIvsProps = {
-  style?: ViewStyle;
+export type MediaPlayerRef = {
+  play: () => void;
+  pause: () => void;
 };
 
-export const MediaPlayer = requireNativeComponent<AmazonIvsProps>('AmazonIvs');
+type MediaPlayerProps = {
+  style?: ViewStyle;
+  ref: any;
+};
 
-export default MediaPlayer;
+const VIEW_NAME = 'AmazonIvs';
+
+export const MediaPlayer = requireNativeComponent<MediaPlayerProps>(VIEW_NAME);
+
+const PlayerContainer = React.forwardRef<MediaPlayerRef>((_, ref) => {
+  const mediaPlayerRef = useRef(null);
+
+  const play = useCallback(() => {
+    UIManager.dispatchViewManagerCommand(
+      findNodeHandle(mediaPlayerRef.current),
+      UIManager.getViewManagerConfig(VIEW_NAME).Commands.play,
+      []
+    );
+  }, []);
+
+  const pause = useCallback(() => {
+    UIManager.dispatchViewManagerCommand(
+      findNodeHandle(mediaPlayerRef.current),
+      UIManager.getViewManagerConfig(VIEW_NAME).Commands.pause,
+      []
+    );
+  }, []);
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      play,
+      pause,
+    }),
+    [play, pause]
+  );
+
+  return (
+    <View style={styles.container} ref={ref as any}>
+      <MediaPlayer style={styles.mediaPlayer} ref={mediaPlayerRef} />
+    </View>
+  );
+});
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  mediaPlayer: {
+    flex: 1,
+  },
+});
+
+export default PlayerContainer;

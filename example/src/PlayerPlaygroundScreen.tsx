@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { SafeAreaView, StyleSheet, View } from 'react-native';
-import MediaPlayer from 'react-native-amazon-ivs';
+import { Button, SafeAreaView, StyleSheet, View } from 'react-native';
+import MediaPlayer, { MediaPlayerRef } from 'react-native-amazon-ivs';
 import BottomSheet from '@gorhom/bottom-sheet';
 import { useState } from 'react';
 import SettingsInputItem from './components/SettingsInputItem';
@@ -9,6 +9,7 @@ import { IconButton, Title } from 'react-native-paper';
 
 export default function PlayerPlaygroundScreen() {
   const sheetRef = React.useRef<BottomSheet>(null);
+  const mediaPlayerRef = React.useRef<MediaPlayerRef>(null);
   const [url, setUrl] = useState('');
   const [muted, setMuted] = useState(false);
 
@@ -18,7 +19,7 @@ export default function PlayerPlaygroundScreen() {
 
   return (
     <View style={styles.container}>
-      <MediaPlayer style={styles.player} />
+      <MediaPlayer ref={mediaPlayerRef} />
       <SafeAreaView style={styles.settingsIcon}>
         <IconButton
           icon="cog"
@@ -27,14 +28,24 @@ export default function PlayerPlaygroundScreen() {
           onPress={handleSettingsOpen}
         />
       </SafeAreaView>
+      <SafeAreaView>
+        <Button
+          title="Play"
+          onPress={() =>
+            mediaPlayerRef.current ? mediaPlayerRef.current.play() : null
+          }
+        />
+        <Button
+          title="Pause"
+          onPress={() =>
+            mediaPlayerRef.current ? mediaPlayerRef.current.pause() : null
+          }
+        />
+      </SafeAreaView>
       <BottomSheet ref={sheetRef} index={0} snapPoints={[0, '50%']}>
         <View style={styles.settings}>
           <Title style={styles.settingsTitle}>Settings</Title>
-          <SettingsInputItem
-            label="url"
-            onChangeText={setUrl}
-            text={url}
-          ></SettingsInputItem>
+          <SettingsInputItem label="url" onChangeText={setUrl} text={url} />
           <SettingsSwitchItem
             label="is muted"
             value={muted}
@@ -49,8 +60,6 @@ export default function PlayerPlaygroundScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
     padding: 0,
   },
   player: {

@@ -25,6 +25,14 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
         player.play()
     }
     
+    @objc func play() {
+        player.play()
+    }
+    
+    @objc func pause() {
+        player.pause()
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
