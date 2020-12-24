@@ -11,6 +11,7 @@ export default function PlayerPlaygroundScreen() {
   const sheetRef = React.useRef<BottomSheet>(null);
   const mediaPlayerRef = React.useRef<MediaPlayerRef>(null);
   const [url, setUrl] = useState('');
+  const [paused, setPaused] = useState(false);
   const [muted, setMuted] = useState(false);
 
   const handleSettingsOpen = React.useCallback(() => {
@@ -19,7 +20,7 @@ export default function PlayerPlaygroundScreen() {
 
   return (
     <View style={styles.container}>
-      <MediaPlayer ref={mediaPlayerRef} />
+      <MediaPlayer ref={mediaPlayerRef} paused={paused} />
       <SafeAreaView style={styles.settingsIcon}>
         <IconButton
           icon="cog"
@@ -50,6 +51,11 @@ export default function PlayerPlaygroundScreen() {
             label="is muted"
             value={muted}
             onValueChange={setMuted}
+          />
+          <SettingsSwitchItem
+            label="is paused"
+            onValueChange={setPaused}
+            value={paused}
           />
         </View>
       </BottomSheet>
