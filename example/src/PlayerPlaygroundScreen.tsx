@@ -20,7 +20,7 @@ export default function PlayerPlaygroundScreen() {
 
   return (
     <View style={styles.container}>
-      <MediaPlayer ref={mediaPlayerRef} paused={paused} />
+      <MediaPlayer ref={mediaPlayerRef} paused={paused} muted={muted} />
       <SafeAreaView style={styles.settingsIcon}>
         <IconButton
           icon="cog"

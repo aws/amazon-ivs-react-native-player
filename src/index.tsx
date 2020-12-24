@@ -21,6 +21,7 @@ export type MediaPlayerRef = {
 type MediaPlayerProps = {
   style?: ViewStyle;
   ref: any;
+  muted: boolean;
 };
 
 const VIEW_NAME = 'AmazonIvs';
@@ -29,10 +30,11 @@ export const MediaPlayer = requireNativeComponent<MediaPlayerProps>(VIEW_NAME);
 
 type Props = {
   paused?: boolean;
+  muted?: boolean;
 };
 
 const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
-  ({ paused = false }, ref) => {
+  ({ paused = false, muted = false }, ref) => {
     const mediaPlayerRef = useRef(null);
 
     const play = useCallback(() => {
@@ -66,7 +68,11 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
 
     return (
       <View style={styles.container} ref={ref as any}>
-        <MediaPlayer style={styles.mediaPlayer} ref={mediaPlayerRef} />
+        <MediaPlayer
+          muted={muted}
+          style={styles.mediaPlayer}
+          ref={mediaPlayerRef}
+        />
       </View>
     );
   }
