@@ -12,10 +12,11 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
 
     override init(frame: CGRect) {
         self.muted = player.muted
+        self.looping = player.looping
         super.init(frame: frame)
         self.addSubview(self.playerView)
         self.playerView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
-        
+
         if let url = self.streamUrl {
             self.load(urlString: url)
         }
@@ -37,8 +38,13 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
             player.muted = muted
         }
     }
-
     
+    @objc var looping: Bool {
+        didSet {
+            player.looping = looping
+        }
+    }
+
     @objc var streamUrl: String? {
         didSet {
             if let url = streamUrl {
@@ -46,7 +52,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
             }
         }
     }
-    
+
     @objc func play() {
         player.play()
     }

@@ -15,6 +15,7 @@ export default function PlayerPlaygroundScreen() {
     'https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8'
   );
   const [muted, setMuted] = useState(false);
+  const [looping, setLooping] = useState(false);
 
   const handleSettingsOpen = React.useCallback(() => {
     sheetRef?.current?.expand();
@@ -26,6 +27,7 @@ export default function PlayerPlaygroundScreen() {
         ref={mediaPlayerRef}
         paused={paused}
         muted={muted}
+        looping={looping}
         streamUrl={url}
         onSeek={(position) => console.log('new position ', position)}
         onPlayerStateChange={(state) => console.log('state changed', state)}
@@ -60,6 +62,11 @@ export default function PlayerPlaygroundScreen() {
             label="is muted"
             value={muted}
             onValueChange={setMuted}
+          />
+          <SettingsSwitchItem
+            label="is looping"
+            onValueChange={setLooping}
+            value={looping}
           />
           <SettingsSwitchItem
             label="is paused"
