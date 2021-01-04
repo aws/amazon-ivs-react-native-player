@@ -39,6 +39,7 @@ export default function PlayerPlaygroundScreen() {
         onSeek={(position) => console.log('new position', position)}
         onPlayerStateChange={(state) => console.log('state changed', state)}
         onDurationChange={setDuration}
+        onQualityChange={(quality) => console.log('quality changed', quality)}
       />
 
       <View style={styles.durationsContainer}>

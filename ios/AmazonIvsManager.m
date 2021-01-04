@@ -12,4 +12,5 @@ RCT_EXTERN_METHOD(seekTo:(nonnull NSNumber *)node position:(nonnull NSNumber)pos
 RCT_EXPORT_VIEW_PROPERTY(onSeek, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onPlayerStateChange, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onDurationChange, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onQualityChange, RCTDirectEventBlock)
 @end

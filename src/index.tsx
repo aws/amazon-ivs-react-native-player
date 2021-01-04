@@ -13,6 +13,7 @@ import {
   View,
   NativeSyntheticEvent,
 } from 'react-native';
+import type { Quality } from './types';
 
 export type MediaPlayerRef = {
   play: () => void;
@@ -31,6 +32,7 @@ type MediaPlayerProps = {
   onDurationChange?(
     event: NativeSyntheticEvent<{ duration: number | null }>
   ): void;
+  onQualityChange?(event: NativeSyntheticEvent<Quality>): void;
 };
 
 const VIEW_NAME = 'AmazonIvs';
@@ -45,6 +47,7 @@ type Props = {
   onSeek?(position: number): void;
   onPlayerStateChange?(state: number): void;
   onDurationChange?(duration: number | null): void;
+  onQualityChange?(quality: Quality | null): void;
 };
 
 const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
@@ -57,6 +60,7 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
       onSeek,
       onPlayerStateChange,
       onDurationChange,
+      onQualityChange,
     },
     ref
   ) => {
@@ -122,12 +126,18 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
       onDurationChange?.(duration);
     };
 
+    const onQualityChangeHandler = (event: NativeSyntheticEvent<Quality>) => {
+      const quality = event.nativeEvent;
+      onQualityChange?.(quality);
+    };
+
     return (
       <View style={styles.container} ref={ref as any}>
         <MediaPlayer
           muted={muted}
           looping={looping}
           style={styles.mediaPlayer}
+          onQualityChange={onQualityChangeHandler}
           ref={mediaPlayerRef}
           streamUrl={streamUrl}
           onSeek={onSeekHandler}

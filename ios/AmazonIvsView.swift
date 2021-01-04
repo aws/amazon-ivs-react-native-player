@@ -7,6 +7,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
     @objc var onSeek: RCTDirectEventBlock?
     @objc var onPlayerStateChange: RCTDirectEventBlock?
     @objc var onDurationChange: RCTDirectEventBlock?
+    @objc var onQualityChange: RCTDirectEventBlock?
     
     private let player = IVSPlayer()
     private let playerView = IVSPlayerView()
@@ -86,6 +87,25 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
                 onDurationChange!(["duration": CMTimeGetSeconds(duration)])
             } else {
                 onDurationChange!(["duration": NSNull()])
+            }
+        }
+    }
+
+    func player(_ player: IVSPlayer, didChangeQuality quality: IVSQuality?) {
+        if onQualityChange != nil {
+            if quality == nil {
+                onQualityChange!(["quality": NSNull()])
+            } else {
+                let qualityData: [String: Any ] = [
+                    "name": quality?.name ?? "",
+                    "codecs": quality?.codecs ?? "",
+                    "bitrate": quality?.bitrate ?? 0,
+                    "framerate": quality?.framerate ?? 0,
+                    "width": quality?.width ?? 0,
+                    "height": quality?.height ?? 0
+                ]
+
+                onQualityChange!(qualityData)
             }
         }
     }
