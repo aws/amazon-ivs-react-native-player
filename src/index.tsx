@@ -76,13 +76,10 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
       [play, pause]
     );
 
-    const onSeekHandler = useCallback(
-      (event: NativeSyntheticEvent<number>) => {
-        const position = event.nativeEvent;
-        onSeek?.(position);
-      },
-      [onSeek]
-    );
+    const onSeekHandler = (event: NativeSyntheticEvent<number>) => {
+      const position = event.nativeEvent;
+      onSeek?.(position);
+    };
 
     const onPlayerStateChangeHandler = (
       event: NativeSyntheticEvent<{ state: number }>
