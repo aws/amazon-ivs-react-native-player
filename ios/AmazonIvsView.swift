@@ -4,6 +4,8 @@ import AmazonIVSPlayer
 
 @objc(AmazonIvsView)
 class AmazonIvsView: UIView, IVSPlayer.Delegate{
+    @objc var onSeek: RCTDirectEventBlock?
+
     private let player = IVSPlayer()
     private let playerView = IVSPlayerView()
 
@@ -54,5 +56,9 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func player(_ player: IVSPlayer, didSeekTo time: CMTime) {
+        onSeek?(["position": CMTimeGetSeconds(time)])
     }
 }
