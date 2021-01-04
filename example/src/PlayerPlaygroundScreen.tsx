@@ -62,6 +62,10 @@ export default function PlayerPlaygroundScreen() {
           onDurationChange={setDuration}
           onQualityChange={(quality) => console.log('quality changed', quality)}
           onBuffer={() => setBuffering(true)}
+          onLoadStart={() => console.log('loadStart')}
+          onLoad={(loadedDuration) =>
+            console.log('load ', loadedDuration, ' - duration')
+          }
         />
       </View>
       <SafeAreaView style={styles.settingsIcon}>

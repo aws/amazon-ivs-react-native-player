@@ -9,9 +9,12 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
     @objc var onDurationChange: RCTDirectEventBlock?
     @objc var onQualityChange: RCTDirectEventBlock?
     @objc var onBuffer: RCTDirectEventBlock?
-
+    @objc var onLoadStart: RCTDirectEventBlock?
+    @objc var onLoad: RCTDirectEventBlock?
+    
     private let player = IVSPlayer()
     private let playerView = IVSPlayerView()
+    private var finishedLoading: Bool = false;
 
     override init(frame: CGRect) {
         self.muted = player.muted
@@ -28,10 +31,12 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
     }
 
     func load(urlString: String) {
+        finishedLoading = false
         player.delegate = self
         let url = URL(string: urlString)!
 
         self.playerView.player = player
+        onLoadStart?(["": NSNull()])
         player.load(url)
 
         //TODO: remove below after implementing autoplay prop
@@ -93,6 +98,15 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
 
     func player(_ player: IVSPlayer, didChangeState state: IVSPlayer.State) {
         onPlayerStateChange?(["state": state.rawValue])
+
+        if state == IVSPlayer.State.playing, finishedLoading == false {
+            if player.duration.isNumeric {
+                onLoad?(["duration": player.duration.seconds])
+            } else {
+                onLoad?(["duration": NSNull()])
+            }
+            finishedLoading = true
+        }
     }
 
     func player(_ player: IVSPlayer, didChangeDuration duration: CMTime) {
