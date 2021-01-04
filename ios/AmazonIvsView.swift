@@ -8,13 +8,14 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
     @objc var onPlayerStateChange: RCTDirectEventBlock?
     @objc var onDurationChange: RCTDirectEventBlock?
     @objc var onQualityChange: RCTDirectEventBlock?
-    
+
     private let player = IVSPlayer()
     private let playerView = IVSPlayerView()
 
     override init(frame: CGRect) {
         self.muted = player.muted
         self.looping = player.looping
+        self.liveLowLatency = player.isLiveLowLatency
         self.playbackRate = NSNumber(value: player.playbackRate)
         super.init(frame: frame)
         self.addSubview(self.playerView)
@@ -47,10 +48,16 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
             player.playbackRate = Float(truncating: playbackRate)
         }
     }
-    
+
     @objc var looping: Bool {
         didSet {
             player.looping = looping
+        }
+    }
+
+    @objc var liveLowLatency: Bool {
+        didSet {
+            player.setLiveLowLatencyEnabled(liveLowLatency)
         }
     }
 

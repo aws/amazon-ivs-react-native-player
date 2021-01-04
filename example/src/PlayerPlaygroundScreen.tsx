@@ -20,6 +20,7 @@ export default function PlayerPlaygroundScreen() {
   const [muted, setMuted] = useState(false);
   const [looping, setLooping] = useState(false);
   const [duration, setDuration] = useState<number | null>(null);
+  const [liveLowLatency, setLiveLowLatency] = useState(true);
   // min - 0.5 max - 2.0
   const [playbackRate, setPlaybackRate] = useState(1);
 
@@ -38,6 +39,7 @@ export default function PlayerPlaygroundScreen() {
         paused={paused}
         muted={muted}
         looping={looping}
+        liveLowLatency={liveLowLatency}
         streamUrl={url}
         playbackRate={playbackRate}
         onSeek={(position) => console.log('new position', position)}
@@ -109,6 +111,11 @@ export default function PlayerPlaygroundScreen() {
             label="Paused"
             onValueChange={setPaused}
             value={paused}
+          />
+          <SettingsSwitchItem
+            label="Live Low Latency"
+            onValueChange={setLiveLowLatency}
+            value={liveLowLatency}
           />
         </View>
       </BottomSheet>

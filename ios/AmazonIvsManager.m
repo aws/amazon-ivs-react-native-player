@@ -4,6 +4,7 @@
 @interface RCT_EXTERN_MODULE(AmazonIvsManager, RCTViewManager)
 RCT_EXPORT_VIEW_PROPERTY(muted, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(looping, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(liveLowLatency, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(playbackRate, NSNumber)
 RCT_EXTERN_METHOD(play:(nonnull NSNumber *)node)
 RCT_EXTERN_METHOD(pause:(nonnull NSNumber *)node)
