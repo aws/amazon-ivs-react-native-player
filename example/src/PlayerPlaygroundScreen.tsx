@@ -1,11 +1,13 @@
 import * as React from 'react';
-import { Button, SafeAreaView, StyleSheet, View } from 'react-native';
+import { Button, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import MediaPlayer, { MediaPlayerRef } from 'react-native-amazon-ivs';
 import BottomSheet from '@gorhom/bottom-sheet';
 import { useState } from 'react';
 import SettingsInputItem from './components/SettingsInputItem';
 import SettingsSwitchItem from './components/SettingsSwitchItem';
 import { IconButton, Title } from 'react-native-paper';
+import Slider from '@react-native-community/slider';
+import { parseSeconds } from './helpers';
 
 export default function PlayerPlaygroundScreen() {
   const sheetRef = React.useRef<BottomSheet>(null);
@@ -16,10 +18,15 @@ export default function PlayerPlaygroundScreen() {
   );
   const [muted, setMuted] = useState(false);
   const [looping, setLooping] = useState(false);
+  const [duration, setDuration] = useState<number | null>(null);
 
   const handleSettingsOpen = React.useCallback(() => {
     sheetRef?.current?.expand();
   }, []);
+
+  const slidingCompleteHandler = (value: number) => {
+    mediaPlayerRef?.current?.seekTo(value);
+  };
 
   return (
     <View style={styles.container}>
@@ -29,12 +36,25 @@ export default function PlayerPlaygroundScreen() {
         muted={muted}
         looping={looping}
         streamUrl={url}
-        onSeek={(position) => console.log('new position ', position)}
+        onSeek={(position) => console.log('new position', position)}
         onPlayerStateChange={(state) => console.log('state changed', state)}
-        onDurationChange={(duration) =>
-          console.log('duration changed', duration)
-        }
+        onDurationChange={setDuration}
       />
+
+      <View style={styles.durationsContainer}>
+        {/* TODO: placeholder for current time */}
+        <Text />
+        {duration ? <Text>{parseSeconds(duration)}</Text> : null}
+      </View>
+
+      {duration ? (
+        <Slider
+          minimumValue={0}
+          maximumValue={duration}
+          onSlidingComplete={slidingCompleteHandler}
+        />
+      ) : null}
+
       <SafeAreaView style={styles.settingsIcon}>
         <IconButton
           icon="cog"
@@ -90,6 +110,10 @@ const styles = StyleSheet.create({
   player: {
     width: '100%',
     height: '100%',
+  },
+  durationsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   settingsIcon: {
     position: 'absolute',

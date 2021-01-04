@@ -17,6 +17,7 @@ import {
 export type MediaPlayerRef = {
   play: () => void;
   pause: () => void;
+  seekTo: (position: number) => void;
 };
 
 type MediaPlayerProps = {
@@ -25,7 +26,7 @@ type MediaPlayerProps = {
   muted: boolean;
   looping: boolean;
   streamUrl?: string;
-  onSeek?(event: NativeSyntheticEvent<number>): void;
+  onSeek?(event: NativeSyntheticEvent<{ position: number }>): void;
   onPlayerStateChange?(event: NativeSyntheticEvent<{ state: number }>): void;
   onDurationChange?(
     event: NativeSyntheticEvent<{ duration: number | null }>
@@ -77,6 +78,15 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
       );
     }, []);
 
+    const seekTo = useCallback((value) => {
+      UIManager.dispatchViewManagerCommand(
+        findNodeHandle(mediaPlayerRef.current),
+
+        UIManager.getViewManagerConfig(VIEW_NAME).Commands.seekTo,
+        [value]
+      );
+    }, []);
+
     useEffect(() => {
       paused ? pause() : play();
     }, [pause, paused, play]);
@@ -86,12 +96,15 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
       () => ({
         play,
         pause,
+        seekTo,
       }),
-      [play, pause]
+      [play, pause, seekTo]
     );
 
-    const onSeekHandler = (event: NativeSyntheticEvent<number>) => {
-      const position = event.nativeEvent;
+    const onSeekHandler = (
+      event: NativeSyntheticEvent<{ position: number }>
+    ) => {
+      const { position } = event.nativeEvent;
       onSeek?.(position);
     };
 
