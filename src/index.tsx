@@ -22,6 +22,7 @@ type MediaPlayerProps = {
   style?: ViewStyle;
   ref: any;
   muted: boolean;
+  streamUrl?: string;
 };
 
 const VIEW_NAME = 'AmazonIvs';
@@ -31,10 +32,11 @@ export const MediaPlayer = requireNativeComponent<MediaPlayerProps>(VIEW_NAME);
 type Props = {
   paused?: boolean;
   muted?: boolean;
+  streamUrl?: string;
 };
 
 const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
-  ({ paused = false, muted = false }, ref) => {
+  ({ streamUrl, paused = false, muted = false }, ref) => {
     const mediaPlayerRef = useRef(null);
 
     const play = useCallback(() => {
@@ -72,6 +74,7 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
           muted={muted}
           style={styles.mediaPlayer}
           ref={mediaPlayerRef}
+          streamUrl={streamUrl}
         />
       </View>
     );

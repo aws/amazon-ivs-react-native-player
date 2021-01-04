@@ -12,9 +12,10 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
         super.init(frame: frame)
         self.addSubview(self.playerView)
         self.playerView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
-
-        // TODO: probably we should not load url and play videa in init
-        self.load(urlString: "https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8")
+        
+        if let url = self.streamUrl {
+            self.load(urlString: url)
+        }
     }
 
     func load(urlString: String) {
@@ -23,6 +24,8 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
 
         self.playerView.player = player
         player.load(url)
+
+        //TODO: remove below after implementing autoplay prop
         player.play()
     }
 
@@ -32,6 +35,15 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
         }
     }
 
+    
+    @objc var streamUrl: String? {
+        didSet {
+            if let url = streamUrl {
+                self.load(urlString: url)
+            }
+        }
+    }
+    
     @objc func play() {
         player.play()
     }

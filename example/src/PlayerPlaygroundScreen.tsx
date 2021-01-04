@@ -10,8 +10,10 @@ import { IconButton, Title } from 'react-native-paper';
 export default function PlayerPlaygroundScreen() {
   const sheetRef = React.useRef<BottomSheet>(null);
   const mediaPlayerRef = React.useRef<MediaPlayerRef>(null);
-  const [url, setUrl] = useState('');
   const [paused, setPaused] = useState(false);
+  const [url, setUrl] = useState(
+    'https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8'
+  );
   const [muted, setMuted] = useState(false);
 
   const handleSettingsOpen = React.useCallback(() => {
@@ -20,7 +22,12 @@ export default function PlayerPlaygroundScreen() {
 
   return (
     <View style={styles.container}>
-      <MediaPlayer ref={mediaPlayerRef} paused={paused} muted={muted} />
+      <MediaPlayer
+        ref={mediaPlayerRef}
+        paused={paused}
+        muted={muted}
+        streamUrl={url}
+      />
       <SafeAreaView style={styles.settingsIcon}>
         <IconButton
           icon="cog"
