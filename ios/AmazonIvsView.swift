@@ -5,6 +5,7 @@ import AmazonIVSPlayer
 @objc(AmazonIvsView)
 class AmazonIvsView: UIView, IVSPlayer.Delegate{
     @objc var onSeek: RCTDirectEventBlock?
+    @objc var onPlayerStateChange: RCTDirectEventBlock?
 
     private let player = IVSPlayer()
     private let playerView = IVSPlayerView()
@@ -60,5 +61,9 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
     
     func player(_ player: IVSPlayer, didSeekTo time: CMTime) {
         onSeek?(["position": CMTimeGetSeconds(time)])
+    }
+
+    func player(_ player: IVSPlayer, didChangeState state: IVSPlayer.State) {
+        onPlayerStateChange?(["state": state.rawValue])
     }
 }

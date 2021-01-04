@@ -28,6 +28,7 @@ export default function PlayerPlaygroundScreen() {
         muted={muted}
         streamUrl={url}
         onSeek={(position) => console.log('new position ', position)}
+        onPlayerStateChange={(state) => console.log('state changed', state)}
       />
       <SafeAreaView style={styles.settingsIcon}>
         <IconButton

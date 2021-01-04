@@ -25,6 +25,7 @@ type MediaPlayerProps = {
   muted: boolean;
   streamUrl?: string;
   onSeek?(event: NativeSyntheticEvent<number>): void;
+  onPlayerStateChange?(event: NativeSyntheticEvent<{ state: number }>): void;
 };
 
 const VIEW_NAME = 'AmazonIvs';
@@ -36,10 +37,14 @@ type Props = {
   muted?: boolean;
   streamUrl?: string;
   onSeek?(position: number): void;
+  onPlayerStateChange?(state: number): void;
 };
 
 const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
-  ({ streamUrl, paused = false, muted = false, onSeek }, ref) => {
+  (
+    { streamUrl, paused = false, muted = false, onSeek, onPlayerStateChange },
+    ref
+  ) => {
     const mediaPlayerRef = useRef(null);
 
     const play = useCallback(() => {
@@ -79,6 +84,13 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
       [onSeek]
     );
 
+    const onPlayerStateChangeHandler = (
+      event: NativeSyntheticEvent<{ state: number }>
+    ) => {
+      const { state } = event.nativeEvent;
+      onPlayerStateChange?.(state);
+    };
+
     return (
       <View style={styles.container} ref={ref as any}>
         <MediaPlayer
@@ -87,6 +99,7 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
           ref={mediaPlayerRef}
           streamUrl={streamUrl}
           onSeek={onSeekHandler}
+          onPlayerStateChange={onPlayerStateChangeHandler}
         />
       </View>
     );
