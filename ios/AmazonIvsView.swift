@@ -6,7 +6,8 @@ import AmazonIVSPlayer
 class AmazonIvsView: UIView, IVSPlayer.Delegate{
     @objc var onSeek: RCTDirectEventBlock?
     @objc var onPlayerStateChange: RCTDirectEventBlock?
-
+    @objc var onDurationChange: RCTDirectEventBlock?
+    
     private let player = IVSPlayer()
     private let playerView = IVSPlayerView()
 
@@ -71,5 +72,16 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
 
     func player(_ player: IVSPlayer, didChangeState state: IVSPlayer.State) {
         onPlayerStateChange?(["state": state.rawValue])
+    }
+
+    func player(_ player: IVSPlayer, didChangeDuration duration: CMTime) {
+        if onDurationChange != nil {
+            if duration.isNumeric {
+                // TODO: not sure about the expected return format, it returns seconds at the moment
+                onDurationChange!(["duration": CMTimeGetSeconds(duration)])
+            } else {
+                onDurationChange!(["duration": NSNull()])
+            }
+        }
     }
 }
