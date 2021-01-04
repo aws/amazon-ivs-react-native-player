@@ -15,4 +15,5 @@ RCT_EXPORT_VIEW_PROPERTY(onSeek, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onPlayerStateChange, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onDurationChange, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onQualityChange, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onBuffer, RCTDirectEventBlock)
 @end

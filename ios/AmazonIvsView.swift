@@ -8,6 +8,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
     @objc var onPlayerStateChange: RCTDirectEventBlock?
     @objc var onDurationChange: RCTDirectEventBlock?
     @objc var onQualityChange: RCTDirectEventBlock?
+    @objc var onBuffer: RCTDirectEventBlock?
 
     private let player = IVSPlayer()
     private let playerView = IVSPlayerView()
@@ -122,5 +123,9 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
                 onQualityChange!(qualityData)
             }
         }
+    }
+    
+    func playerWillRebuffer(_ player: IVSPlayer) {
+        onBuffer?(["": NSNull()])
     }
 }

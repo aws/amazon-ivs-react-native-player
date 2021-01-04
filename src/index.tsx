@@ -35,6 +35,7 @@ type MediaPlayerProps = {
     event: NativeSyntheticEvent<{ duration: number | null }>
   ): void;
   onQualityChange?(event: NativeSyntheticEvent<Quality>): void;
+  onBuffer?(): void;
 };
 
 const VIEW_NAME = 'AmazonIvs';
@@ -52,6 +53,7 @@ type Props = {
   onPlayerStateChange?(state: number): void;
   onDurationChange?(duration: number | null): void;
   onQualityChange?(quality: Quality | null): void;
+  onBuffer?(): void;
 };
 
 const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
@@ -67,6 +69,7 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
       onPlayerStateChange,
       onDurationChange,
       onQualityChange,
+      onBuffer,
     },
     ref
   ) => {
@@ -151,6 +154,7 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
           onSeek={onSeekHandler}
           onPlayerStateChange={onPlayerStateChangeHandler}
           onDurationChange={onDurationChangeHandler}
+          onBuffer={onBuffer}
         />
       </View>
     );

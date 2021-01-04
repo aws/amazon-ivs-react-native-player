@@ -5,7 +5,7 @@ import BottomSheet from '@gorhom/bottom-sheet';
 import { useState } from 'react';
 import SettingsInputItem from './components/SettingsInputItem';
 import SettingsSwitchItem from './components/SettingsSwitchItem';
-import { IconButton, Title } from 'react-native-paper';
+import { IconButton, Title, ActivityIndicator } from 'react-native-paper';
 import Slider from '@react-native-community/slider';
 import { parseSeconds } from './helpers';
 import SettingsItem from './components/SettingsItem';
@@ -19,6 +19,7 @@ export default function PlayerPlaygroundScreen() {
   );
   const [muted, setMuted] = useState(false);
   const [looping, setLooping] = useState(false);
+  const [buffering, setBuffering] = useState(false);
   const [duration, setDuration] = useState<number | null>(null);
   const [liveLowLatency, setLiveLowLatency] = useState(true);
   // min - 0.5 max - 2.0
@@ -34,19 +35,35 @@ export default function PlayerPlaygroundScreen() {
 
   return (
     <View style={styles.container}>
-      <MediaPlayer
-        ref={mediaPlayerRef}
-        paused={paused}
-        muted={muted}
-        looping={looping}
-        liveLowLatency={liveLowLatency}
-        streamUrl={url}
-        playbackRate={playbackRate}
-        onSeek={(position) => console.log('new position', position)}
-        onPlayerStateChange={(state) => console.log('state changed', state)}
-        onDurationChange={setDuration}
-        onQualityChange={(quality) => console.log('quality changed', quality)}
-      />
+      <View style={styles.playerContainer}>
+        {buffering ? (
+          <ActivityIndicator
+            animating={true}
+            size="large"
+            style={styles.loader}
+          />
+        ) : null}
+
+        <MediaPlayer
+          ref={mediaPlayerRef}
+          paused={paused}
+          muted={muted}
+          looping={looping}
+          liveLowLatency={liveLowLatency}
+          streamUrl={url}
+          playbackRate={playbackRate}
+          onSeek={(position) => console.log('new position', position)}
+          onPlayerStateChange={(state) => {
+            if (state === 3) {
+              setBuffering(false);
+            }
+            console.log('state changed', state);
+          }}
+          onDurationChange={setDuration}
+          onQualityChange={(quality) => console.log('quality changed', quality)}
+          onBuffer={() => setBuffering(true)}
+        />
+      </View>
       <SafeAreaView style={styles.settingsIcon}>
         <IconButton
           icon="cog"
@@ -128,9 +145,9 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 0,
   },
-  player: {
-    width: '100%',
-    height: '100%',
+  playerContainer: {
+    flex: 1,
+    justifyContent: 'center',
   },
   durationsContainer: {
     flexDirection: 'row',
@@ -149,5 +166,10 @@ const styles = StyleSheet.create({
   },
   slider: {
     flex: 1,
+  },
+  loader: {
+    position: 'absolute',
+    zIndex: 1,
+    alignSelf: 'center',
   },
 });
