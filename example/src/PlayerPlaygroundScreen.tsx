@@ -8,6 +8,7 @@ import SettingsSwitchItem from './components/SettingsSwitchItem';
 import { IconButton, Title } from 'react-native-paper';
 import Slider from '@react-native-community/slider';
 import { parseSeconds } from './helpers';
+import SettingsItem from './components/SettingsItem';
 
 export default function PlayerPlaygroundScreen() {
   const sheetRef = React.useRef<BottomSheet>(null);
@@ -19,6 +20,8 @@ export default function PlayerPlaygroundScreen() {
   const [muted, setMuted] = useState(false);
   const [looping, setLooping] = useState(false);
   const [duration, setDuration] = useState<number | null>(null);
+  // min - 0.5 max - 2.0
+  const [playbackRate, setPlaybackRate] = useState(1);
 
   const handleSettingsOpen = React.useCallback(() => {
     sheetRef?.current?.expand();
@@ -36,26 +39,12 @@ export default function PlayerPlaygroundScreen() {
         muted={muted}
         looping={looping}
         streamUrl={url}
+        playbackRate={playbackRate}
         onSeek={(position) => console.log('new position', position)}
         onPlayerStateChange={(state) => console.log('state changed', state)}
         onDurationChange={setDuration}
         onQualityChange={(quality) => console.log('quality changed', quality)}
       />
-
-      <View style={styles.durationsContainer}>
-        {/* TODO: placeholder for current time */}
-        <Text />
-        {duration ? <Text>{parseSeconds(duration)}</Text> : null}
-      </View>
-
-      {duration ? (
-        <Slider
-          minimumValue={0}
-          maximumValue={duration}
-          onSlidingComplete={slidingCompleteHandler}
-        />
-      ) : null}
-
       <SafeAreaView style={styles.settingsIcon}>
         <IconButton
           icon="cog"
@@ -65,6 +54,18 @@ export default function PlayerPlaygroundScreen() {
         />
       </SafeAreaView>
       <SafeAreaView>
+        <View style={styles.durationsContainer}>
+          {/* TODO: placeholder for current time */}
+          <Text />
+          {duration ? <Text>{parseSeconds(duration)}</Text> : null}
+        </View>
+        {duration ? (
+          <Slider
+            minimumValue={0}
+            maximumValue={duration}
+            onSlidingComplete={slidingCompleteHandler}
+          />
+        ) : null}
         <Button
           title="Play"
           onPress={() =>
@@ -82,18 +83,30 @@ export default function PlayerPlaygroundScreen() {
         <View style={styles.settings}>
           <Title style={styles.settingsTitle}>Settings</Title>
           <SettingsInputItem label="url" onChangeText={setUrl} text={url} />
+          <SettingsItem label={`Playback Rate: ${playbackRate}`}>
+            <Slider
+              style={styles.slider}
+              minimumValue={0.5}
+              maximumValue={2}
+              step={0.1}
+              value={playbackRate}
+              onValueChange={(value) =>
+                setPlaybackRate(Number(value.toFixed(1)))
+              }
+            />
+          </SettingsItem>
           <SettingsSwitchItem
-            label="is muted"
+            label="Muted"
             value={muted}
             onValueChange={setMuted}
           />
           <SettingsSwitchItem
-            label="is looping"
+            label="Looping"
             onValueChange={setLooping}
             value={looping}
           />
           <SettingsSwitchItem
-            label="is paused"
+            label="Paused"
             onValueChange={setPaused}
             value={paused}
           />
@@ -126,5 +139,8 @@ const styles = StyleSheet.create({
   },
   settingsTitle: {
     paddingBottom: 8,
+  },
+  slider: {
+    flex: 1,
   },
 });

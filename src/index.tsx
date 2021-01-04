@@ -26,6 +26,7 @@ type MediaPlayerProps = {
   ref: any;
   muted: boolean;
   looping: boolean;
+  playbackRate?: number;
   streamUrl?: string;
   onSeek?(event: NativeSyntheticEvent<{ position: number }>): void;
   onPlayerStateChange?(event: NativeSyntheticEvent<{ state: number }>): void;
@@ -44,6 +45,7 @@ type Props = {
   muted?: boolean;
   looping?: boolean;
   streamUrl?: string;
+  playbackRate?: number;
   onSeek?(position: number): void;
   onPlayerStateChange?(state: number): void;
   onDurationChange?(duration: number | null): void;
@@ -57,6 +59,7 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
       paused = false,
       muted = false,
       looping = false,
+      playbackRate,
       onSeek,
       onPlayerStateChange,
       onDurationChange,
@@ -139,6 +142,7 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
           style={styles.mediaPlayer}
           onQualityChange={onQualityChangeHandler}
           ref={mediaPlayerRef}
+          playbackRate={playbackRate}
           streamUrl={streamUrl}
           onSeek={onSeekHandler}
           onPlayerStateChange={onPlayerStateChangeHandler}

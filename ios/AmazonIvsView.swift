@@ -15,6 +15,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
     override init(frame: CGRect) {
         self.muted = player.muted
         self.looping = player.looping
+        self.playbackRate = NSNumber(value: player.playbackRate)
         super.init(frame: frame)
         self.addSubview(self.playerView)
         self.playerView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
@@ -38,6 +39,12 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
     @objc var muted: Bool {
         didSet {
             player.muted = muted
+        }
+    }
+
+    @objc var playbackRate: NSNumber {
+        didSet {
+            player.playbackRate = Float(truncating: playbackRate)
         }
     }
     
