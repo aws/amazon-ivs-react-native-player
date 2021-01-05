@@ -71,6 +71,7 @@ export default function PlayerPlaygroundScreen() {
           onLiveLatencyChange={(liveLatency) =>
             console.log('live latency', liveLatency)
           }
+          onData={(data) => console.log(data)}
         />
       </View>
       <SafeAreaView style={styles.settingsIcon}>

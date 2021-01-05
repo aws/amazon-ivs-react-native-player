@@ -6,3 +6,9 @@ export type Quality = {
   width: number;
   height: number;
 };
+
+export type PlayerData = {
+  qualities: Quality[];
+  version: string;
+  sessionId: string;
+};

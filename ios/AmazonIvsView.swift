@@ -5,6 +5,7 @@ import AmazonIVSPlayer
 @objc(AmazonIvsView)
 class AmazonIvsView: UIView, IVSPlayer.Delegate{
     @objc var onSeek: RCTDirectEventBlock?
+    @objc var onData: RCTDirectEventBlock?
     @objc var onPlayerStateChange: RCTDirectEventBlock?
     @objc var onDurationChange: RCTDirectEventBlock?
     @objc var onQualityChange: RCTDirectEventBlock?
@@ -19,7 +20,8 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
     private var finishedLoading: Bool = false;
 
     private var liveLatencyObserverToken: Any?
-
+    private var oldQualities: [IVSQuality] = [];
+    
     override init(frame: CGRect) {
         self.muted = player.muted
         self.looping = player.looping
@@ -128,6 +130,32 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
                 onLoad?(["duration": NSNull()])
             }
             finishedLoading = true
+        }
+        
+        if state == IVSPlayer.State.ready {
+            if player.qualities != oldQualities {
+                let qualities: NSMutableArray = []
+                for quality in player.qualities {
+                    let qualityData: [String: Any ] = [
+                        "name": quality.name,
+                        "codecs": quality.codecs,
+                        "bitrate": quality.bitrate,
+                        "framerate": quality.framerate,
+                        "width": quality.width,
+                        "height": quality.height
+                    ]
+                    
+                    qualities.add(qualityData)
+                }
+                
+                onData?([
+                    "qualities": qualities,
+                    "version": player.version,
+                    "sessionId": player.sessionId
+                ])
+            }
+
+            oldQualities = player.qualities
         }
     }
 
