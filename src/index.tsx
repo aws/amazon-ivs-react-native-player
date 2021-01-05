@@ -51,6 +51,7 @@ type Props = {
   paused?: boolean;
   muted?: boolean;
   looping?: boolean;
+  autoplay?: boolean;
   streamUrl?: string;
   liveLowLatency?: boolean;
   playbackRate?: number;
@@ -71,6 +72,7 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
       paused,
       muted,
       looping,
+      autoplay,
       liveLowLatency,
       playbackRate,
       onSeek,
@@ -154,6 +156,10 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
     const onLoadHandler = (
       event: NativeSyntheticEvent<{ duration: number | null }>
     ) => {
+      if (autoplay === false || paused === true) {
+        pause();
+      }
+
       const { duration } = event.nativeEvent;
       onLoad?.(duration);
     };

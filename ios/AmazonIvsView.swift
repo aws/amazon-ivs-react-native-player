@@ -91,7 +91,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
     @objc func pause() {
         player.pause()
     }
-    
+
     @objc func seek(position: NSNumber) {
         let parsedTime = CMTimeMakeWithSeconds(Float64(truncating: position), preferredTimescale: 1000000)
         player.seek(to: parsedTime)
@@ -100,7 +100,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     func addLiveLatencyObserver() {
         liveLatencyObserverToken = player.addPeriodicTimeObserver(forInterval: CMTime(seconds: 1, preferredTimescale: CMTimeScale(NSEC_PER_SEC)), queue: .main) {
             time in
@@ -114,7 +114,6 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
             self.liveLatencyObserverToken = nil
         }
     }
-
     func player(_ player: IVSPlayer, didSeekTo time: CMTime) {
         onSeek?(["position": CMTimeGetSeconds(time)])
     }

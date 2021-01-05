@@ -19,6 +19,7 @@ export default function PlayerPlaygroundScreen() {
   );
   const [muted, setMuted] = useState(false);
   const [looping, setLooping] = useState(false);
+  const [autoplay, setAutoplay] = useState(true);
   const [buffering, setBuffering] = useState(false);
   const [duration, setDuration] = useState<number | null>(null);
   const [liveLowLatency, setLiveLowLatency] = useState(true);
@@ -49,6 +50,7 @@ export default function PlayerPlaygroundScreen() {
           paused={paused}
           muted={muted}
           looping={looping}
+          autoplay={autoplay}
           liveLowLatency={liveLowLatency}
           streamUrl={url}
           playbackRate={playbackRate}
@@ -130,6 +132,11 @@ export default function PlayerPlaygroundScreen() {
             label="Looping"
             onValueChange={setLooping}
             value={looping}
+          />
+          <SettingsSwitchItem
+            label="Autoplay"
+            onValueChange={setAutoplay}
+            value={autoplay}
           />
           <SettingsSwitchItem
             label="Paused"
