@@ -24,8 +24,8 @@ export type MediaPlayerRef = {
 type MediaPlayerProps = {
   style?: ViewStyle;
   ref: any;
-  muted: boolean;
-  looping: boolean;
+  muted?: boolean;
+  looping?: boolean;
   liveLowLatency?: boolean;
   playbackRate?: number;
   streamUrl?: string;
@@ -68,9 +68,9 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
   (
     {
       streamUrl,
-      paused = false,
-      muted = false,
-      looping = false,
+      paused,
+      muted,
+      looping,
       liveLowLatency,
       playbackRate,
       onSeek,
