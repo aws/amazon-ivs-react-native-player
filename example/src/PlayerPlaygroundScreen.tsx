@@ -66,6 +66,9 @@ export default function PlayerPlaygroundScreen() {
           onLoad={(loadedDuration) =>
             console.log('load ', loadedDuration, ' - duration')
           }
+          onLiveLatencyChange={(liveLatency) =>
+            console.log('live latency', liveLatency)
+          }
         />
       </View>
       <SafeAreaView style={styles.settingsIcon}>

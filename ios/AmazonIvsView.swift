@@ -11,10 +11,14 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
     @objc var onBuffer: RCTDirectEventBlock?
     @objc var onLoadStart: RCTDirectEventBlock?
     @objc var onLoad: RCTDirectEventBlock?
-    
+
+    @objc var onLiveLatencyChange: RCTDirectEventBlock?
+
     private let player = IVSPlayer()
     private let playerView = IVSPlayerView()
     private var finishedLoading: Bool = false;
+
+    private var liveLatencyObserverToken: Any?
 
     override init(frame: CGRect) {
         self.muted = player.muted
@@ -24,10 +28,15 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
         super.init(frame: frame)
         self.addSubview(self.playerView)
         self.playerView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
+        self.addLiveLatencyObserver()
 
         if let url = self.streamUrl {
             self.load(urlString: url)
         }
+    }
+
+    deinit {
+        self.removeLiveLatencyObserver()
     }
 
     func load(urlString: String) {
@@ -92,6 +101,20 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
         fatalError("init(coder:) has not been implemented")
     }
     
+    func addLiveLatencyObserver() {
+        liveLatencyObserverToken = player.addPeriodicTimeObserver(forInterval: CMTime(seconds: 1, preferredTimescale: CMTimeScale(NSEC_PER_SEC)), queue: .main) {
+            time in
+            self.onLiveLatencyChange!(["liveLatency": self.player.liveLatency.value])
+        }
+    }
+
+    func removeLiveLatencyObserver() {
+        if let liveLatencyObserverToken = liveLatencyObserverToken {
+            player.removeTimeObserver(liveLatencyObserverToken)
+            self.liveLatencyObserverToken = nil
+        }
+    }
+
     func player(_ player: IVSPlayer, didSeekTo time: CMTime) {
         onSeek?(["position": CMTimeGetSeconds(time)])
     }
@@ -138,7 +161,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
             }
         }
     }
-    
+
     func playerWillRebuffer(_ player: IVSPlayer) {
         onBuffer?(["": NSNull()])
     }
