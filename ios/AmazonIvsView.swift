@@ -52,9 +52,6 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
         self.playerView.player = player
         onLoadStart?(["": NSNull()])
         player.load(url)
-
-        //TODO: remove below after implementing autoplay prop
-        player.play()
     }
 
     @objc var muted: Bool {
