@@ -84,6 +84,10 @@ export default function PlayerPlaygroundScreen() {
             console.log('live latency', liveLatency)
           }
           onData={(data) => console.log(data)}
+          onTextCue={(textCue) => console.log('text cue', textCue)}
+          onTextMetadataCue={(textMetadataCue) =>
+            console.log('text metadata cue', textMetadataCue)
+          }
         />
       </View>
       <SafeAreaView style={styles.settingsIcon}>

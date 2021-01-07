@@ -14,7 +14,7 @@ import {
   NativeSyntheticEvent,
 } from 'react-native';
 import { LogLevel } from './enums';
-import type { Quality, PlayerData } from './types';
+import type { Quality, PlayerData, TextCue, TextMetadataCue } from './types';
 export { PlayerState } from './enums';
 
 export type MediaPlayerRef = {
@@ -47,6 +47,8 @@ type MediaPlayerProps = {
   onLiveLatencyChange?(
     event: NativeSyntheticEvent<{ liveLatency: number }>
   ): void;
+  onTextCue?(event: NativeSyntheticEvent<TextCue>): void;
+  onTextMetadataCue?(event: NativeSyntheticEvent<TextMetadataCue>): void;
 };
 
 const VIEW_NAME = 'AmazonIvs';
@@ -71,6 +73,8 @@ type Props = {
   onLoadStart?(): void;
   onLoad?(duration: number | null): void;
   onLiveLatencyChange?(liveLatency: number): void;
+  onTextCue?(textCue: TextCue): void;
+  onTextMetadataCue?(textMetadataCue: TextMetadataCue): void;
 };
 
 const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
@@ -93,6 +97,8 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
       onLoadStart,
       onLoad,
       onLiveLatencyChange,
+      onTextCue,
+      onTextMetadataCue,
     },
     ref
   ) => {
@@ -186,6 +192,18 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
       onData?.({ qualities, version, sessionId });
     };
 
+    const onTextCueHandler = (event: NativeSyntheticEvent<TextCue>) => {
+      const textCue = event.nativeEvent;
+      onTextCue?.(textCue);
+    };
+
+    const onTextMetadataCueHandler = (
+      event: NativeSyntheticEvent<TextMetadataCue>
+    ) => {
+      const textMetadataCue = event.nativeEvent;
+      onTextMetadataCue?.(textMetadataCue);
+    };
+
     return (
       <View style={styles.container} ref={ref as any}>
         <MediaPlayer
@@ -206,6 +224,8 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
           onLoadStart={onLoadStart}
           onLoad={onLoadHandler}
           onLiveLatencyChange={onLiveLatencyChangeHandler}
+          onTextCue={onTextCueHandler}
+          onTextMetadataCue={onTextMetadataCueHandler}
         />
       </View>
     );

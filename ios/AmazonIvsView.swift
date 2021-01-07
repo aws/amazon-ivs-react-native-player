@@ -12,6 +12,8 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
     @objc var onBuffer: RCTDirectEventBlock?
     @objc var onLoadStart: RCTDirectEventBlock?
     @objc var onLoad: RCTDirectEventBlock?
+    @objc var onTextCue: RCTDirectEventBlock?
+    @objc var onTextMetadataCue: RCTDirectEventBlock?
 
     @objc var onLiveLatencyChange: RCTDirectEventBlock?
 
@@ -204,6 +206,32 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
 
                 onQualityChange!(qualityData)
             }
+        }
+    }
+
+    func player(_ player: IVSPlayer, didOutputCue cue: IVSCue) {
+        if let cue = cue as? IVSTextCue, onTextCue != nil {
+            let textQue: [String: Any] = [
+                "type": cue.type.rawValue,
+                "line": cue.line,
+                "size": cue.size,
+                "position": cue.position,
+                "text": cue.text,
+                "textAlignment": cue.textAlignment
+            ]
+
+            onTextCue!(textQue)
+        }
+
+        if let cue = cue as? IVSTextMetadataCue, onTextMetadataCue != nil {
+            let textMetadataQue = [
+                "type": cue.type.rawValue,
+                "text": cue.text,
+                "textDescription": cue.textDescription
+
+            ]
+
+            onTextMetadataCue!(textMetadataQue)
         }
     }
 

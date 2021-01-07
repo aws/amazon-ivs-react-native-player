@@ -20,4 +20,6 @@ RCT_EXPORT_VIEW_PROPERTY(onBuffer, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onLoadStart, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onLoad, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onLiveLatencyChange, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onTextCue, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onTextMetadataCue, RCTDirectEventBlock)
 @end
