@@ -177,20 +177,17 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
     }
 
     func player(_ player: IVSPlayer, didChangeDuration duration: CMTime) {
-        if onDurationChange != nil {
             if duration.isNumeric {
                 // TODO: not sure about the expected return format, it returns seconds at the moment
-                onDurationChange!(["duration": CMTimeGetSeconds(duration)])
+                onDurationChange?(["duration": CMTimeGetSeconds(duration)])
             } else {
-                onDurationChange!(["duration": NSNull()])
+                onDurationChange?(["duration": NSNull()])
             }
-        }
     }
 
     func player(_ player: IVSPlayer, didChangeQuality quality: IVSQuality?) {
-        if onQualityChange != nil {
             if quality == nil {
-                onQualityChange!(["quality": NSNull()])
+                onQualityChange?(["quality": NSNull()])
             } else {
                 let qualityData: [String: Any ] = [
                     "name": quality?.name ?? "",
@@ -201,9 +198,8 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
                     "height": quality?.height ?? 0
                 ]
 
-                onQualityChange!(qualityData)
+                onQualityChange?(qualityData)
             }
-        }
     }
 
     func player(_ player: IVSPlayer, didOutputCue cue: IVSCue) {
