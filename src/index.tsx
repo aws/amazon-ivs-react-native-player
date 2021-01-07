@@ -13,6 +13,7 @@ import {
   View,
   NativeSyntheticEvent,
 } from 'react-native';
+import { LogLevel } from './enums';
 import type { Quality, PlayerData } from './types';
 export { PlayerState } from './enums';
 
@@ -22,6 +23,8 @@ export type MediaPlayerRef = {
   seekTo: (position: number) => void;
 };
 
+export { LogLevel };
+
 type MediaPlayerProps = {
   style?: ViewStyle;
   ref: any;
@@ -30,6 +33,7 @@ type MediaPlayerProps = {
   liveLowLatency?: boolean;
   playbackRate?: number;
   streamUrl?: string;
+  logLevel?: LogLevel;
   onSeek?(event: NativeSyntheticEvent<{ position: number }>): void;
   onData?(event: NativeSyntheticEvent<PlayerData>): void;
   onPlayerStateChange?(event: NativeSyntheticEvent<{ state: number }>): void;
@@ -47,7 +51,7 @@ type MediaPlayerProps = {
 
 const VIEW_NAME = 'AmazonIvs';
 
-export const MediaPlayer = requireNativeComponent<MediaPlayerProps>(VIEW_NAME);
+const MediaPlayer = requireNativeComponent<MediaPlayerProps>(VIEW_NAME);
 
 type Props = {
   paused?: boolean;
@@ -57,6 +61,7 @@ type Props = {
   streamUrl?: string;
   liveLowLatency?: boolean;
   playbackRate?: number;
+  logLevel?: LogLevel;
   onSeek?(position: number): void;
   onData?(data: PlayerData): void;
   onPlayerStateChange?(state: number): void;
@@ -78,6 +83,7 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
       autoplay,
       liveLowLatency,
       playbackRate,
+      logLevel,
       onSeek,
       onData,
       onPlayerStateChange,
@@ -191,6 +197,7 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
           ref={mediaPlayerRef}
           playbackRate={playbackRate}
           streamUrl={streamUrl}
+          logLevel={logLevel}
           onData={onDataHandler}
           onSeek={onSeekHandler}
           onPlayerStateChange={onPlayerStateChangeHandler}

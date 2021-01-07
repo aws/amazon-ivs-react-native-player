@@ -27,6 +27,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
         self.looping = player.looping
         self.liveLowLatency = player.isLiveLowLatency
         self.playbackRate = NSNumber(value: player.playbackRate)
+        self.logLevel = NSNumber(value: player.logLevel.rawValue)
         super.init(frame: frame)
         self.addSubview(self.playerView)
         self.playerView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
@@ -82,6 +83,23 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
         didSet {
             if let url = streamUrl {
                 self.load(urlString: url)
+            }
+        }
+    }
+    
+    @objc var logLevel: NSNumber {
+        didSet {
+            switch logLevel {
+            case 0:
+                player.logLevel = IVSPlayer.LogLevel.debug
+            case 1:
+                player.logLevel = IVSPlayer.LogLevel.info
+            case 2:
+                player.logLevel = IVSPlayer.LogLevel.warning
+            case 3:
+                player.logLevel = IVSPlayer.LogLevel.error
+            default:
+                break
             }
         }
     }

@@ -2,13 +2,19 @@ import * as React from 'react';
 import { Button, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import MediaPlayer, {
   MediaPlayerRef,
+  LogLevel,
   PlayerState,
 } from 'react-native-amazon-ivs';
 import BottomSheet from '@gorhom/bottom-sheet';
 import { useState } from 'react';
 import SettingsInputItem from './components/SettingsInputItem';
 import SettingsSwitchItem from './components/SettingsSwitchItem';
-import { IconButton, Title, ActivityIndicator } from 'react-native-paper';
+import {
+  ActivityIndicator,
+  IconButton,
+  RadioButton,
+  Title,
+} from 'react-native-paper';
 import Slider from '@react-native-community/slider';
 import { parseSeconds } from './helpers';
 import SettingsItem from './components/SettingsItem';
@@ -28,6 +34,8 @@ export default function PlayerPlaygroundScreen() {
   const [liveLowLatency, setLiveLowLatency] = useState(true);
   // min - 0.5 max - 2.0
   const [playbackRate, setPlaybackRate] = useState(1);
+  const [logLevel, setLogLevel] = useState(LogLevel.IVSLogLevelError);
+  const [logLevelRadioValue, setLogLevelRadioValue] = useState('error');
 
   const handleSettingsOpen = React.useCallback(() => {
     sheetRef?.current?.expand();
@@ -56,6 +64,7 @@ export default function PlayerPlaygroundScreen() {
           autoplay={autoplay}
           liveLowLatency={liveLowLatency}
           streamUrl={url}
+          logLevel={logLevel}
           playbackRate={playbackRate}
           onSeek={(position) => console.log('new position', position)}
           onPlayerStateChange={(state) => {
@@ -111,13 +120,13 @@ export default function PlayerPlaygroundScreen() {
           }
         />
       </SafeAreaView>
-      <BottomSheet ref={sheetRef} index={0} snapPoints={[0, '50%']}>
+      <BottomSheet ref={sheetRef} index={0} snapPoints={[0, '80%']}>
         <View style={styles.settings}>
           <Title style={styles.settingsTitle}>Settings</Title>
           <SettingsInputItem label="url" onChangeText={setUrl} text={url} />
           <SettingsItem label={`Playback Rate: ${playbackRate}`}>
             <Slider
-              style={styles.slider}
+              style={styles.flex1}
               minimumValue={0.5}
               maximumValue={2}
               step={0.1}
@@ -152,6 +161,31 @@ export default function PlayerPlaygroundScreen() {
             onValueChange={setLiveLowLatency}
             value={liveLowLatency}
           />
+          <SettingsItem label="Log Level">
+            <View style={styles.flex1}>
+              <RadioButton.Group
+                value={logLevelRadioValue}
+                onValueChange={(newValue) => {
+                  setLogLevelRadioValue(newValue);
+                  switch (newValue) {
+                    case 'debug':
+                      return setLogLevel(LogLevel.IVSLogLevelDebug);
+                    case 'info':
+                      return setLogLevel(LogLevel.IVSLogLevelInfo);
+                    case 'warning':
+                      return setLogLevel(LogLevel.IVSLogLevelWarning);
+                    case 'error':
+                      return setLogLevel(LogLevel.IVSLogLevelError);
+                  }
+                }}
+              >
+                <RadioButton.Item value="debug" label="Debug" />
+                <RadioButton.Item value="info" label="Info" />
+                <RadioButton.Item value="warning" label="Warning" />
+                <RadioButton.Item value="error" label="Error" />
+              </RadioButton.Group>
+            </View>
+          </SettingsItem>
         </View>
       </BottomSheet>
     </View>
@@ -182,7 +216,7 @@ const styles = StyleSheet.create({
   settingsTitle: {
     paddingBottom: 8,
   },
-  slider: {
+  flex1: {
     flex: 1,
   },
   loader: {
