@@ -1,6 +1,9 @@
 import * as React from 'react';
 import { Button, SafeAreaView, StyleSheet, Text, View } from 'react-native';
-import MediaPlayer, { MediaPlayerRef } from 'react-native-amazon-ivs';
+import MediaPlayer, {
+  MediaPlayerRef,
+  PlayerState,
+} from 'react-native-amazon-ivs';
 import BottomSheet from '@gorhom/bottom-sheet';
 import { useState } from 'react';
 import SettingsInputItem from './components/SettingsInputItem';
@@ -56,7 +59,7 @@ export default function PlayerPlaygroundScreen() {
           playbackRate={playbackRate}
           onSeek={(position) => console.log('new position', position)}
           onPlayerStateChange={(state) => {
-            if (state === 3) {
+            if (state === PlayerState.Playing || state === PlayerState.Idle) {
               setBuffering(false);
             }
             console.log('state changed', state);

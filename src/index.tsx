@@ -14,6 +14,7 @@ import {
   NativeSyntheticEvent,
 } from 'react-native';
 import type { Quality, PlayerData } from './types';
+export { PlayerState } from './enums';
 
 export type MediaPlayerRef = {
   play: () => void;
