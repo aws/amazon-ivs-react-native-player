@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import MediaPlayer, {
   MediaPlayerRef,
   LogLevel,
@@ -10,14 +10,17 @@ import { useState } from 'react';
 import SettingsInputItem from './components/SettingsInputItem';
 import SettingsSwitchItem from './components/SettingsSwitchItem';
 import {
-  ActivityIndicator,
-  IconButton,
   RadioButton,
+  IconButton,
   Title,
+  ActivityIndicator,
+  Button,
 } from 'react-native-paper';
 import Slider from '@react-native-community/slider';
 import { parseSeconds } from './helpers';
 import SettingsItem from './components/SettingsItem';
+import type { Quality } from 'src/types';
+import QualitiesPicker from './components/QualitiesPicker';
 
 export default function PlayerPlaygroundScreen() {
   const sheetRef = React.useRef<BottomSheet>(null);
@@ -27,6 +30,10 @@ export default function PlayerPlaygroundScreen() {
     'https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8'
   );
   const [muted, setMuted] = useState(false);
+  const [quality, setQuality] = useState<Quality | null>(null);
+  const [autoMaxQuality, setAutoMaxQuality] = useState<Quality | null>(null);
+  const [qualities, setQualities] = useState<Quality[]>([]);
+  const [autoQualityMode, setAutoQualityMode] = useState(true);
   const [looping, setLooping] = useState(false);
   const [autoplay, setAutoplay] = useState(true);
   const [buffering, setBuffering] = useState(false);
@@ -66,6 +73,9 @@ export default function PlayerPlaygroundScreen() {
           streamUrl={url}
           logLevel={logLevel}
           playbackRate={playbackRate}
+          autoQualityMode={autoQualityMode}
+          quality={quality}
+          autoMaxQuality={autoMaxQuality}
           onSeek={(position) => console.log('new position', position)}
           onPlayerStateChange={(state) => {
             if (state === PlayerState.Playing || state === PlayerState.Idle) {
@@ -74,7 +84,9 @@ export default function PlayerPlaygroundScreen() {
             console.log('state changed', state);
           }}
           onDurationChange={setDuration}
-          onQualityChange={(quality) => console.log('quality changed', quality)}
+          onQualityChange={(newQuality) =>
+            console.log('quality changed', newQuality)
+          }
           onBuffer={() => setBuffering(true)}
           onLoadStart={() => console.log('loadStart')}
           onLoad={(loadedDuration) =>
@@ -83,7 +95,6 @@ export default function PlayerPlaygroundScreen() {
           onLiveLatencyChange={(liveLatency) =>
             console.log('live latency', liveLatency)
           }
-          onData={(data) => console.log(data)}
           onTextCue={(textCue) => console.log('text cue', textCue)}
           onTextMetadataCue={(textMetadataCue) =>
             console.log('text metadata cue', textMetadataCue)
@@ -91,6 +102,9 @@ export default function PlayerPlaygroundScreen() {
           onBandwidthEstimateChange={(bandwidthEstimate) =>
             console.log('bandwidth estimate', bandwidthEstimate)
           }
+          onData={(data) => {
+            setQualities(data.qualities);
+          }}
         />
       </View>
       <SafeAreaView style={styles.settingsIcon}>
@@ -115,22 +129,32 @@ export default function PlayerPlaygroundScreen() {
           />
         ) : null}
         <Button
-          title="Play"
           onPress={() =>
             mediaPlayerRef.current ? mediaPlayerRef.current.play() : null
           }
-        />
+        >
+          Play
+        </Button>
         <Button
-          title="Pause"
           onPress={() =>
             mediaPlayerRef.current ? mediaPlayerRef.current.pause() : null
           }
-        />
+        >
+          Pause
+        </Button>
       </SafeAreaView>
       <BottomSheet ref={sheetRef} index={0} snapPoints={[0, '80%']}>
         <View style={styles.settings}>
           <Title style={styles.settingsTitle}>Settings</Title>
           <SettingsInputItem label="url" onChangeText={setUrl} text={url} />
+          <SettingsItem label="Quality">
+            <QualitiesPicker
+              quality={quality}
+              qualities={qualities}
+              setQuality={setQuality}
+            />
+          </SettingsItem>
+
           <SettingsItem label={`Playback Rate: ${playbackRate}`}>
             <Slider
               style={styles.flex1}
@@ -193,6 +217,19 @@ export default function PlayerPlaygroundScreen() {
               </RadioButton.Group>
             </View>
           </SettingsItem>
+          <SettingsSwitchItem
+            label="Auto Quality"
+            onValueChange={setAutoQualityMode}
+            value={autoQualityMode}
+          />
+
+          <SettingsItem label="Auto Max Quality">
+            <QualitiesPicker
+              quality={autoMaxQuality}
+              qualities={qualities}
+              setQuality={setAutoMaxQuality}
+            />
+          </SettingsItem>
         </View>
       </BottomSheet>
     </View>
@@ -219,6 +256,9 @@ const styles = StyleSheet.create({
   },
   settings: {
     padding: 15,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'flex-start',
   },
   settingsTitle: {
     paddingBottom: 8,

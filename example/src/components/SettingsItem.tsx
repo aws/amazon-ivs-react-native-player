@@ -1,14 +1,15 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, StyleProp, ViewStyle } from 'react-native';
 import { Caption } from 'react-native-paper';
 
 type Props = {
   label: string;
   children?: any;
+  style?: StyleProp<ViewStyle>;
 };
 
-const SettingsItem = ({ label, children }: Props) => (
-  <View style={styles.container}>
+const SettingsItem = ({ label, children, style }: Props) => (
+  <View style={[styles.container, style]}>
     <Caption style={styles.label}>{label.toUpperCase()}</Caption>
     {children}
   </View>

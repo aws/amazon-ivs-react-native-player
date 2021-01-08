@@ -28,6 +28,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
         self.muted = player.muted
         self.looping = player.looping
         self.liveLowLatency = player.isLiveLowLatency
+        self.autoQualityMode = player.autoQualityMode
         self.playbackRate = NSNumber(value: player.playbackRate)
         self.logLevel = NSNumber(value: player.logLevel.rawValue)
         super.init(frame: frame)
@@ -76,6 +77,39 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
         didSet {
             player.setLiveLowLatencyEnabled(liveLowLatency)
         }
+    }
+
+    @objc var quality: NSDictionary? {
+        didSet {
+            let newQuality = findQuality(quality: quality)
+            player.quality = newQuality
+        }
+    }
+
+    @objc var autoQualityMode: Bool {
+        didSet {
+            player.autoQualityMode = autoQualityMode
+        }
+    }
+
+    @objc var autoMaxQuality: NSDictionary? {
+        didSet {
+            let quality = findQuality(quality: autoMaxQuality)
+            player.setAutoMaxQuality(quality)
+        }
+    }
+    
+    private func findQuality(quality: NSDictionary?) -> IVSQuality? {
+        let quality = player.qualities.first(where: {
+            $0.name == quality?["name"] as? String &&
+            $0.codecs == quality?["codecs"] as? String &&
+            $0.bitrate == quality?["bitrate"] as? Int &&
+            $0.framerate == quality?["framerate"] as? Float &&
+            $0.width == quality?["width"] as? Int &&
+            $0.height == quality?["height"] as? Int
+        })
+        
+        return quality
     }
 
     @objc var streamUrl: String? {

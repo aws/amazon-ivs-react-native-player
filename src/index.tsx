@@ -34,6 +34,9 @@ type MediaPlayerProps = {
   playbackRate?: number;
   streamUrl?: string;
   logLevel?: LogLevel;
+  quality?: Quality | null;
+  autoMaxQuality?: Quality | null;
+  autoQualityMode?: boolean;
   onSeek?(event: NativeSyntheticEvent<{ position: number }>): void;
   onData?(event: NativeSyntheticEvent<PlayerData>): void;
   onPlayerStateChange?(event: NativeSyntheticEvent<{ state: number }>): void;
@@ -67,6 +70,9 @@ type Props = {
   liveLowLatency?: boolean;
   playbackRate?: number;
   logLevel?: LogLevel;
+  quality?: Quality | null;
+  autoMaxQuality?: Quality | null;
+  autoQualityMode?: boolean;
   onSeek?(position: number): void;
   onData?(data: PlayerData): void;
   onPlayerStateChange?(state: number): void;
@@ -92,6 +98,9 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
       liveLowLatency,
       playbackRate,
       logLevel,
+      quality,
+      autoMaxQuality,
+      autoQualityMode,
       onSeek,
       onData,
       onPlayerStateChange,
@@ -170,8 +179,8 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
     };
 
     const onQualityChangeHandler = (event: NativeSyntheticEvent<Quality>) => {
-      const quality = event.nativeEvent;
-      onQualityChange?.(quality);
+      const newQuality = event.nativeEvent;
+      onQualityChange?.(newQuality);
     };
 
     const onLoadHandler = (
@@ -229,6 +238,9 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
           streamUrl={streamUrl}
           logLevel={logLevel}
           onData={onDataHandler}
+          quality={quality}
+          autoMaxQuality={autoMaxQuality}
+          autoQualityMode={autoQualityMode}
           onSeek={onSeekHandler}
           onPlayerStateChange={onPlayerStateChangeHandler}
           onDurationChange={onDurationChangeHandler}
