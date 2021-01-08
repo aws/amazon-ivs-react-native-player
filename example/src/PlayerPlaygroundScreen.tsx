@@ -88,6 +88,9 @@ export default function PlayerPlaygroundScreen() {
           onTextMetadataCue={(textMetadataCue) =>
             console.log('text metadata cue', textMetadataCue)
           }
+          onBandwidthEstimateChange={(bandwidthEstimate) =>
+            console.log('bandwidth estimate', bandwidthEstimate)
+          }
         />
       </View>
       <SafeAreaView style={styles.settingsIcon}>

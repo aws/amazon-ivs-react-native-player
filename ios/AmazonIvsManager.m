@@ -22,4 +22,5 @@ RCT_EXPORT_VIEW_PROPERTY(onLoad, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onLiveLatencyChange, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onTextCue, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onTextMetadataCue, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onBandwidthEstimateChange, RCTDirectEventBlock)
 @end

@@ -14,14 +14,14 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
     @objc var onLoad: RCTDirectEventBlock?
     @objc var onTextCue: RCTDirectEventBlock?
     @objc var onTextMetadataCue: RCTDirectEventBlock?
-
+    @objc var onBandwidthEstimateChange: RCTDirectEventBlock?
     @objc var onLiveLatencyChange: RCTDirectEventBlock?
 
     private let player = IVSPlayer()
     private let playerView = IVSPlayerView()
     private var finishedLoading: Bool = false;
 
-    private var liveLatencyObserverToken: Any?
+    private var playerObserverToken: Any?
     private var oldQualities: [IVSQuality] = [];
     
     override init(frame: CGRect) {
@@ -33,7 +33,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
         super.init(frame: frame)
         self.addSubview(self.playerView)
         self.playerView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
-        self.addLiveLatencyObserver()
+        self.addPlayerObserver()
 
         if let url = self.streamUrl {
             self.load(urlString: url)
@@ -41,7 +41,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
     }
 
     deinit {
-        self.removeLiveLatencyObserver()
+        self.removePlayerObserver()
     }
 
     func load(urlString: String) {
@@ -120,19 +120,21 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
         fatalError("init(coder:) has not been implemented")
     }
 
-    func addLiveLatencyObserver() {
-        liveLatencyObserverToken = player.addPeriodicTimeObserver(forInterval: CMTime(seconds: 1, preferredTimescale: CMTimeScale(NSEC_PER_SEC)), queue: .main) {
+    func addPlayerObserver() {
+        playerObserverToken = player.addPeriodicTimeObserver(forInterval: CMTime(seconds: 1, preferredTimescale: CMTimeScale(NSEC_PER_SEC)), queue: .main) {
             time in
-            self.onLiveLatencyChange!(["liveLatency": self.player.liveLatency.value])
+            self.onLiveLatencyChange?(["liveLatency": self.player.liveLatency.value])
+            self.onBandwidthEstimateChange?(["bandwidthEstimate": self.player.bandwidthEstimate])
         }
     }
 
-    func removeLiveLatencyObserver() {
-        if let liveLatencyObserverToken = liveLatencyObserverToken {
-            player.removeTimeObserver(liveLatencyObserverToken)
-            self.liveLatencyObserverToken = nil
+    func removePlayerObserver() {
+        if let playerObserverToken = playerObserverToken {
+            player.removeTimeObserver(playerObserverToken)
+            self.playerObserverToken = nil
         }
     }
+    
     func player(_ player: IVSPlayer, didSeekTo time: CMTime) {
         onSeek?(["position": CMTimeGetSeconds(time)])
     }

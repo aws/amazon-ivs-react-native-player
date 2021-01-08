@@ -49,6 +49,9 @@ type MediaPlayerProps = {
   ): void;
   onTextCue?(event: NativeSyntheticEvent<TextCue>): void;
   onTextMetadataCue?(event: NativeSyntheticEvent<TextMetadataCue>): void;
+  onBandwidthEstimateChange?(
+    event: NativeSyntheticEvent<{ bandwidthEstimate: number }>
+  ): void;
 };
 
 const VIEW_NAME = 'AmazonIvs';
@@ -75,6 +78,7 @@ type Props = {
   onLiveLatencyChange?(liveLatency: number): void;
   onTextCue?(textCue: TextCue): void;
   onTextMetadataCue?(textMetadataCue: TextMetadataCue): void;
+  onBandwidthEstimateChange?(bandwidthEstimate: number): void;
 };
 
 const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
@@ -99,6 +103,7 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
       onLiveLatencyChange,
       onTextCue,
       onTextMetadataCue,
+      onBandwidthEstimateChange,
     },
     ref
   ) => {
@@ -187,6 +192,13 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
       onLiveLatencyChange?.(liveLatency);
     };
 
+    const onBandwidthEstimateChangeHandler = (
+      event: NativeSyntheticEvent<{ bandwidthEstimate: number }>
+    ) => {
+      const { bandwidthEstimate } = event.nativeEvent;
+      onBandwidthEstimateChange?.(bandwidthEstimate);
+    };
+
     const onDataHandler = (event: NativeSyntheticEvent<PlayerData>) => {
       const { qualities, version, sessionId } = event.nativeEvent;
       onData?.({ qualities, version, sessionId });
@@ -223,9 +235,16 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
           onBuffer={onBuffer}
           onLoadStart={onLoadStart}
           onLoad={onLoadHandler}
-          onLiveLatencyChange={onLiveLatencyChangeHandler}
           onTextCue={onTextCueHandler}
           onTextMetadataCue={onTextMetadataCueHandler}
+          onLiveLatencyChange={
+            onLiveLatencyChange ? onLiveLatencyChangeHandler : undefined
+          }
+          onBandwidthEstimateChange={
+            onBandwidthEstimateChange
+              ? onBandwidthEstimateChangeHandler
+              : undefined
+          }
         />
       </View>
     );
