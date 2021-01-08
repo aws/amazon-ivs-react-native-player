@@ -5,16 +5,16 @@ import MediaPlayer, {
   LogLevel,
   PlayerState,
 } from 'react-native-amazon-ivs';
-import BottomSheet from '@gorhom/bottom-sheet';
+import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { useState } from 'react';
 import SettingsInputItem from './components/SettingsInputItem';
 import SettingsSwitchItem from './components/SettingsSwitchItem';
 import {
   RadioButton,
+  Button,
   IconButton,
   Title,
   ActivityIndicator,
-  Button,
 } from 'react-native-paper';
 import Slider from '@react-native-community/slider';
 import { parseSeconds } from './helpers';
@@ -43,6 +43,7 @@ export default function PlayerPlaygroundScreen() {
   const [playbackRate, setPlaybackRate] = useState(1);
   const [logLevel, setLogLevel] = useState(LogLevel.IVSLogLevelError);
   const [logLevelRadioValue, setLogLevelRadioValue] = useState('error');
+  const [volume, setVolume] = useState(1);
 
   const handleSettingsOpen = React.useCallback(() => {
     sheetRef?.current?.expand();
@@ -73,6 +74,7 @@ export default function PlayerPlaygroundScreen() {
           streamUrl={url}
           logLevel={logLevel}
           playbackRate={playbackRate}
+          volume={volume}
           autoQualityMode={autoQualityMode}
           quality={quality}
           autoMaxQuality={autoMaxQuality}
@@ -144,93 +146,105 @@ export default function PlayerPlaygroundScreen() {
         </Button>
       </SafeAreaView>
       <BottomSheet ref={sheetRef} index={0} snapPoints={[0, '80%']}>
-        <View style={styles.settings}>
-          <Title style={styles.settingsTitle}>Settings</Title>
-          <SettingsInputItem label="url" onChangeText={setUrl} text={url} />
-          <SettingsItem label="Quality">
-            <QualitiesPicker
-              quality={quality}
-              qualities={qualities}
-              setQuality={setQuality}
-            />
-          </SettingsItem>
+        <BottomSheetScrollView>
+          <View style={styles.settings}>
+            <Title style={styles.settingsTitle}>Settings</Title>
+            <SettingsInputItem label="url" onChangeText={setUrl} text={url} />
+            <SettingsItem label="Quality">
+              <QualitiesPicker
+                quality={quality}
+                qualities={qualities}
+                setQuality={setQuality}
+              />
+            </SettingsItem>
 
-          <SettingsItem label={`Playback Rate: ${playbackRate}`}>
-            <Slider
-              style={styles.flex1}
-              minimumValue={0.5}
-              maximumValue={2}
-              step={0.1}
-              value={playbackRate}
-              onValueChange={(value) =>
-                setPlaybackRate(Number(value.toFixed(1)))
-              }
+            <SettingsItem label={`Playback Rate: ${playbackRate}`}>
+              <Slider
+                style={styles.flex1}
+                minimumValue={0.5}
+                maximumValue={2}
+                step={0.1}
+                value={playbackRate}
+                onValueChange={(value) =>
+                  setPlaybackRate(Number(value.toFixed(1)))
+                }
+              />
+            </SettingsItem>
+            <SettingsSwitchItem
+              label="Muted"
+              value={muted}
+              onValueChange={setMuted}
             />
-          </SettingsItem>
-          <SettingsSwitchItem
-            label="Muted"
-            value={muted}
-            onValueChange={setMuted}
-          />
-          <SettingsSwitchItem
-            label="Looping"
-            onValueChange={setLooping}
-            value={looping}
-          />
-          <SettingsSwitchItem
-            label="Autoplay"
-            onValueChange={setAutoplay}
-            value={autoplay}
-          />
-          <SettingsSwitchItem
-            label="Paused"
-            onValueChange={setPaused}
-            value={paused}
-          />
-          <SettingsSwitchItem
-            label="Live Low Latency"
-            onValueChange={setLiveLowLatency}
-            value={liveLowLatency}
-          />
-          <SettingsItem label="Log Level">
-            <View style={styles.flex1}>
-              <RadioButton.Group
-                value={logLevelRadioValue}
-                onValueChange={(newValue) => {
-                  setLogLevelRadioValue(newValue);
-                  switch (newValue) {
-                    case 'debug':
-                      return setLogLevel(LogLevel.IVSLogLevelDebug);
-                    case 'info':
-                      return setLogLevel(LogLevel.IVSLogLevelInfo);
-                    case 'warning':
-                      return setLogLevel(LogLevel.IVSLogLevelWarning);
-                    case 'error':
-                      return setLogLevel(LogLevel.IVSLogLevelError);
-                  }
-                }}
-              >
-                <RadioButton.Item value="debug" label="Debug" />
-                <RadioButton.Item value="info" label="Info" />
-                <RadioButton.Item value="warning" label="Warning" />
-                <RadioButton.Item value="error" label="Error" />
-              </RadioButton.Group>
-            </View>
-          </SettingsItem>
-          <SettingsSwitchItem
-            label="Auto Quality"
-            onValueChange={setAutoQualityMode}
-            value={autoQualityMode}
-          />
+            <SettingsSwitchItem
+              label="Looping"
+              onValueChange={setLooping}
+              value={looping}
+            />
+            <SettingsSwitchItem
+              label="Autoplay"
+              onValueChange={setAutoplay}
+              value={autoplay}
+            />
+            <SettingsSwitchItem
+              label="Paused"
+              onValueChange={setPaused}
+              value={paused}
+            />
+            <SettingsItem label={`Volume: ${volume.toFixed(1)}`}>
+              <Slider
+                style={styles.flex1}
+                minimumValue={0}
+                maximumValue={1}
+                step={0.1}
+                value={volume}
+                onValueChange={setVolume}
+              />
+            </SettingsItem>
+            <SettingsSwitchItem
+              label="Live Low Latency"
+              onValueChange={setLiveLowLatency}
+              value={liveLowLatency}
+            />
+            <SettingsItem label="Log Level">
+              <View style={styles.flex1}>
+                <RadioButton.Group
+                  value={logLevelRadioValue}
+                  onValueChange={(newValue) => {
+                    setLogLevelRadioValue(newValue);
+                    switch (newValue) {
+                      case 'debug':
+                        return setLogLevel(LogLevel.IVSLogLevelDebug);
+                      case 'info':
+                        return setLogLevel(LogLevel.IVSLogLevelInfo);
+                      case 'warning':
+                        return setLogLevel(LogLevel.IVSLogLevelWarning);
+                      case 'error':
+                        return setLogLevel(LogLevel.IVSLogLevelError);
+                    }
+                  }}
+                >
+                  <RadioButton.Item value="debug" label="Debug" />
+                  <RadioButton.Item value="info" label="Info" />
+                  <RadioButton.Item value="warning" label="Warning" />
+                  <RadioButton.Item value="error" label="Error" />
+                </RadioButton.Group>
+              </View>
+            </SettingsItem>
+            <SettingsSwitchItem
+              label="Auto Quality"
+              onValueChange={setAutoQualityMode}
+              value={autoQualityMode}
+            />
 
-          <SettingsItem label="Auto Max Quality">
-            <QualitiesPicker
-              quality={autoMaxQuality}
-              qualities={qualities}
-              setQuality={setAutoMaxQuality}
-            />
-          </SettingsItem>
-        </View>
+            <SettingsItem label="Auto Max Quality">
+              <QualitiesPicker
+                quality={autoMaxQuality}
+                qualities={qualities}
+                setQuality={setAutoMaxQuality}
+              />
+            </SettingsItem>
+          </View>
+        </BottomSheetScrollView>
       </BottomSheet>
     </View>
   );

@@ -34,6 +34,7 @@ type MediaPlayerProps = {
   playbackRate?: number;
   streamUrl?: string;
   logLevel?: LogLevel;
+  volume?: number;
   quality?: Quality | null;
   autoMaxQuality?: Quality | null;
   autoQualityMode?: boolean;
@@ -70,6 +71,7 @@ type Props = {
   liveLowLatency?: boolean;
   playbackRate?: number;
   logLevel?: LogLevel;
+  volume?: number;
   quality?: Quality | null;
   autoMaxQuality?: Quality | null;
   autoQualityMode?: boolean;
@@ -98,6 +100,7 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
       liveLowLatency,
       playbackRate,
       logLevel,
+      volume,
       quality,
       autoMaxQuality,
       autoQualityMode,
@@ -237,6 +240,7 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
           playbackRate={playbackRate}
           streamUrl={streamUrl}
           logLevel={logLevel}
+          volume={volume}
           onData={onDataHandler}
           quality={quality}
           autoMaxQuality={autoMaxQuality}

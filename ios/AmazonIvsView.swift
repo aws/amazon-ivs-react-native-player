@@ -31,6 +31,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
         self.autoQualityMode = player.autoQualityMode
         self.playbackRate = NSNumber(value: player.playbackRate)
         self.logLevel = NSNumber(value: player.logLevel.rawValue)
+        self.volume = NSNumber(value: player.volume)
         super.init(frame: frame)
         self.addSubview(self.playerView)
         self.playerView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
@@ -117,6 +118,12 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
             if let url = streamUrl {
                 self.load(urlString: url)
             }
+        }
+    }
+
+    @objc var volume: NSNumber {
+        didSet {
+            player.volume = Float(truncating: volume)
         }
     }
     
