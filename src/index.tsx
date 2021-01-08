@@ -34,6 +34,7 @@ type MediaPlayerProps = {
   playbackRate?: number;
   streamUrl?: string;
   logLevel?: LogLevel;
+  progressInterval?: number;
   volume?: number;
   quality?: Quality | null;
   autoMaxQuality?: Quality | null;
@@ -53,6 +54,7 @@ type MediaPlayerProps = {
   ): void;
   onTextCue?(event: NativeSyntheticEvent<TextCue>): void;
   onTextMetadataCue?(event: NativeSyntheticEvent<TextMetadataCue>): void;
+  onProgress?(event: NativeSyntheticEvent<{ position: number }>): void;
   onBandwidthEstimateChange?(
     event: NativeSyntheticEvent<{ bandwidthEstimate: number }>
   ): void;
@@ -71,6 +73,7 @@ type Props = {
   liveLowLatency?: boolean;
   playbackRate?: number;
   logLevel?: LogLevel;
+  progressInterval?: number;
   volume?: number;
   quality?: Quality | null;
   autoMaxQuality?: Quality | null;
@@ -86,6 +89,7 @@ type Props = {
   onLiveLatencyChange?(liveLatency: number): void;
   onTextCue?(textCue: TextCue): void;
   onTextMetadataCue?(textMetadataCue: TextMetadataCue): void;
+  onProgress?(progress: number): void;
   onBandwidthEstimateChange?(bandwidthEstimate: number): void;
 };
 
@@ -100,6 +104,7 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
       liveLowLatency,
       playbackRate,
       logLevel,
+      progressInterval,
       volume,
       quality,
       autoMaxQuality,
@@ -115,6 +120,7 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
       onLiveLatencyChange,
       onTextCue,
       onTextMetadataCue,
+      onProgress,
       onBandwidthEstimateChange,
     },
     ref
@@ -228,6 +234,13 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
       onTextMetadataCue?.(textMetadataCue);
     };
 
+    const onProgressHandler = (
+      event: NativeSyntheticEvent<{ position: number }>
+    ) => {
+      const { position } = event.nativeEvent;
+      onProgress?.(position);
+    };
+
     return (
       <View style={styles.container} ref={ref as any}>
         <MediaPlayer
@@ -235,17 +248,18 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
           looping={looping}
           liveLowLatency={liveLowLatency}
           style={styles.mediaPlayer}
-          onQualityChange={onQualityChangeHandler}
           ref={mediaPlayerRef}
           playbackRate={playbackRate}
           streamUrl={streamUrl}
           logLevel={logLevel}
+          progressInterval={progressInterval}
           volume={volume}
           onData={onDataHandler}
           quality={quality}
           autoMaxQuality={autoMaxQuality}
           autoQualityMode={autoQualityMode}
           onSeek={onSeekHandler}
+          onQualityChange={onQualityChangeHandler}
           onPlayerStateChange={onPlayerStateChangeHandler}
           onDurationChange={onDurationChangeHandler}
           onBuffer={onBuffer}
@@ -253,6 +267,7 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
           onLoad={onLoadHandler}
           onTextCue={onTextCueHandler}
           onTextMetadataCue={onTextMetadataCueHandler}
+          onProgress={onProgressHandler}
           onLiveLatencyChange={
             onLiveLatencyChange ? onLiveLatencyChangeHandler : undefined
           }

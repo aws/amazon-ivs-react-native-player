@@ -21,6 +21,7 @@ import { parseSeconds } from './helpers';
 import SettingsItem from './components/SettingsItem';
 import type { Quality } from 'src/types';
 import QualitiesPicker from './components/QualitiesPicker';
+import SettingsSliderItem from './components/SettingsSliderItem';
 
 export default function PlayerPlaygroundScreen() {
   const sheetRef = React.useRef<BottomSheet>(null);
@@ -43,6 +44,7 @@ export default function PlayerPlaygroundScreen() {
   const [playbackRate, setPlaybackRate] = useState(1);
   const [logLevel, setLogLevel] = useState(LogLevel.IVSLogLevelError);
   const [logLevelRadioValue, setLogLevelRadioValue] = useState('error');
+  const [progressInterval, setProgressInterval] = useState(1);
   const [volume, setVolume] = useState(1);
 
   const handleSettingsOpen = React.useCallback(() => {
@@ -74,6 +76,7 @@ export default function PlayerPlaygroundScreen() {
           streamUrl={url}
           logLevel={logLevel}
           playbackRate={playbackRate}
+          progressInterval={progressInterval}
           volume={volume}
           autoQualityMode={autoQualityMode}
           quality={quality}
@@ -101,6 +104,7 @@ export default function PlayerPlaygroundScreen() {
           onTextMetadataCue={(textMetadataCue) =>
             console.log('text metadata cue', textMetadataCue)
           }
+          onProgress={(position) => console.log('position', position)}
           onBandwidthEstimateChange={(bandwidthEstimate) =>
             console.log('bandwidth estimate', bandwidthEstimate)
           }
@@ -157,19 +161,24 @@ export default function PlayerPlaygroundScreen() {
                 setQuality={setQuality}
               />
             </SettingsItem>
-
-            <SettingsItem label={`Playback Rate: ${playbackRate}`}>
-              <Slider
-                style={styles.flex1}
-                minimumValue={0.5}
-                maximumValue={2}
-                step={0.1}
-                value={playbackRate}
-                onValueChange={(value) =>
-                  setPlaybackRate(Number(value.toFixed(1)))
-                }
-              />
-            </SettingsItem>
+            <SettingsSliderItem
+              label={`Playback Rate: ${playbackRate}`}
+              minimumValue={0.5}
+              maximumValue={2}
+              step={0.1}
+              value={playbackRate}
+              onValueChange={(value) =>
+                setPlaybackRate(Number(value.toFixed(1)))
+              }
+            />
+            <SettingsSliderItem
+              label={`Progress Interval: ${progressInterval}`}
+              minimumValue={1}
+              maximumValue={5}
+              step={1}
+              value={progressInterval}
+              onValueChange={(value) => setProgressInterval(Number(value))}
+            />
             <SettingsSwitchItem
               label="Muted"
               value={muted}
@@ -190,16 +199,14 @@ export default function PlayerPlaygroundScreen() {
               onValueChange={setPaused}
               value={paused}
             />
-            <SettingsItem label={`Volume: ${volume.toFixed(1)}`}>
-              <Slider
-                style={styles.flex1}
-                minimumValue={0}
-                maximumValue={1}
-                step={0.1}
-                value={volume}
-                onValueChange={setVolume}
-              />
-            </SettingsItem>
+            <SettingsSliderItem
+              label={`Volume: ${volume.toFixed(1)}`}
+              minimumValue={0}
+              maximumValue={1}
+              step={0.1}
+              value={volume}
+              onValueChange={setVolume}
+            />
             <SettingsSwitchItem
               label="Live Low Latency"
               onValueChange={setLiveLowLatency}

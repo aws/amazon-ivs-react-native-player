@@ -3,7 +3,7 @@ import UIKit
 import AmazonIVSPlayer
 
 @objc(AmazonIvsView)
-class AmazonIvsView: UIView, IVSPlayer.Delegate{
+class AmazonIvsView: UIView, IVSPlayer.Delegate {
     @objc var onSeek: RCTDirectEventBlock?
     @objc var onData: RCTDirectEventBlock?
     @objc var onPlayerStateChange: RCTDirectEventBlock?
@@ -16,11 +16,13 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
     @objc var onTextMetadataCue: RCTDirectEventBlock?
     @objc var onBandwidthEstimateChange: RCTDirectEventBlock?
     @objc var onLiveLatencyChange: RCTDirectEventBlock?
+    @objc var onProgress: RCTDirectEventBlock?
 
     private let player = IVSPlayer()
     private let playerView = IVSPlayerView()
     private var finishedLoading: Bool = false;
 
+    private var progressObserverToken: Any?
     private var playerObserverToken: Any?
     private var oldQualities: [IVSQuality] = [];
     
@@ -31,10 +33,12 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
         self.autoQualityMode = player.autoQualityMode
         self.playbackRate = NSNumber(value: player.playbackRate)
         self.logLevel = NSNumber(value: player.logLevel.rawValue)
+        self.progressInterval = 1
         self.volume = NSNumber(value: player.volume)
         super.init(frame: frame)
         self.addSubview(self.playerView)
         self.playerView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
+        self.addProgressObserver()
         self.addPlayerObserver()
 
         if let url = self.streamUrl {
@@ -43,6 +47,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
     }
 
     deinit {
+        self.removeProgressObserver()
         self.removePlayerObserver()
     }
 
@@ -54,6 +59,14 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
         self.playerView.player = player
         onLoadStart?(["": NSNull()])
         player.load(url)
+    }
+
+    @objc var progressInterval: NSNumber {
+        // TODO: Figure out why updatating observer does not work and results in multiple calls per second
+        didSet {
+            self.removeProgressObserver()
+            self.addProgressObserver()
+        }
     }
 
     @objc var muted: Bool {
@@ -99,7 +112,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
             player.setAutoMaxQuality(quality)
         }
     }
-    
+
     private func findQuality(quality: NSDictionary?) -> IVSQuality? {
         let quality = player.qualities.first(where: {
             $0.name == quality?["name"] as? String &&
@@ -109,7 +122,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
             $0.width == quality?["width"] as? Int &&
             $0.height == quality?["height"] as? Int
         })
-        
+
         return quality
     }
 
@@ -126,7 +139,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
             player.volume = Float(truncating: volume)
         }
     }
-    
+
     @objc var logLevel: NSNumber {
         didSet {
             switch logLevel {
@@ -163,19 +176,33 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
 
     func addPlayerObserver() {
         playerObserverToken = player.addPeriodicTimeObserver(forInterval: CMTime(seconds: 1, preferredTimescale: CMTimeScale(NSEC_PER_SEC)), queue: .main) {
-            time in
-            self.onLiveLatencyChange?(["liveLatency": self.player.liveLatency.value])
-            self.onBandwidthEstimateChange?(["bandwidthEstimate": self.player.bandwidthEstimate])
+            [weak self] time in
+            self?.onLiveLatencyChange?(["liveLatency": (self?.player.liveLatency.value ?? nil) as Any])
+            self?.onBandwidthEstimateChange?(["bandwidthEstimate": (self?.player.bandwidthEstimate ?? nil) as Any])
+        }
+    }
+
+    func addProgressObserver() {
+        progressObserverToken = player.addPeriodicTimeObserver(forInterval: CMTime(seconds: Double(truncating: progressInterval), preferredTimescale: CMTimeScale(NSEC_PER_SEC)), queue: .main) {
+            [weak self] time in
+            self?.onProgress?(["position": (self?.player.position.seconds ?? nil) as Any])
         }
     }
 
     func removePlayerObserver() {
-        if let playerObserverToken = playerObserverToken {
-            player.removeTimeObserver(playerObserverToken)
+        if let token = playerObserverToken {
+            player.removeTimeObserver(token)
             self.playerObserverToken = nil
         }
     }
-    
+
+    func removeProgressObserver() {
+        if let token = progressObserverToken {
+            player.removeTimeObserver(token)
+            self.progressObserverToken = nil
+        }
+    }
+
     func player(_ player: IVSPlayer, didSeekTo time: CMTime) {
         onSeek?(["position": CMTimeGetSeconds(time)])
     }
@@ -196,7 +223,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
             if player.qualities != oldQualities {
                 let qualities: NSMutableArray = []
                 for quality in player.qualities {
-                    let qualityData: [String: Any ] = [
+                    let qualityData: [String: Any] = [
                         "name": quality.name,
                         "codecs": quality.codecs,
                         "bitrate": quality.bitrate,
@@ -232,7 +259,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate{
             if quality == nil {
                 onQualityChange?(["quality": NSNull()])
             } else {
-                let qualityData: [String: Any ] = [
+                let qualityData: [String: Any] = [
                     "name": quality?.name ?? "",
                     "codecs": quality?.codecs ?? "",
                     "bitrate": quality?.bitrate ?? 0,
