@@ -16,9 +16,7 @@ const SettingsInputItem = ({ label, onChangeText, value }: Props) => {
   const finalValue = useDebounce(internalValue, 1000);
 
   useEffect(() => {
-    if (!isEmpty(finalValue)) {
-      onChangeText(finalValue.trim());
-    }
+    onChangeText(finalValue.trim());
   }, [finalValue, onChangeText]);
 
   return (
@@ -33,8 +31,6 @@ const SettingsInputItem = ({ label, onChangeText, value }: Props) => {
     </SettingsItem>
   );
 };
-
-const isEmpty = (value: string) => !value || value.trim().length === 0;
 
 const styles = StyleSheet.create({
   input: {

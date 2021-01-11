@@ -130,7 +130,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
 
     @objc var streamUrl: String? {
         didSet {
-            if let url = streamUrl {
+            if let url = streamUrl, !streamUrl!.isEmpty {
                 self.load(urlString: url)
             }
         }
