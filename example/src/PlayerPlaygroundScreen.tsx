@@ -23,6 +23,9 @@ import type { Quality } from 'src/types';
 import QualitiesPicker from './components/QualitiesPicker';
 import SettingsSliderItem from './components/SettingsSliderItem';
 
+const INITIAL_PLAYBACK_RATE = 1;
+const INITIAL_PROGRESS_INTERVAL = 1;
+
 export default function PlayerPlaygroundScreen() {
   const sheetRef = React.useRef<BottomSheet>(null);
   const mediaPlayerRef = React.useRef<MediaPlayerRef>(null);
@@ -46,6 +49,9 @@ export default function PlayerPlaygroundScreen() {
   const [logLevelRadioValue, setLogLevelRadioValue] = useState('error');
   const [progressInterval, setProgressInterval] = useState(1);
   const [volume, setVolume] = useState(1);
+  const [position, setPosition] = useState<number>();
+  const [lockPosition, setLockPosition] = useState(false);
+  const [positionSlider, setPositionSlider] = useState(0);
 
   const handleSettingsOpen = React.useCallback(() => {
     sheetRef?.current?.expand();
@@ -81,7 +87,7 @@ export default function PlayerPlaygroundScreen() {
           autoQualityMode={autoQualityMode}
           quality={quality}
           autoMaxQuality={autoMaxQuality}
-          onSeek={(position) => console.log('new position', position)}
+          onSeek={(newPosition) => console.log('new position', newPosition)}
           onPlayerStateChange={(state) => {
             if (state === PlayerState.Playing || state === PlayerState.Idle) {
               setBuffering(false);
@@ -104,7 +110,12 @@ export default function PlayerPlaygroundScreen() {
           onTextMetadataCue={(textMetadataCue) =>
             console.log('text metadata cue', textMetadataCue)
           }
-          onProgress={(position) => console.log('position', position)}
+          onProgress={(newPosition) => {
+            if (!lockPosition) {
+              setPosition(newPosition);
+              setPositionSlider(newPosition);
+            }
+          }}
           onBandwidthEstimateChange={(bandwidthEstimate) =>
             console.log('bandwidth estimate', bandwidthEstimate)
           }
@@ -123,15 +134,23 @@ export default function PlayerPlaygroundScreen() {
       </SafeAreaView>
       <SafeAreaView>
         <View style={styles.durationsContainer}>
-          {/* TODO: placeholder for current time */}
-          <Text />
+          {duration && position ? (
+            <Text>{parseSeconds(position ?? 0)}</Text>
+          ) : null}
           {duration ? <Text>{parseSeconds(duration)}</Text> : null}
         </View>
         {duration ? (
           <Slider
             minimumValue={0}
             maximumValue={duration}
+            value={positionSlider}
+            onValueChange={setPosition}
             onSlidingComplete={slidingCompleteHandler}
+            onTouchStart={() => setLockPosition(true)}
+            onTouchEnd={() => {
+              setLockPosition(false);
+              setPositionSlider(position ?? 0);
+            }}
           />
         ) : null}
         <Button
@@ -166,7 +185,7 @@ export default function PlayerPlaygroundScreen() {
               minimumValue={0.5}
               maximumValue={2}
               step={0.1}
-              value={playbackRate}
+              value={INITIAL_PLAYBACK_RATE}
               onValueChange={(value) =>
                 setPlaybackRate(Number(value.toFixed(1)))
               }
@@ -176,7 +195,7 @@ export default function PlayerPlaygroundScreen() {
               minimumValue={1}
               maximumValue={5}
               step={1}
-              value={progressInterval}
+              value={INITIAL_PROGRESS_INTERVAL}
               onValueChange={(value) => setProgressInterval(Number(value))}
             />
             <SettingsSwitchItem
