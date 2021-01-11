@@ -119,9 +119,8 @@ export default function PlayerPlaygroundScreen() {
           onBandwidthEstimateChange={(bandwidthEstimate) =>
             console.log('bandwidth estimate', bandwidthEstimate)
           }
-          onData={(data) => {
-            setQualities(data.qualities);
-          }}
+          onData={(data) => setQualities(data.qualities)}
+          onError={(error) => console.log('error', error)}
         />
       </View>
       <SafeAreaView style={styles.settingsIcon}>

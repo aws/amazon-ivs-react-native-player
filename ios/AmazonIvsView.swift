@@ -18,6 +18,8 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
     @objc var onLiveLatencyChange: RCTDirectEventBlock?
     @objc var onProgress: RCTDirectEventBlock?
 
+    @objc var onError: RCTDirectEventBlock?
+
     private let player = IVSPlayer()
     private let playerView = IVSPlayerView()
     private var finishedLoading: Bool = false;
@@ -300,5 +302,9 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
 
     func playerWillRebuffer(_ player: IVSPlayer) {
         onBuffer?(["": NSNull()])
+    }
+
+    func player(_ player: IVSPlayer, didFailWithError error: Error) {
+        onError?(["error": error.localizedDescription])
     }
 }

@@ -58,6 +58,7 @@ type MediaPlayerProps = {
   onBandwidthEstimateChange?(
     event: NativeSyntheticEvent<{ bandwidthEstimate: number }>
   ): void;
+  onError?(event: NativeSyntheticEvent<{ error: string }>): void;
 };
 
 const VIEW_NAME = 'AmazonIvs';
@@ -91,6 +92,7 @@ type Props = {
   onTextMetadataCue?(textMetadataCue: TextMetadataCue): void;
   onProgress?(progress: number): void;
   onBandwidthEstimateChange?(bandwidthEstimate: number): void;
+  onError?(error: string): void;
 };
 
 const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
@@ -122,6 +124,7 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
       onTextMetadataCue,
       onProgress,
       onBandwidthEstimateChange,
+      onError,
     },
     ref
   ) => {
@@ -241,6 +244,11 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
       onProgress?.(position);
     };
 
+    const onErrorHandler = (event: NativeSyntheticEvent<{ error: string }>) => {
+      const { error } = event.nativeEvent;
+      onError?.(error);
+    };
+
     return (
       <View style={styles.container} ref={ref as any}>
         <MediaPlayer
@@ -276,6 +284,7 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
               ? onBandwidthEstimateChangeHandler
               : undefined
           }
+          onError={onErrorHandler}
         />
       </View>
     );
