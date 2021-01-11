@@ -9,9 +9,15 @@ type Props = {
   label: string;
   onChangeText: (text: string) => void;
   value: string;
+  multiline?: boolean;
 };
 
-const SettingsInputItem = ({ label, onChangeText, value }: Props) => {
+const SettingsInputItem = ({
+  label,
+  onChangeText,
+  value,
+  multiline,
+}: Props) => {
   const [internalValue, setInternalValue] = useState(value);
   const finalValue = useDebounce(internalValue, 1000);
 
@@ -27,6 +33,7 @@ const SettingsInputItem = ({ label, onChangeText, value }: Props) => {
         onChangeText={setInternalValue}
         style={styles.input}
         dense
+        multiline={multiline}
       />
     </SettingsItem>
   );

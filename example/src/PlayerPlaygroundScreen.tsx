@@ -9,13 +9,10 @@ import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { useState } from 'react';
 import SettingsInputItem from './components/SettingsInputItem';
 import SettingsSwitchItem from './components/SettingsSwitchItem';
-import {
-  Button,
-  IconButton,
-  Title,
-  ActivityIndicator,
-} from 'react-native-paper';
+import { IconButton, Title, ActivityIndicator } from 'react-native-paper';
 import Slider from '@react-native-community/slider';
+import Orientation from 'react-native-orientation-locker';
+
 import { parseSeconds } from './helpers';
 import SettingsItem from './components/SettingsItem';
 import type { Quality } from 'src/types';
@@ -29,6 +26,8 @@ const INITIAL_PROGRESS_INTERVAL = 1;
 export default function PlayerPlaygroundScreen() {
   const sheetRef = React.useRef<BottomSheet>(null);
   const mediaPlayerRef = React.useRef<MediaPlayerRef>(null);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const [paused, setPaused] = useState(false);
   const [url, setUrl] = useState(
     'https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8'
@@ -54,6 +53,18 @@ export default function PlayerPlaygroundScreen() {
 
   const handleSettingsOpen = React.useCallback(() => {
     sheetRef?.current?.expand();
+  }, []);
+
+  const handleFullscreenPress = React.useCallback(() => {
+    Orientation.getOrientation((orientation) => {
+      if (orientation === 'PORTRAIT') {
+        Orientation.lockToLandscape();
+        setIsFullscreen(true);
+      } else {
+        Orientation.lockToPortrait();
+        setIsFullscreen(false);
+      }
+    });
   }, []);
 
   const slidingCompleteHandler = (value: number) => {
@@ -124,9 +135,15 @@ export default function PlayerPlaygroundScreen() {
       </View>
       <SafeAreaView style={styles.settingsIcon}>
         <IconButton
+          icon={isFullscreen ? 'fullscreen-exit' : 'fullscreen'}
+          size={25}
+          color="lightgrey"
+          onPress={handleFullscreenPress}
+        />
+        <IconButton
           icon="cog"
-          size={30}
-          color="black"
+          size={25}
+          color="lightgrey"
           onPress={handleSettingsOpen}
         />
       </SafeAreaView>
@@ -153,26 +170,31 @@ export default function PlayerPlaygroundScreen() {
             }}
           />
         ) : null}
-        <Button
-          onPress={() =>
-            mediaPlayerRef.current ? mediaPlayerRef.current.play() : null
-          }
-        >
-          Play
-        </Button>
-        <Button
-          onPress={() =>
-            mediaPlayerRef.current ? mediaPlayerRef.current.pause() : null
-          }
-        >
-          Pause
-        </Button>
+        <View style={styles.playButtonContainer}>
+          <IconButton
+            icon={isPlaying ? 'pause' : 'play'}
+            size={40}
+            color="white"
+            onPress={() => {
+              isPlaying
+                ? mediaPlayerRef.current?.pause()
+                : mediaPlayerRef.current?.play();
+              setIsPlaying(!isPlaying);
+            }}
+            style={styles.playIcon}
+          />
+        </View>
       </SafeAreaView>
       <BottomSheet ref={sheetRef} index={0} snapPoints={[0, '80%']}>
         <BottomSheetScrollView>
           <View style={styles.settings}>
             <Title style={styles.settingsTitle}>Settings</Title>
-            <SettingsInputItem label="url" onChangeText={setUrl} value={url} />
+            <SettingsInputItem
+              label="url"
+              onChangeText={setUrl}
+              value={url}
+              multiline
+            />
             <SettingsItem label="Quality">
               <QualitiesPicker
                 quality={quality}
@@ -260,10 +282,22 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 0,
+    backgroundColor: 'black',
   },
   playerContainer: {
     flex: 1,
     justifyContent: 'center',
+  },
+  playButtonContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    bottom: 15,
+    width: '100%',
+  },
+  playIcon: {
+    borderWidth: 1,
+    borderColor: 'white',
   },
   durationsContainer: {
     flexDirection: 'row',
@@ -272,7 +306,10 @@ const styles = StyleSheet.create({
   settingsIcon: {
     position: 'absolute',
     top: 15,
-    right: 0,
+    left: 0,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
   },
   settings: {
     padding: 15,
