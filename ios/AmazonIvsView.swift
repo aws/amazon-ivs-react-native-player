@@ -37,15 +37,16 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
         self.logLevel = NSNumber(value: player.logLevel.rawValue)
         self.progressInterval = 1
         self.volume = NSNumber(value: player.volume)
+        
         super.init(frame: frame)
+        
         self.addSubview(self.playerView)
         self.playerView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
         self.addProgressObserver()
         self.addPlayerObserver()
-
-        if let url = self.streamUrl {
-            self.load(urlString: url)
-        }
+        
+        player.delegate = self
+        self.playerView.player = player
     }
 
     deinit {
@@ -55,10 +56,8 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
 
     func load(urlString: String) {
         finishedLoading = false
-        player.delegate = self
-        let url = URL(string: urlString)!
+        let url = URL(string: urlString)
 
-        self.playerView.player = player
         onLoadStart?(["": NSNull()])
         player.load(url)
     }

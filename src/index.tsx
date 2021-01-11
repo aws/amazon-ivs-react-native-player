@@ -199,13 +199,17 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
       onQualityChange?.(newQuality);
     };
 
+    const onLoadStartHandler = () => {
+      if (autoplay && !paused) {
+        play();
+      }
+
+      onLoadStart?.();
+    };
+
     const onLoadHandler = (
       event: NativeSyntheticEvent<{ duration: number | null }>
     ) => {
-      if (autoplay === false || paused === true) {
-        pause();
-      }
-
       const { duration } = event.nativeEvent;
       onLoad?.(duration);
     };
@@ -279,7 +283,7 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
           onPlayerStateChange={onPlayerStateChangeHandler}
           onDurationChange={onDurationChangeHandler}
           onBuffer={onBuffer}
-          onLoadStart={onLoadStart}
+          onLoadStart={onLoadStartHandler}
           onLoad={onLoadHandler}
           onTextCue={onTextCueHandler}
           onTextMetadataCue={onTextMetadataCueHandler}
