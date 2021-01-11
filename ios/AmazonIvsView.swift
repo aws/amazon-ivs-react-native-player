@@ -237,11 +237,11 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
                     qualities.add(qualityData)
                 }
                 
-                onData?([
+                onData?(["playerData": [
                     "qualities": qualities,
                     "version": player.version,
                     "sessionId": player.sessionId
-                ])
+                ]])
             }
 
             oldQualities = player.qualities
@@ -270,13 +270,13 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
                     "height": quality?.height ?? 0
                 ]
 
-                onQualityChange?(qualityData)
+                onQualityChange?(["quality": qualityData])
             }
     }
 
     func player(_ player: IVSPlayer, didOutputCue cue: IVSCue) {
         if let cue = cue as? IVSTextCue, onTextCue != nil {
-            let textQue: [String: Any] = [
+            let textCue: [String: Any] = [
                 "type": cue.type.rawValue,
                 "line": cue.line,
                 "size": cue.size,
@@ -285,18 +285,18 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
                 "textAlignment": cue.textAlignment
             ]
 
-            onTextCue!(textQue)
+            onTextCue!(["textCue": textCue])
         }
 
         if let cue = cue as? IVSTextMetadataCue, onTextMetadataCue != nil {
-            let textMetadataQue = [
+            let textMetadataCue = [
                 "type": cue.type.rawValue,
                 "text": cue.text,
                 "textDescription": cue.textDescription
 
             ]
 
-            onTextMetadataCue!(textMetadataQue)
+            onTextMetadataCue!(["textMetadataCue": textMetadataCue])
         }
     }
 

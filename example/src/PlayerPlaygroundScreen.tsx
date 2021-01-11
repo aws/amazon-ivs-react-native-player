@@ -10,7 +10,6 @@ import { useState } from 'react';
 import SettingsInputItem from './components/SettingsInputItem';
 import SettingsSwitchItem from './components/SettingsSwitchItem';
 import {
-  RadioButton,
   Button,
   IconButton,
   Title,
@@ -22,6 +21,7 @@ import SettingsItem from './components/SettingsItem';
 import type { Quality } from 'src/types';
 import QualitiesPicker from './components/QualitiesPicker';
 import SettingsSliderItem from './components/SettingsSliderItem';
+import LogLevelPicker from './components/LogLevelPicker';
 
 const INITIAL_PLAYBACK_RATE = 1;
 const INITIAL_PROGRESS_INTERVAL = 1;
@@ -46,7 +46,6 @@ export default function PlayerPlaygroundScreen() {
   // min - 0.5 max - 2.0
   const [playbackRate, setPlaybackRate] = useState(1);
   const [logLevel, setLogLevel] = useState(LogLevel.IVSLogLevelError);
-  const [logLevelRadioValue, setLogLevelRadioValue] = useState('error');
   const [progressInterval, setProgressInterval] = useState(1);
   const [volume, setVolume] = useState(1);
   const [position, setPosition] = useState<number>();
@@ -134,8 +133,10 @@ export default function PlayerPlaygroundScreen() {
       <SafeAreaView>
         <View style={styles.durationsContainer}>
           {duration && position ? (
-            <Text>{parseSeconds(position ?? 0)}</Text>
-          ) : null}
+            <Text>{parseSeconds(position ? position : 0)}</Text>
+          ) : (
+            <Text />
+          )}
           {duration ? <Text>{parseSeconds(duration)}</Text> : null}
         </View>
         {duration ? (
@@ -233,29 +234,7 @@ export default function PlayerPlaygroundScreen() {
               value={liveLowLatency}
             />
             <SettingsItem label="Log Level">
-              <View style={styles.flex1}>
-                <RadioButton.Group
-                  value={logLevelRadioValue}
-                  onValueChange={(newValue) => {
-                    setLogLevelRadioValue(newValue);
-                    switch (newValue) {
-                      case 'debug':
-                        return setLogLevel(LogLevel.IVSLogLevelDebug);
-                      case 'info':
-                        return setLogLevel(LogLevel.IVSLogLevelInfo);
-                      case 'warning':
-                        return setLogLevel(LogLevel.IVSLogLevelWarning);
-                      case 'error':
-                        return setLogLevel(LogLevel.IVSLogLevelError);
-                    }
-                  }}
-                >
-                  <RadioButton.Item value="debug" label="Debug" />
-                  <RadioButton.Item value="info" label="Info" />
-                  <RadioButton.Item value="warning" label="Warning" />
-                  <RadioButton.Item value="error" label="Error" />
-                </RadioButton.Group>
-              </View>
+              <LogLevelPicker logLevel={logLevel} setLogLevel={setLogLevel} />
             </SettingsItem>
             <SettingsSwitchItem
               label="Auto Quality"

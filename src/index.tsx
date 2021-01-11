@@ -40,20 +40,22 @@ type MediaPlayerProps = {
   autoMaxQuality?: Quality | null;
   autoQualityMode?: boolean;
   onSeek?(event: NativeSyntheticEvent<{ position: number }>): void;
-  onData?(event: NativeSyntheticEvent<PlayerData>): void;
+  onData?(event: NativeSyntheticEvent<{ playerData: PlayerData }>): void;
   onPlayerStateChange?(event: NativeSyntheticEvent<{ state: number }>): void;
   onDurationChange?(
     event: NativeSyntheticEvent<{ duration: number | null }>
   ): void;
-  onQualityChange?(event: NativeSyntheticEvent<Quality>): void;
+  onQualityChange?(event: NativeSyntheticEvent<{ quality: Quality }>): void;
   onBuffer?(): void;
   onLoadStart?(): void;
   onLoad?(event: NativeSyntheticEvent<{ duration: number | null }>): void;
   onLiveLatencyChange?(
     event: NativeSyntheticEvent<{ liveLatency: number }>
   ): void;
-  onTextCue?(event: NativeSyntheticEvent<TextCue>): void;
-  onTextMetadataCue?(event: NativeSyntheticEvent<TextMetadataCue>): void;
+  onTextCue?(event: NativeSyntheticEvent<{ textCue: TextCue }>): void;
+  onTextMetadataCue?(
+    event: NativeSyntheticEvent<{ textMetadataCue: TextMetadataCue }>
+  ): void;
   onProgress?(event: NativeSyntheticEvent<{ position: number }>): void;
   onBandwidthEstimateChange?(
     event: NativeSyntheticEvent<{ bandwidthEstimate: number }>
@@ -190,8 +192,10 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
       onDurationChange?.(duration);
     };
 
-    const onQualityChangeHandler = (event: NativeSyntheticEvent<Quality>) => {
-      const newQuality = event.nativeEvent;
+    const onQualityChangeHandler = (
+      event: NativeSyntheticEvent<{ quality: Quality }>
+    ) => {
+      const { quality: newQuality } = event.nativeEvent;
       onQualityChange?.(newQuality);
     };
 
@@ -220,20 +224,24 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
       onBandwidthEstimateChange?.(bandwidthEstimate);
     };
 
-    const onDataHandler = (event: NativeSyntheticEvent<PlayerData>) => {
-      const { qualities, version, sessionId } = event.nativeEvent;
-      onData?.({ qualities, version, sessionId });
+    const onDataHandler = (
+      event: NativeSyntheticEvent<{ playerData: PlayerData }>
+    ) => {
+      const { playerData } = event.nativeEvent;
+      onData?.(playerData);
     };
 
-    const onTextCueHandler = (event: NativeSyntheticEvent<TextCue>) => {
-      const textCue = event.nativeEvent;
+    const onTextCueHandler = (
+      event: NativeSyntheticEvent<{ textCue: TextCue }>
+    ) => {
+      const { textCue } = event.nativeEvent;
       onTextCue?.(textCue);
     };
 
     const onTextMetadataCueHandler = (
-      event: NativeSyntheticEvent<TextMetadataCue>
+      event: NativeSyntheticEvent<{ textMetadataCue: TextMetadataCue }>
     ) => {
-      const textMetadataCue = event.nativeEvent;
+      const { textMetadataCue } = event.nativeEvent;
       onTextMetadataCue?.(textMetadataCue);
     };
 
