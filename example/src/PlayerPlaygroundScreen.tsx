@@ -171,7 +171,7 @@ export default function PlayerPlaygroundScreen() {
         <BottomSheetScrollView>
           <View style={styles.settings}>
             <Title style={styles.settingsTitle}>Settings</Title>
-            <SettingsInputItem label="url" onChangeText={setUrl} text={url} />
+            <SettingsInputItem label="url" onChangeText={setUrl} value={url} />
             <SettingsItem label="Quality">
               <QualitiesPicker
                 quality={quality}
@@ -179,16 +179,18 @@ export default function PlayerPlaygroundScreen() {
                 setQuality={setQuality}
               />
             </SettingsItem>
-            <SettingsSliderItem
-              label={`Playback Rate: ${playbackRate}`}
-              minimumValue={0.5}
-              maximumValue={2}
-              step={0.1}
-              value={INITIAL_PLAYBACK_RATE}
-              onValueChange={(value) =>
-                setPlaybackRate(Number(value.toFixed(1)))
-              }
-            />
+            <SettingsItem label={`Playback Rate: ${playbackRate}`}>
+              <Slider
+                style={styles.flex1}
+                minimumValue={0.5}
+                maximumValue={2}
+                step={0.1}
+                value={INITIAL_PLAYBACK_RATE}
+                onValueChange={(value) =>
+                  setPlaybackRate(Number(value.toFixed(1)))
+                }
+              />
+            </SettingsItem>
             <SettingsSliderItem
               label={`Progress Interval: ${progressInterval}`}
               minimumValue={1}

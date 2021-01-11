@@ -1,25 +1,40 @@
-import React from 'react';
+import * as React from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
-import SettingsItem from './SettingsItem';
 import { TextInput } from 'react-native-paper';
+import SettingsItem from './SettingsItem';
+import { useDebounce } from '../hooks';
 
 type Props = {
   label: string;
   onChangeText: (text: string) => void;
-  text: string;
+  value: string;
 };
 
-const SettingsInputItem = ({ label, onChangeText, text }: Props) => (
-  <SettingsItem label={label}>
-    <TextInput
-      mode="outlined"
-      value={text}
-      onChangeText={onChangeText}
-      style={styles.input}
-      dense
-    />
-  </SettingsItem>
-);
+const SettingsInputItem = ({ label, onChangeText, value }: Props) => {
+  const [internalValue, setInternalValue] = useState(value);
+  const finalValue = useDebounce(internalValue, 1000);
+
+  useEffect(() => {
+    if (!isEmpty(finalValue)) {
+      onChangeText(finalValue.trim());
+    }
+  }, [finalValue, onChangeText]);
+
+  return (
+    <SettingsItem label={label}>
+      <TextInput
+        mode="outlined"
+        value={internalValue}
+        onChangeText={setInternalValue}
+        style={styles.input}
+        dense
+      />
+    </SettingsItem>
+  );
+};
+
+const isEmpty = (value: string) => !value || value.trim().length === 0;
 
 const styles = StyleSheet.create({
   input: {
