@@ -14,7 +14,13 @@ import {
   NativeSyntheticEvent,
 } from 'react-native';
 import { LogLevel } from './enums';
-import type { Quality, PlayerData, TextCue, TextMetadataCue } from './types';
+import type {
+  Quality,
+  PlayerData,
+  TextCue,
+  TextMetadataCue,
+  VideoData,
+} from './types';
 export { PlayerState } from './enums';
 
 export type MediaPlayerRef = {
@@ -41,6 +47,7 @@ type MediaPlayerProps = {
   autoQualityMode?: boolean;
   onSeek?(event: NativeSyntheticEvent<{ position: number }>): void;
   onData?(event: NativeSyntheticEvent<{ playerData: PlayerData }>): void;
+  onVideo?(event: NativeSyntheticEvent<{ videoData: VideoData }>): void;
   onPlayerStateChange?(event: NativeSyntheticEvent<{ state: number }>): void;
   onDurationChange?(
     event: NativeSyntheticEvent<{ duration: number | null }>
@@ -83,6 +90,7 @@ type Props = {
   autoQualityMode?: boolean;
   onSeek?(position: number): void;
   onData?(data: PlayerData): void;
+  onVideo?(data: VideoData): void;
   onPlayerStateChange?(state: number): void;
   onDurationChange?(duration: number | null): void;
   onQualityChange?(quality: Quality | null): void;
@@ -115,6 +123,7 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
       autoQualityMode,
       onSeek,
       onData,
+      onVideo,
       onPlayerStateChange,
       onDurationChange,
       onQualityChange,
@@ -242,6 +251,13 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
       onTextCue?.(textCue);
     };
 
+    const onVideoHandler = (
+      event: NativeSyntheticEvent<{ videoData: VideoData }>
+    ) => {
+      const { videoData } = event.nativeEvent;
+      onVideo?.(videoData);
+    };
+
     const onTextMetadataCueHandler = (
       event: NativeSyntheticEvent<{ textMetadataCue: TextMetadataCue }>
     ) => {
@@ -275,6 +291,7 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
           progressInterval={progressInterval}
           volume={volume}
           onData={onDataHandler}
+          onVideo={onVideo ? onVideoHandler : undefined}
           quality={quality}
           autoMaxQuality={autoMaxQuality}
           autoQualityMode={autoQualityMode}

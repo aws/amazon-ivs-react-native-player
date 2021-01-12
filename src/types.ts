@@ -13,6 +13,13 @@ export type PlayerData = {
   sessionId: string;
 };
 
+export type VideoData = {
+  bitrate: number;
+  duration: number | null;
+  framesDecoded: number | null;
+  framesDropped: number | null;
+};
+
 export type TextCue = {
   type: string;
   line: number;

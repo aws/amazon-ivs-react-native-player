@@ -132,6 +132,7 @@ export default function PlayerPlaygroundScreen() {
             console.log('bandwidth estimate', bandwidthEstimate)
           }
           onData={(data) => setQualities(data.qualities)}
+          onVideo={(video) => console.log('onVideo', video)}
           onError={(error) => console.log('error', error)}
         />
       </View>
