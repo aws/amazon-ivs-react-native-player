@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState, useMemo } from 'react';
 import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import MediaPlayer, {
   MediaPlayerRef,
@@ -6,7 +7,6 @@ import MediaPlayer, {
   PlayerState,
 } from 'react-native-amazon-ivs';
 import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
-import { useState } from 'react';
 import SettingsInputItem from './components/SettingsInputItem';
 import SettingsSwitchItem from './components/SettingsSwitchItem';
 import { IconButton, Title, ActivityIndicator } from 'react-native-paper';
@@ -70,6 +70,8 @@ export default function PlayerPlaygroundScreen() {
   const slidingCompleteHandler = (value: number) => {
     mediaPlayerRef?.current?.seekTo(value);
   };
+
+  const snapPoints = useMemo(() => [0, '80%'], []);
 
   return (
     <View style={styles.container}>
@@ -185,7 +187,7 @@ export default function PlayerPlaygroundScreen() {
           />
         </View>
       </SafeAreaView>
-      <BottomSheet ref={sheetRef} index={0} snapPoints={[0, '80%']}>
+      <BottomSheet ref={sheetRef} index={0} snapPoints={snapPoints}>
         <BottomSheetScrollView>
           <View style={styles.settings}>
             <Title style={styles.settingsTitle}>Settings</Title>
