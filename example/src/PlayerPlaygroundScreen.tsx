@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState, useMemo } from 'react';
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView, StyleSheet, View } from 'react-native';
 import MediaPlayer, {
   MediaPlayerRef,
   LogLevel,
@@ -9,7 +9,7 @@ import MediaPlayer, {
 import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import SettingsInputItem from './components/SettingsInputItem';
 import SettingsSwitchItem from './components/SettingsSwitchItem';
-import { IconButton, Title, ActivityIndicator } from 'react-native-paper';
+import { IconButton, Title, ActivityIndicator, Text } from 'react-native-paper';
 import Slider from '@react-native-community/slider';
 import Orientation from 'react-native-orientation-locker';
 
@@ -151,29 +151,39 @@ export default function PlayerPlaygroundScreen() {
         />
       </SafeAreaView>
       <SafeAreaView>
-        <View style={styles.durationsContainer}>
-          {duration && position ? (
-            <Text>{parseSeconds(position ? position : 0)}</Text>
-          ) : (
-            <Text />
-          )}
-          {duration ? <Text>{parseSeconds(duration)}</Text> : null}
-        </View>
-        {duration ? (
-          <Slider
-            minimumValue={0}
-            maximumValue={duration}
-            value={positionSlider}
-            onValueChange={setPosition}
-            onSlidingComplete={slidingCompleteHandler}
-            onTouchStart={() => setLockPosition(true)}
-            onTouchEnd={() => {
-              setLockPosition(false);
-              setPositionSlider(position ?? 0);
-            }}
-          />
-        ) : null}
         <View style={styles.playButtonContainer}>
+          <View style={styles.positionContainer}>
+            <View style={styles.durationsContainer}>
+              {duration && position !== null ? (
+                <Text style={styles.positionText}>
+                  {parseSeconds(position ? position : 0)}
+                </Text>
+              ) : (
+                <Text />
+              )}
+              {duration ? (
+                <Text style={styles.positionText}>
+                  {parseSeconds(duration)}
+                </Text>
+              ) : null}
+            </View>
+
+            {duration ? (
+              <Slider
+                minimumValue={0}
+                maximumValue={duration}
+                value={positionSlider}
+                onValueChange={setPosition}
+                onSlidingComplete={slidingCompleteHandler}
+                onTouchStart={() => setLockPosition(true)}
+                onTouchEnd={() => {
+                  setLockPosition(false);
+                  setPositionSlider(position ?? 0);
+                }}
+              />
+            ) : null}
+          </View>
+
           <IconButton
             icon={isPlaying ? 'pause' : 'play'}
             size={40}
@@ -302,6 +312,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'white',
   },
+  positionContainer: {
+    width: '100%',
+  },
   durationsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -319,6 +332,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     alignItems: 'flex-start',
+  },
+  positionText: {
+    color: 'white',
   },
   settingsTitle: {
     paddingBottom: 8,
