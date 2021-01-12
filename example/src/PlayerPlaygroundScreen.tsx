@@ -9,10 +9,15 @@ import MediaPlayer, {
 import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import SettingsInputItem from './components/SettingsInputItem';
 import SettingsSwitchItem from './components/SettingsSwitchItem';
-import { IconButton, Title, ActivityIndicator, Text } from 'react-native-paper';
+import {
+  IconButton,
+  Title,
+  ActivityIndicator,
+  Button,
+  Text,
+} from 'react-native-paper';
 import Slider from '@react-native-community/slider';
 import Orientation from 'react-native-orientation-locker';
-
 import { parseSeconds } from './helpers';
 import SettingsItem from './components/SettingsItem';
 import type { Quality } from 'src/types';
@@ -22,6 +27,8 @@ import LogLevelPicker from './components/LogLevelPicker';
 
 const INITIAL_PLAYBACK_RATE = 1;
 const INITIAL_PROGRESS_INTERVAL = 1;
+const INITIAL_BREAKPOINTS = [10, 20, 40, 55, 60, 130, 250, 490, 970, 1930];
+const UPDATED_BREAKPOINTS = [5, 15, 30, 45, 60, 120, 240, 480, 960, 1920];
 
 export default function PlayerPlaygroundScreen() {
   const sheetRef = React.useRef<BottomSheet>(null);
@@ -50,6 +57,7 @@ export default function PlayerPlaygroundScreen() {
   const [position, setPosition] = useState<number>();
   const [lockPosition, setLockPosition] = useState(false);
   const [positionSlider, setPositionSlider] = useState(0);
+  const [breakpoints, setBreakpoints] = useState<number[]>(INITIAL_BREAKPOINTS);
 
   const handleSettingsOpen = React.useCallback(() => {
     sheetRef?.current?.expand();
@@ -99,6 +107,7 @@ export default function PlayerPlaygroundScreen() {
           autoQualityMode={autoQualityMode}
           quality={quality}
           autoMaxQuality={autoMaxQuality}
+          breakpoints={breakpoints}
           onSeek={(newPosition) => console.log('new position', newPosition)}
           onPlayerStateChange={(state) => {
             if (state === PlayerState.Playing || state === PlayerState.Idle) {
@@ -134,6 +143,7 @@ export default function PlayerPlaygroundScreen() {
           onData={(data) => setQualities(data.qualities)}
           onVideo={(video) => console.log('onVideo', video)}
           onError={(error) => console.log('error', error)}
+          onTimePoint={(timePoint) => console.log('time point', timePoint)}
         />
       </View>
       <SafeAreaView style={styles.settingsIcon}>
@@ -276,13 +286,17 @@ export default function PlayerPlaygroundScreen() {
               onValueChange={setAutoQualityMode}
               value={autoQualityMode}
             />
-
             <SettingsItem label="Auto Max Quality">
               <QualitiesPicker
                 quality={autoMaxQuality}
                 qualities={qualities}
                 setQuality={setAutoMaxQuality}
               />
+            </SettingsItem>
+            <SettingsItem label="Breakpoints">
+              <Button onPress={() => setBreakpoints(UPDATED_BREAKPOINTS)}>
+                Add
+              </Button>
             </SettingsItem>
           </View>
         </BottomSheetScrollView>

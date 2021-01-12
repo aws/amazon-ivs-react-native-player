@@ -45,6 +45,7 @@ type MediaPlayerProps = {
   quality?: Quality | null;
   autoMaxQuality?: Quality | null;
   autoQualityMode?: boolean;
+  breakpoints?: number[];
   onSeek?(event: NativeSyntheticEvent<{ position: number }>): void;
   onData?(event: NativeSyntheticEvent<{ playerData: PlayerData }>): void;
   onVideo?(event: NativeSyntheticEvent<{ videoData: VideoData }>): void;
@@ -68,6 +69,7 @@ type MediaPlayerProps = {
     event: NativeSyntheticEvent<{ bandwidthEstimate: number }>
   ): void;
   onError?(event: NativeSyntheticEvent<{ error: string }>): void;
+  onTimePoint?(event: NativeSyntheticEvent<{ position: number }>): void;
 };
 
 const VIEW_NAME = 'AmazonIvs';
@@ -88,6 +90,7 @@ type Props = {
   quality?: Quality | null;
   autoMaxQuality?: Quality | null;
   autoQualityMode?: boolean;
+  breakpoints: number[];
   onSeek?(position: number): void;
   onData?(data: PlayerData): void;
   onVideo?(data: VideoData): void;
@@ -103,6 +106,7 @@ type Props = {
   onProgress?(progress: number): void;
   onBandwidthEstimateChange?(bandwidthEstimate: number): void;
   onError?(error: string): void;
+  onTimePoint?(position: number): void;
 };
 
 const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
@@ -121,6 +125,7 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
       quality,
       autoMaxQuality,
       autoQualityMode,
+      breakpoints = [],
       onSeek,
       onData,
       onVideo,
@@ -136,6 +141,7 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
       onProgress,
       onBandwidthEstimateChange,
       onError,
+      onTimePoint,
     },
     ref
   ) => {
@@ -277,6 +283,13 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
       onError?.(error);
     };
 
+    const onTimePointHandler = (
+      event: NativeSyntheticEvent<{ position: number }>
+    ) => {
+      const { position } = event.nativeEvent;
+      onTimePoint?.(position);
+    };
+
     return (
       <View style={styles.container} ref={ref as any}>
         <MediaPlayer
@@ -290,11 +303,12 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
           logLevel={logLevel}
           progressInterval={progressInterval}
           volume={volume}
-          onData={onDataHandler}
-          onVideo={onVideo ? onVideoHandler : undefined}
           quality={quality}
           autoMaxQuality={autoMaxQuality}
           autoQualityMode={autoQualityMode}
+          breakpoints={breakpoints}
+          onVideo={onVideo ? onVideoHandler : undefined}
+          onData={onDataHandler}
           onSeek={onSeekHandler}
           onQualityChange={onQualityChangeHandler}
           onPlayerStateChange={onPlayerStateChangeHandler}
@@ -314,6 +328,7 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
               : undefined
           }
           onError={onErrorHandler}
+          onTimePoint={onTimePointHandler}
         />
       </View>
     );

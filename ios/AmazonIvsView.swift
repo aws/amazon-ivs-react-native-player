@@ -18,6 +18,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
     @objc var onBandwidthEstimateChange: RCTDirectEventBlock?
     @objc var onLiveLatencyChange: RCTDirectEventBlock?
     @objc var onProgress: RCTDirectEventBlock?
+    @objc var onTimePoint: RCTDirectEventBlock?
 
     @objc var onError: RCTDirectEventBlock?
 
@@ -27,6 +28,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
 
     private var progressObserverToken: Any?
     private var playerObserverToken: Any?
+    private var timePointObserver: Any?
     private var oldQualities: [IVSQuality] = [];
     
     override init(frame: CGRect) {
@@ -38,14 +40,16 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
         self.logLevel = NSNumber(value: player.logLevel.rawValue)
         self.progressInterval = 1
         self.volume = NSNumber(value: player.volume)
-        
+        self.breakpoints = []
+
         super.init(frame: frame)
-        
+
         self.addSubview(self.playerView)
         self.playerView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
         self.addProgressObserver()
         self.addPlayerObserver()
-        
+        self.addTimePointObserver()
+
         player.delegate = self
         self.playerView.player = player
     }
@@ -53,6 +57,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
     deinit {
         self.removeProgressObserver()
         self.removePlayerObserver()
+        self.removeTimePointObserver()
     }
 
     func load(urlString: String) {
@@ -166,6 +171,13 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
             }
         }
     }
+    
+    @objc var breakpoints: NSArray {
+        didSet {
+            self.removeTimePointObserver()
+            self.addTimePointObserver()
+        }
+    }
 
     @objc func play() {
         player.play()
@@ -210,6 +222,14 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
         }
     }
 
+    func addTimePointObserver() {
+        timePointObserver = player.addBoundaryTimeObserver(forTimes: breakpoints as! [NSNumber], queue: .main) {
+            [weak self] in
+            self?.onTimePoint?(["position": (self?.player.position.seconds ?? nil) as Any])
+
+        }
+    }
+
     func removePlayerObserver() {
         if let token = playerObserverToken {
             player.removeTimeObserver(token)
@@ -221,6 +241,13 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
         if let token = progressObserverToken {
             player.removeTimeObserver(token)
             self.progressObserverToken = nil
+        }
+    }
+
+    func removeTimePointObserver() {
+        if let token = timePointObserver {
+            player.removeTimeObserver(token)
+            self.timePointObserver = nil
         }
     }
 
