@@ -8,6 +8,8 @@ import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReactContext
 import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.events.RCTEventEmitter
+import java.math.BigDecimal
+import java.util.concurrent.TimeUnit
 
 class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(context) {
   private var playerView: PlayerView? = null
@@ -15,7 +17,8 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
   private var streamUri: Uri? = null
 
   enum class Events(private val mName: String) {
-    STATE_CHANGED("onPlayerStateChange");
+    STATE_CHANGED("onPlayerStateChange"),
+    DURATION_CHANGED("onDurationChange");
 
     override fun toString(): String {
       return mName
@@ -32,8 +35,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
       }
 
       override fun onDurationChanged(duration: Long) {
-        // TODO: implement
-        Log.i("PLAYER", "onDurationChanged");
+        onDurationChange(duration)
       }
 
       override fun onRebuffering() {
@@ -85,7 +87,15 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
   fun setVolume(volume: Double) {
     player?.setVolume(volume.toFloat())
   }
-  
+
+  fun setLiveLowLatency(liveLowLatency: Boolean) {
+    player?.setLiveLowLatencyEnabled(liveLowLatency)
+  }
+
+  fun setPlaybackRate(playbackRate: Double) {
+    player?.playbackRate = playbackRate.toFloat()
+  }
+
   fun onPlayerStateChange(state: Player.State) {
     val reactContext = context as ReactContext
     val data = Arguments.createMap()
@@ -94,19 +104,19 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     when (state) {
       Player.State.READY -> {
         // TODO: handle paused (etc.) props here
-        mPlayer!!.play()
+        player!!.play()
       };
     }
 
     reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.STATE_CHANGED.toString(), data)
   }
+  
+  fun onDurationChange(duration: Long) {
+    val reactContext = context as ReactContext
+    val data = Arguments.createMap()
+    data.putInt("duration", TimeUnit.MILLISECONDS.toSeconds(duration).toInt())
 
-  fun setLiveLowLatency(liveLowLatency: Boolean) {
-    mPlayer?.setLiveLowLatencyEnabled(liveLowLatency)
-  }
-
-  fun setPlaybackRate(playbackRate: Double) {
-    mPlayer?.playbackRate = playbackRate.toFloat()
+    reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.DURATION_CHANGED.toString(), data)
   }
 
   private val mLayoutRunnable = Runnable {
