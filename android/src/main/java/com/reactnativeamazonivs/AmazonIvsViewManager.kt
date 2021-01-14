@@ -18,7 +18,7 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>()  {
     return MapBuilder.of(
       AmazonIvsView.Events.STATE_CHANGED.toString(), MapBuilder.of("registrationName", AmazonIvsView.Events.STATE_CHANGED.toString()))
   }
-  
+
   override fun getCommandsMap(): Map<String, Int>? {
     return MapBuilder.of(
       "play",
@@ -54,6 +54,11 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>()  {
   @ReactProp(name = "liveLowLatency")
   fun setLiveLowLatency(view: AmazonIvsView, liveLowLatency: Boolean) {
     view.setLiveLowLatency(liveLowLatency)
+  }
+
+  @ReactProp(name = "playbackRate")
+  fun setPlaybackRate(view: AmazonIvsView, playbackRate: Double) {
+    view.setPlaybackRate(playbackRate)
   }
 
   override fun createViewInstance(reactContext: ThemedReactContext): AmazonIvsView {

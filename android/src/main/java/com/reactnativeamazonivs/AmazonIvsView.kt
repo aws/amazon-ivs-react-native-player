@@ -105,6 +105,10 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     mPlayer?.setLiveLowLatencyEnabled(liveLowLatency)
   }
 
+  fun setPlaybackRate(playbackRate: Double) {
+    mPlayer?.playbackRate = playbackRate.toFloat()
+  }
+
   private val mLayoutRunnable = Runnable {
     measure(
       MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
