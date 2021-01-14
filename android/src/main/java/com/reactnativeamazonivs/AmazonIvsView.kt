@@ -77,6 +77,10 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     mPlayer?.isMuted = muted
   }
 
+  fun setVolume(volume: Double) {
+    mPlayer?.setVolume(volume.toFloat())
+  }
+
   private val mLayoutRunnable = Runnable {
     measure(
       MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),

@@ -17,6 +17,11 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>()  {
     view.setMuted(muted)
   }
 
+  @ReactProp(name = "volume")
+  fun setVolume(view: AmazonIvsView, volume: Double) {
+    view.setVolume(volume)
+  }
+
   override fun createViewInstance(reactContext: ThemedReactContext): AmazonIvsView {
     return AmazonIvsView(reactContext)
   }
