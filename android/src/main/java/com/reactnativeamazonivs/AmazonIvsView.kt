@@ -101,6 +101,10 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.STATE_CHANGED.toString(), data)
   }
 
+  fun setLiveLowLatency(liveLowLatency: Boolean) {
+    mPlayer?.setLiveLowLatencyEnabled(liveLowLatency)
+  }
+
   private val mLayoutRunnable = Runnable {
     measure(
       MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),

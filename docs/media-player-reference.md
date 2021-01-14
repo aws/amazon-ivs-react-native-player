@@ -135,6 +135,7 @@ type: `number`
 ### liveLowLatency _(optional)_
 
 Indicates whether live low-latency streaming is enabled for the current stream.
+Only works with live streams.
 
 type: `boolean`
 

@@ -51,6 +51,11 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>()  {
     view.setVolume(volume)
   }
 
+  @ReactProp(name = "liveLowLatency")
+  fun setLiveLowLatency(view: AmazonIvsView, liveLowLatency: Boolean) {
+    view.setLiveLowLatency(liveLowLatency)
+  }
+
   override fun createViewInstance(reactContext: ThemedReactContext): AmazonIvsView {
     return AmazonIvsView(reactContext)
   }
