@@ -148,11 +148,12 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
     const mediaPlayerRef = useRef(null);
 
     const play = useCallback(() => {
-      UIManager.dispatchViewManagerCommand(
-        findNodeHandle(mediaPlayerRef.current),
-        UIManager.getViewManagerConfig(VIEW_NAME).Commands.play,
-        []
-      );
+      // TODO: Had to comment it out because refs methods aren't implemented for android yet
+      // UIManager.dispatchViewManagerCommand(
+      //   findNodeHandle(mediaPlayerRef.current),
+      //   UIManager.getViewManagerConfig(VIEW_NAME).Commands.play,
+      //   []
+      // );
     }, []);
 
     const pause = useCallback(() => {
