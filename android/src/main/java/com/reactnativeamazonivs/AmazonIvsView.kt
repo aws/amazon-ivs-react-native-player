@@ -7,13 +7,13 @@ import com.amazonaws.ivs.player.*
 import com.facebook.react.uimanager.ThemedReactContext
 
 class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(context) {
-  private var mPlayerView: PlayerView? = null
-  private var mPlayer: Player? = null
+  private var playerView: PlayerView? = null
+  private var player: Player? = null
   private var streamUri: Uri? = null
 
   init {
-    mPlayerView = PlayerView(context)
-    mPlayer = mPlayerView!!.player
+    playerView = PlayerView(context)
+    player = playerView!!.player
 
     val playerListener = object : Player.Listener() {
       override fun onStateChanged(state: Player.State) {
@@ -21,7 +21,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
         when (state) {
           Player.State.READY -> {
             // TODO: handle paused (etc.) props here
-            mPlayer!!.play()
+            player!!.play()
           };
         }
       }
@@ -61,12 +61,12 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
       }
     }
 
-    mPlayer!!.addListener(playerListener);
-    addView(mPlayerView)
+    player!!.addListener(playerListener);
+    addView(playerView)
   }
 
   fun setStreamUrl(streamUrl: String) {
-    mPlayer?.let { player ->
+    player?.let { player ->
       val uri = Uri.parse(streamUrl);
       this.streamUri = uri;
       player.load(uri)
@@ -74,11 +74,11 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
   }
 
   fun setMuted(muted: Boolean) {
-    mPlayer?.isMuted = muted
+    player?.isMuted = muted
   }
 
   fun setVolume(volume: Double) {
-    mPlayer?.setVolume(volume.toFloat())
+    player?.setVolume(volume.toFloat())
   }
 
   private val mLayoutRunnable = Runnable {
@@ -86,5 +86,13 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
       MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
       MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY))
     layout(left, top, right, bottom)
+  }
+
+  fun play() {
+    player?.play()
+  }
+
+  fun pause() {
+    player?.pause()
   }
 }
