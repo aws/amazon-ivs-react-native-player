@@ -11,6 +11,18 @@ enum LogLevel {
 }
 ```
 
+## PlayerState
+
+```ts
+export enum PlayerState {
+  Idle,
+  Ready,
+  Buffering,
+  Playing,
+  Ended,
+}
+```
+
 ## Quality
 
 ```ts

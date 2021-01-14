@@ -1,8 +1,27 @@
 # Media Player component - reference
 
-// TODO: description here
+Media Player components allows setup and interaction with native implementation of Amazon IVS player on iOS and Android.
+This document contains information about available props, callbacks, and refs.
 
-// TODO: simple code example here
+Amazon IVS documentation:
+https://docs.aws.amazon.com/ivs/index.html
+
+Android reference:
+https://aws.github.io/amazon-ivs-player-docs/1.2.1/android/reference/packages.html
+
+iOS reference:
+https://aws.github.io/amazon-ivs-player-docs/1.2.0/ios/index.html
+
+Web reference:
+https://aws.github.io/amazon-ivs-player-docs/1.2.0/web/
+
+```ts
+import MediaPlayer from "react-native-amazon-ivs";
+
+function App() {
+  return <MediaPlayer streamUrl="https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8" />
+}
+```
 
 ## Props
 
@@ -10,205 +29,233 @@
 
 An URL of the the stream to load. Should be in a valid URL format.
 
+default: `undefined`
 type: `string`
 
 ### autoplay _(optional)_
 
-Some description. // TODO: proper description here
+Opening a player or specifying new `streamUrl` will make it automatically play, when it is ready.
 
-type: `boolean`
-
-### autoQualityMode _(optional)_
-
-Some description. // TODO: proper description here
-
+default: `false`
 type: `boolean`
 
 ### looping _(optional)_
 
-Some description. // TODO: proper description here
+Only works with videos. When turned on it will loop the video instead of stopping at the end.
 
+default: `false`
 type: `boolean`
 
 ### logLevel _(optional)_
 
-Some description. // TODO: proper description here
+Specifies level of logging information from player to the console.
 
-type: [`LogLevel`](./types.md#loglevel)
+default: `IVSLogLevelError`
+type: [`LogLevel`](./types.md#LogLevel)
 
 ### muted _(optional)_
 
-Some description. // TODO: proper description here
+Disables audio from the currently played video/stream.
 
-type: `string` // TODO: proper type here
+default: `false`
+type: `boolean`
 
 ### paused _(optional)_
 
-Some description. // TODO: proper description here
+Pauses playback of current video/stream.
 
-type: `string` // TODO: proper type here
+default: `false`
+type: `boolean`
 
 ### playbackRate _(optional)_
 
-Some description. // TODO: proper description here
+Sets playback rate that the video will be player. 
+Minimal value is `0.5`. Maximum is `2.0`.
 
-type: `string` // TODO: proper type here
+default: `1.0`
+type: `number`
 
 ### volume _(optional)_
 
-Some description. // TODO: proper description here
+Set audio volume. This setting is independent from device volume. 
+Minimal value is `0.0`. Maximum is `1.0`.
 
-type: `string` // TODO: proper type here
+default: `1.0`
+type: `number`
 
 ### quality _(optional)_
 
-Some description. // TODO: proper description here
+Specifies what video/stream quality should be used for playback.
+Available qualites for current video/stream can be read from `onData` callback.
 
-type: `string` // TODO: proper type here
+type: [`Quality`](./types.md#Quality)
 
 ### autoMaxQuality _(optional)_
 
-Some description. // TODO: proper description here
+Specifies maximum quality that can be used when `autoQualityMode` is turned on.
 
-type: `string` // TODO: proper type here
+default: `undefined`
+type: [`Quality`](./types.md#Quality)
 
 ### maxQuality _(optional)_
 
-Some description. // TODO: proper description here
+Specifies maximum quality that can be used.
 
-type: `string` // TODO: proper type here
+Android only
+type: [`Quality`](./types.md#Quality)
 
 ### autoQualityMode _(optional)_
 
-Some description. // TODO: proper description here
+Automatically select video quality based on the quality of the internet connection.
 
-type: `string` // TODO: proper type here
+default: `true`
+type: `boolean`
 
 ### maxVideoSize _(optional)_
 
 Some description. // TODO: proper description here
 
-type: `string` // TODO: proper type here
+Android only
+type: `{ width: number, height: number }`
 
 ### initialBitrate _(optional)_
 
 Some description. // TODO: proper description here
 
-type: `string` // TODO: proper type here
+Android only
+type: `number`
 
 ### maxBitrate _(optional)_
 
 Some description. // TODO: proper description here
 
-type: `string` // TODO: proper type here
+Android only
+type: `number`
 
 ### liveLowLatency _(optional)_
 
-Some description. // TODO: proper description here
+Indicates whether live low-latency streaming is enabled for the current stream.
 
-type: `string` // TODO: proper type here
+type: `boolean`
 
 ### playerConfig _(optional)_
 
 Some description. // TODO: proper description here
 
-type: `string` // TODO: proper type here
+Web only
+type: `{ wasmBinary: string, wasmWorker: string }`
 
 ### onBuffer _(optional)_
 
 Some description. // TODO: proper description here
 
-type: `string` // TODO: proper type here
+type: `(buffer: number) => void`
 
 ### onError _(optional)_
 
-Some description. // TODO: proper description here
+Callback function that is called when error occurs.
 
-type: `string` // TODO: proper type here
+type: `(error: string) => void`
 
 ### onLiveLatencyChange _(optional)_
 
-Some description. // TODO: proper description here
+Callback that return changes in live latency.
 
-type: `string` // TODO: proper type here
+type: `(liveLatency: number) => void`
 
 ### onBandwidthEstimateChange _(optional)_
 
-Some description. // TODO: proper description here
+Callback that returns changes in bandthwidth estimate.
 
-type: `string` // TODO: proper type here
+type: `(bandwithEstimate: number) => void`
 
 ### onData _(optional)_
 
-Some description. // TODO: proper description here
+Callback that returns qualities, version, and sessionId, when new data is present.
 
-type: `string` // TODO: proper type here
+type: `({ qualities: Quality, version: string, sessionId: string }) => void`
 
 ### onVideo _(optional)_
 
-Some description. // TODO: proper description here
+Callback that return changes in duration, bitrate, framesDropped, and framesDecoded.
 
-type: `string` // TODO: proper type here
+type: `({ duration: number, bitrate: number, framesDropped: number, framesDecoded: number }) => void`
 
 ### onPlayerStateChange _(optional)_
 
-Some description. // TODO: proper description here
+Callback that returns player state when it changes. E.g. play, pause, error, buffering, etc.
 
-type: `string` // TODO: proper type here
+type: [`(state: PlayerState) => void`](./types.md#)
 
 ### onLoad _(optional)_
 
-Some description. // TODO: proper description here
+Callback that is called on new video load.
 
-type: `string` // TODO: proper type here
+type: `(duration: number) => void`
 
 ### onLoadStart _(optional)_
 
-Some description. // TODO: proper description here
+Callback that is called on new video load.
 
-type: `string` // TODO: proper type here
+type: `() => void`
 
 ### onProgress _(optional)_
 
-Some description. // TODO: proper description here
+Callback that returns current player position. Its interval can be configured using `progressInterval` prop.
 
-type: `string` // TODO: proper type here
+type: `(position: number) => void`
+
+### progressInterval _(optional)_
+
+Value that specifies how often `onProgress` callback should be called in seconds.
+
+default: `1`
+type: `number`
 
 ### onTimePoint _(optional)_
 
-Some description. // TODO: proper description here
+Callback that returns current player position. Only called when position is included in `breakpoints` prop array.
 
-type: `string` // TODO: proper type here
+!!!WARNING!!! You need to specify `breakpoint` for this callback to be called called. !!!WARNING!!!
+
+type: `(position: number) => number`
+
+### breakpoints _(optional)_
+
+Specifies time breakpoints in which `onTimePoint` callback should be called. Breakpoint value is seconds.
+
+default: `[]`
+type: `number[]`
 
 ### onTextCue _(optional)_
 
-Some description. // TODO: proper description here
+Callback that returns text cue when it is present during video/stream playback.
 
-type: `string` // TODO: proper type here
+type: [`(textCue: TextCue => void)`](./types.md#TextCue)
 
 ### onTextMetadataCue _(optional)_
 
-Some description. // TODO: proper description here
+Callback that returns text metadata cue when it is present from video/stream playback.
 
-type: `string` // TODO: proper type here
+type: [`(textMetadataCue: TextMetadataCue => void)`](./types.md#TextMetadataCue)
 
 ### onDurationChange _(optional)_
 
-Some description. // TODO: proper description here
+Callback that returns changes to the duration of video/stream.
 
-type: `string` // TODO: proper type here
+type: `(duration: number) => void`
 
 ### onSeek _(optional)_
 
-Some description. // TODO: proper description here
+Callback that returns new position when it is changed using `seekTo` ref.
 
-type: `string` // TODO: proper type here
+type: `(position: number) => void`
 
 ### onQualityChange _(optional)_
 
-Some description. // TODO: proper description here
+Callback that returns new quality that is used in video/stream playback.
 
-type: `string` // TODO: proper type here
+type: [`(quality: Quality) => void`](./types.md#Quality)
 
 ## Ref methods
 
@@ -219,14 +266,16 @@ A reference method that will play the stream/video if it is stopped. For a strea
 type: `() => void`
 
 ```tsx
+import MediaPlayer from "react-native-amazon-ivs";
+
 function App() {
   const mediaPlayerRef = React.useRef<MediaPlayerRef>(null);
 
-  const handlePlay = () => mediaPlayerRef?.current?.play();
+  const handlePlay = () => { mediaPlayerRef.current?.play() };
 
   return (
     <>
-      <MediaPlayer ref={mediaPlayerRef} />
+      <MediaPlayer ref={mediaPlayerRef} streamUrl="https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8" />
       <Button onPress={handlePlay} title="Play">
     </>
   );
@@ -235,16 +284,46 @@ function App() {
 
 ### pause
 
-Some description. // TODO: proper description here
+A reference method that will pause the stream/video if it is playing. For a stream that is currently paused it won't do anything.
 
-type: `string` // TODO: proper type here
+type: `() => void`
 
-// TODO: We can also add an example code like in `play`
+```tsx
+import MediaPlayer from "react-native-amazon-ivs";
+
+function App() {
+  const mediaPlayerRef = React.useRef<MediaPlayerRef>(null);
+
+  const handlePause = () => { mediaPlayerRef.current?.pause() };
+
+  return (
+    <>
+      <MediaPlayer ref={mediaPlayerRef} streamUrl="https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8" />
+      <Button onPress={handlePause} title="Pause">
+    </>
+  );
+}
+```
 
 ### seekTo
 
 Some description. // TODO: proper description here
 
-type: `string` // TODO: proper type here
+type: `(position: number, completionHandler: function?) => void`
 
-// TODO: We can also add an example code like in `play`
+```tsx
+import MediaPlayer from "react-native-amazon-ivs";
+
+function App() {
+  const mediaPlayerRef = React.useRef<MediaPlayerRef>(null);
+
+  const handleSeekTo = () => { mediaPlayerRef.current?.seekTo({ position: 15 }) };
+
+  return (
+    <>
+      <MediaPlayer ref={mediaPlayerRef} streamUrl="https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8" />
+      <Button onPress={handleSeekTo} title="Pause">
+    </>
+  );
+}
+```
