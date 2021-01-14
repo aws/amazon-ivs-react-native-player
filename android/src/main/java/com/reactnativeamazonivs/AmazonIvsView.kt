@@ -4,12 +4,23 @@ import android.net.Uri
 import android.util.Log
 import android.widget.FrameLayout
 import com.amazonaws.ivs.player.*
+import com.facebook.react.bridge.Arguments
+import com.facebook.react.bridge.ReactContext
 import com.facebook.react.uimanager.ThemedReactContext
+import com.facebook.react.uimanager.events.RCTEventEmitter
 
 class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(context) {
   private var playerView: PlayerView? = null
   private var player: Player? = null
   private var streamUri: Uri? = null
+
+  enum class Events(private val mName: String) {
+    STATE_CHANGED("onPlayerStateChange");
+
+    override fun toString(): String {
+      return mName
+    }
+  }
 
   init {
     playerView = PlayerView(context)
@@ -17,13 +28,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
 
     val playerListener = object : Player.Listener() {
       override fun onStateChanged(state: Player.State) {
-        Log.i("PLAYER", state.toString());
-        when (state) {
-          Player.State.READY -> {
-            // TODO: handle paused (etc.) props here
-            player!!.play()
-          };
-        }
+        onPlayerStateChange(state)
       }
 
       override fun onDurationChanged(duration: Long) {
@@ -79,6 +84,21 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
 
   fun setVolume(volume: Double) {
     player?.setVolume(volume.toFloat())
+  }
+  
+  fun onPlayerStateChange(state: Player.State) {
+    val reactContext = context as ReactContext
+    val data = Arguments.createMap()
+    data.putInt("state", state.ordinal)
+
+    when (state) {
+      Player.State.READY -> {
+        // TODO: handle paused (etc.) props here
+        mPlayer!!.play()
+      };
+    }
+
+    reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.STATE_CHANGED.toString(), data)
   }
 
   private val mLayoutRunnable = Runnable {

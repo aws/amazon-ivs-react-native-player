@@ -14,6 +14,11 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>()  {
 
   override fun getName() = "AmazonIvs"
 
+  override fun getExportedCustomDirectEventTypeConstants(): MutableMap<String, Any> {
+    return MapBuilder.of(
+      AmazonIvsView.Events.STATE_CHANGED.toString(), MapBuilder.of("registrationName", AmazonIvsView.Events.STATE_CHANGED.toString()))
+  }
+  
   override fun getCommandsMap(): Map<String, Int>? {
     return MapBuilder.of(
       "play",
