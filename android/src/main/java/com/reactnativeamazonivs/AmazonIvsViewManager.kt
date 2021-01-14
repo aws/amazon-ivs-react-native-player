@@ -12,6 +12,11 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>()  {
     view.setStreamUrl(streamUrl);
   }
 
+  @ReactProp(name = "muted")
+  fun setMuted(view: AmazonIvsView, muted: Boolean) {
+    view.setMuted(muted)
+  }
+
   override fun createViewInstance(reactContext: ThemedReactContext): AmazonIvsView {
     return AmazonIvsView(reactContext)
   }
