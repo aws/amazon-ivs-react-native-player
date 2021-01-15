@@ -23,7 +23,9 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     ERROR("onError"),
     QUALITY_CHANGED("onQualityChange"),
     CUE("onTextCue"),
-    METADATA_CUE("onTextMetadataCue");
+    METADATA_CUE("onTextMetadataCue"),
+    LOAD("onLoad"),
+    LOAD_START("onLoadStart");
 
     override fun toString(): String {
       return mName
@@ -82,9 +84,12 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
 
   fun setStreamUrl(streamUrl: String) {
     player?.let { player ->
+      val reactContext = context as ReactContext
       val uri = Uri.parse(streamUrl);
       this.streamUri = uri;
       player.load(uri)
+
+      reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.LOAD_START.toString(), Arguments.createMap())
     }
   }
 
@@ -210,17 +215,27 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
 
   fun onPlayerStateChange(state: Player.State) {
     val reactContext = context as ReactContext
-    val data = Arguments.createMap()
-    data.putInt("state", state.ordinal)
 
     when (state) {
+      Player.State.PLAYING -> {
+        val onLoadData = Arguments.createMap()
+        if (player!!.duration > 0) {
+          onLoadData.putInt("duration", TimeUnit.MILLISECONDS.toSeconds(player!!.duration).toInt())
+        } else {
+          onLoadData.putNull("duration")
+        }
+
+        reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.LOAD.toString(), onLoadData)
+      }
       Player.State.READY -> {
         // TODO: handle paused (etc.) props here
         player!!.play()
       };
     }
 
-    reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.STATE_CHANGED.toString(), data)
+    val onStateChangeData = Arguments.createMap()
+    onStateChangeData.putInt("state", state.ordinal)
+    reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.STATE_CHANGED.toString(), onStateChangeData)
   }
 
   fun onQualityChange(quality: Quality) {

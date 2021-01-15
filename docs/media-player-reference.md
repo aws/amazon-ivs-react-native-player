@@ -16,10 +16,12 @@ Web reference:
 https://aws.github.io/amazon-ivs-player-docs/1.2.0/web/
 
 ```ts
-import MediaPlayer from "react-native-amazon-ivs";
+import MediaPlayer from 'react-native-amazon-ivs';
 
 function App() {
-  return <MediaPlayer streamUrl="https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8" />
+  return (
+    <MediaPlayer streamUrl="https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8" />
+  );
 }
 ```
 
@@ -69,7 +71,7 @@ type: `boolean`
 
 ### playbackRate _(optional)_
 
-Sets playback rate that the video will be player. 
+Sets playback rate that the video will be player.
 Minimal value is `0.5`. Maximum is `2.0`.
 
 default: `1.0`
@@ -77,7 +79,7 @@ type: `number`
 
 ### volume _(optional)_
 
-Set audio volume. This setting is independent from device volume. 
+Set audio volume. This setting is independent from device volume.
 Minimal value is `0.0`. Maximum is `1.0`.
 
 default: `1.0`
@@ -179,8 +181,9 @@ type: `({ qualities: Quality, version: string, sessionId: string }) => void`
 ### onVideo _(optional)_
 
 Callback that return changes in duration, bitrate, framesDropped, and framesDecoded.
+Duration returns null if no stream is loaded or the stream length is infinite or unknown.
 
-type: `({ duration: number, bitrate: number, framesDropped: number, framesDecoded: number }) => void`
+type: `({ duration: number | null, bitrate: number, framesDropped: number, framesDecoded: number }) => void`
 
 ### onPlayerStateChange _(optional)_
 
@@ -191,8 +194,9 @@ type: [`(state: PlayerState) => void`](./types.md#)
 ### onLoad _(optional)_
 
 Callback that is called on new video load.
+This returns null if no stream is loaded or the stream length is infinite or unknown.
 
-type: `(duration: number) => void`
+type: `(duration: number | number) => void`
 
 ### onLoadStart _(optional)_
 
@@ -245,8 +249,9 @@ type: [`(textMetadataCue: TextMetadataCue => void)`](./types.md#TextMetadataCue)
 ### onDurationChange _(optional)_
 
 Callback that returns changes to the duration of video/stream.
+This returns null if no stream is loaded or the stream length is infinite or unknown.
 
-type: `(duration: number) => void`
+type: `(duration: number | null) => void`
 
 ### onSeek _(optional)_
 
