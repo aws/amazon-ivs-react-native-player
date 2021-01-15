@@ -101,6 +101,15 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     player?.setLooping(looping)
   }
 
+  fun setLogLevel(logLevel: Double) {
+    when (logLevel.toInt()) {
+      0 -> player?.setLogLevel(Player.LogLevel.DEBUG)
+      1 -> player?.setLogLevel(Player.LogLevel.INFO)
+      2 -> player?.setLogLevel(Player.LogLevel.WARNING)
+      3 -> player?.setLogLevel(Player.LogLevel.ERROR)
+    }
+  }
+
   fun onDurationChange(duration: Long) {
     val reactContext = context as ReactContext
     val data = Arguments.createMap()

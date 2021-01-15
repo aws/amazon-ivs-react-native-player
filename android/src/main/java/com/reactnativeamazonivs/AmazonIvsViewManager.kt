@@ -77,6 +77,11 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>()  {
     view.setLooping(looping)
   }
 
+  @ReactProp(name = "logLevel")
+  fun setLogLevel(view: AmazonIvsView, logLevel: Double) {
+    view.setVolume(logLevel)
+  }
+
   override fun createViewInstance(reactContext: ThemedReactContext): AmazonIvsView {
     return AmazonIvsView(reactContext)
   }
