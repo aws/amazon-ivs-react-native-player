@@ -161,4 +161,8 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
 
     reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.QUALITY_CHANGED.toString(), data)
   }
+  
+  fun seekTo(position: Long) {
+    player?.seekTo(TimeUnit.SECONDS.toMillis(position))
+  }
 }

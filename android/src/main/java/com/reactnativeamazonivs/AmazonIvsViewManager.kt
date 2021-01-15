@@ -9,7 +9,8 @@ import com.facebook.react.uimanager.annotations.ReactProp
 class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>()  {
   private enum class Commands {
     PLAY,
-    PAUSE
+    PAUSE,
+    SEEK_TO
   }
 
   override fun getName() = "AmazonIvs"
@@ -27,7 +28,9 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>()  {
       "play",
       Commands.PLAY.ordinal,
       "pause",
-      Commands.PAUSE.ordinal
+      Commands.PAUSE.ordinal,
+      "seekTo",
+      Commands.SEEK_TO.ordinal
     )
   }
 
@@ -35,6 +38,11 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>()  {
     when (commandType) {
       Commands.PLAY.ordinal -> view.play()
       Commands.PAUSE.ordinal -> view.pause()
+      Commands.SEEK_TO.ordinal -> {
+        args?.getInt(0)?.let { position ->
+          view.seekTo(position.toLong())
+        }
+      }
       else -> {}
     }
   }
