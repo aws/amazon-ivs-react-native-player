@@ -204,6 +204,7 @@ type: `() => void`
 
 Callback that returns current player position. Its interval can be configured using `progressInterval` prop.
 
+iOS only
 type: `(position: number) => void`
 
 ### progressInterval _(optional)_
@@ -219,6 +220,7 @@ Callback that returns current player position. Only called when position is incl
 
 !!!WARNING!!! You need to specify `breakpoint` for this callback to be called called. !!!WARNING!!!
 
+iOS only
 type: `(position: number) => number`
 
 ### breakpoints _(optional)_
