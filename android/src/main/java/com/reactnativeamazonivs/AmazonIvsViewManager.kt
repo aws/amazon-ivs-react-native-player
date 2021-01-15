@@ -16,19 +16,12 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>() {
 
   override fun getName() = "AmazonIvs"
 
-  override fun getExportedCustomDirectEventTypeConstants(): MutableMap<String, Any> {
-    return MapBuilder.of(
-      AmazonIvsView.Events.STATE_CHANGED.toString(), MapBuilder.of("registrationName", AmazonIvsView.Events.STATE_CHANGED.toString()),
-      AmazonIvsView.Events.DURATION_CHANGED.toString(), MapBuilder.of("registrationName", AmazonIvsView.Events.DURATION_CHANGED.toString()),
-      AmazonIvsView.Events.ERROR.toString(), MapBuilder.of("registrationName", AmazonIvsView.Events.ERROR.toString()),
-      AmazonIvsView.Events.QUALITY_CHANGED.toString(), MapBuilder.of("registrationName", AmazonIvsView.Events.QUALITY_CHANGED.toString()),
-      AmazonIvsView.Events.CUE.toString(), MapBuilder.of("registrationName", AmazonIvsView.Events.CUE.toString()),
-      AmazonIvsView.Events.METADATA_CUE.toString(), MapBuilder.of("registrationName", AmazonIvsView.Events.METADATA_CUE.toString()),
-      AmazonIvsView.Events.LOAD_START.toString(), MapBuilder.of("registrationName", AmazonIvsView.Events.LOAD_START.toString()),
-      AmazonIvsView.Events.LOAD.toString(), MapBuilder.of("registrationName", AmazonIvsView.Events.LOAD.toString()),
-      AmazonIvsView.Events.REBUFFER.toString(), MapBuilder.of("registrationName", AmazonIvsView.Events.REBUFFER.toString())
-    )
-
+  override fun getExportedCustomDirectEventTypeConstants(): MutableMap<String, Map<String, String>>? {
+    val builder: MapBuilder.Builder<String, Map<String, String>> = MapBuilder.builder<String, Map<String, String>>()
+    for (event in AmazonIvsView.Events.values()) {
+      builder.put(event.toString(), MapBuilder.of("registrationName", event.toString()))
+    }
+    return builder.build()
   }
 
   override fun getCommandsMap(): Map<String, Int>? {
