@@ -25,8 +25,10 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>() {
       AmazonIvsView.Events.CUE.toString(), MapBuilder.of("registrationName", AmazonIvsView.Events.CUE.toString()),
       AmazonIvsView.Events.METADATA_CUE.toString(), MapBuilder.of("registrationName", AmazonIvsView.Events.METADATA_CUE.toString()),
       AmazonIvsView.Events.LOAD_START.toString(), MapBuilder.of("registrationName", AmazonIvsView.Events.LOAD_START.toString()),
-      AmazonIvsView.Events.LOAD.toString(), MapBuilder.of("registrationName", AmazonIvsView.Events.LOAD.toString())
+      AmazonIvsView.Events.LOAD.toString(), MapBuilder.of("registrationName", AmazonIvsView.Events.LOAD.toString()),
+      AmazonIvsView.Events.REBUFFER.toString(), MapBuilder.of("registrationName", AmazonIvsView.Events.REBUFFER.toString())
     )
+
   }
 
   override fun getCommandsMap(): Map<String, Int>? {

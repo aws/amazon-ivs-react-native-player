@@ -25,7 +25,8 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     CUE("onTextCue"),
     METADATA_CUE("onTextMetadataCue"),
     LOAD("onLoad"),
-    LOAD_START("onLoadStart");
+    LOAD_START("onLoadStart"),
+    REBUFFER("onBuffer");
 
     override fun toString(): String {
       return mName
@@ -48,8 +49,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
       }
 
       override fun onRebuffering() {
-        // TODO: implement
-        Log.i("PLAYER", "onRebuffering");
+        onBuffer()
       }
 
       override fun onSeekCompleted(p0: Long) {
@@ -213,6 +213,10 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     player?.pause()
   }
 
+  fun seekTo(position: Long) {
+    player?.seekTo(TimeUnit.SECONDS.toMillis(position))
+  }
+
   fun onPlayerStateChange(state: Player.State) {
     val reactContext = context as ReactContext
 
@@ -255,7 +259,8 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.QUALITY_CHANGED.toString(), data)
   }
 
-  fun seekTo(position: Long) {
-    player?.seekTo(TimeUnit.SECONDS.toMillis(position))
+  fun onBuffer() {
+    val reactContext = context as ReactContext
+    reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.REBUFFER.toString(), Arguments.createMap())
   }
 }

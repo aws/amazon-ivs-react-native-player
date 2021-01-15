@@ -150,9 +150,10 @@ type: `{ wasmBinary: string, wasmWorker: string }`
 
 ### onBuffer _(optional)_
 
-Some description. // TODO: proper description here
+Indicates that the player is buffering from a previous PLAYING state.
+Excludes user actions such as seeking, starting or resuming the stream.
 
-type: `(buffer: number) => void`
+type: `() => void`
 
 ### onError _(optional)_
 
