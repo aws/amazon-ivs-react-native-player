@@ -9,6 +9,7 @@ import com.facebook.react.bridge.ReactContext
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.events.RCTEventEmitter
+import java.nio.ByteBuffer
 import java.util.concurrent.TimeUnit
 
 class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(context) {
@@ -20,7 +21,9 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     STATE_CHANGED("onPlayerStateChange"),
     DURATION_CHANGED("onDurationChange"),
     ERROR("onError"),
-    QUALITY_CHANGED("onQualityChange");
+    QUALITY_CHANGED("onQualityChange"),
+    CUE("onTextCue"),
+    METADATA_CUE("onTextMetadataCue");
 
     override fun toString(): String {
       return mName
@@ -60,9 +63,12 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
         post(mLayoutRunnable)
       }
 
-      override fun onCue(p0: Cue) {
-        // TODO: implement
-        Log.i("PLAYER", "onCue");
+      override fun onCue(cue: Cue) {
+        if (cue is TextCue) {
+          onTextCue(cue)
+        } else if (cue is TextMetadataCue) {
+          onTextMetadataCue(cue)
+        }
       }
 
       override fun onError(e: PlayerException) {
@@ -138,6 +144,37 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
 
   fun setAutoQualityMode(autoQualityMode: Boolean) {
     player?.isAutoQualityMode = autoQualityMode
+  }
+
+  fun onTextCue(cue: TextCue) {
+    val reactContext = context as ReactContext
+
+    val textCue = Arguments.createMap()
+    textCue.putString("type", cue.javaClass.name)
+    textCue.putDouble("line", cue.line.toDouble())
+    textCue.putDouble("size", cue.size.toDouble())
+    textCue.putDouble("position", cue.position.toDouble())
+    textCue.putString("text", cue.text)
+    textCue.putInt("textAlignment", cue.textAlign.ordinal)
+
+    val data = Arguments.createMap()
+    data.putMap("textCue", textCue)
+
+    reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.CUE.toString(), data)
+  }
+
+  fun onTextMetadataCue(cue: TextMetadataCue) {
+    val reactContext = context as ReactContext
+
+    val textMetadataCue = Arguments.createMap()
+    textMetadataCue.putString("type", cue.javaClass.name)
+    textMetadataCue.putString("text", cue.text)
+    textMetadataCue.putString("description", cue.description)
+
+    val data = Arguments.createMap()
+    data.putMap("textMetadataCue", textMetadataCue)
+
+    reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.METADATA_CUE.toString(), data)
   }
 
   fun onDurationChange(duration: Long) {

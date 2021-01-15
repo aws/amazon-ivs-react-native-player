@@ -7,7 +7,7 @@ import com.facebook.react.uimanager.SimpleViewManager
 import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.annotations.ReactProp
 
-class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>()  {
+class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>() {
   private enum class Commands {
     PLAY,
     PAUSE,
@@ -21,7 +21,10 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>()  {
       AmazonIvsView.Events.STATE_CHANGED.toString(), MapBuilder.of("registrationName", AmazonIvsView.Events.STATE_CHANGED.toString()),
       AmazonIvsView.Events.DURATION_CHANGED.toString(), MapBuilder.of("registrationName", AmazonIvsView.Events.DURATION_CHANGED.toString()),
       AmazonIvsView.Events.ERROR.toString(), MapBuilder.of("registrationName", AmazonIvsView.Events.ERROR.toString()),
-      AmazonIvsView.Events.QUALITY_CHANGED.toString(), MapBuilder.of("registrationName", AmazonIvsView.Events.QUALITY_CHANGED.toString()))
+      AmazonIvsView.Events.QUALITY_CHANGED.toString(), MapBuilder.of("registrationName", AmazonIvsView.Events.QUALITY_CHANGED.toString()),
+      AmazonIvsView.Events.CUE.toString(), MapBuilder.of("registrationName", AmazonIvsView.Events.CUE.toString()),
+      AmazonIvsView.Events.METADATA_CUE.toString(), MapBuilder.of("registrationName", AmazonIvsView.Events.METADATA_CUE.toString())
+    )
   }
 
   override fun getCommandsMap(): Map<String, Int>? {
@@ -44,7 +47,8 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>()  {
           view.seekTo(position.toLong())
         }
       }
-      else -> {}
+      else -> {
+      }
     }
   }
 
@@ -80,7 +84,7 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>()  {
 
   @ReactProp(name = "logLevel")
   fun setLogLevel(view: AmazonIvsView, logLevel: Double) {
-    view.setVolume(logLevel)
+    view.setLogLevel(logLevel)
   }
 
   @ReactProp(name = "quality")
