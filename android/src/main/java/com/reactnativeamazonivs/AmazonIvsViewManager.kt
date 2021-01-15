@@ -62,6 +62,11 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>()  {
     view.setPlaybackRate(playbackRate)
   }
 
+  @ReactProp(name = "looping")
+  fun setLooping(view: AmazonIvsView, looping: Boolean) {
+    view.setLooping(looping)
+  }
+
   override fun createViewInstance(reactContext: ThemedReactContext): AmazonIvsView {
     return AmazonIvsView(reactContext)
   }

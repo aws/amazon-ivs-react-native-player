@@ -96,6 +96,10 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     player?.playbackRate = playbackRate.toFloat()
   }
 
+  fun setLooping(looping: Boolean) {
+    player?.setLooping(looping)
+  }
+
   fun onPlayerStateChange(state: Player.State) {
     val reactContext = context as ReactContext
     val data = Arguments.createMap()
@@ -110,7 +114,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
 
     reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.STATE_CHANGED.toString(), data)
   }
-  
+
   fun onDurationChange(duration: Long) {
     val reactContext = context as ReactContext
     val data = Arguments.createMap()
