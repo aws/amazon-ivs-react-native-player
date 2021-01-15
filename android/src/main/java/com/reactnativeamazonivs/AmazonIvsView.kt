@@ -6,6 +6,7 @@ import android.widget.FrameLayout
 import com.amazonaws.ivs.player.*
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReactContext
+import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.events.RCTEventEmitter
 import java.util.concurrent.TimeUnit
@@ -110,6 +111,35 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     }
   }
 
+  private fun findQuality(quality: ReadableMap?): Quality? {
+    val newQuality = player?.qualities?.first { x ->
+        x.name == quality?.getString("name") &&
+        x.codecs == quality.getString("codecs") &&
+        x.bitrate == quality.getInt("bitrate") &&
+        x.framerate == quality.getDouble("framerate").toFloat() &&
+        x.width == quality.getInt("width") &&
+        x.height == quality.getInt("height")
+    }
+
+    return newQuality
+  }
+
+  fun setQuality(quality: ReadableMap?) {
+    if (quality != null) {
+      player?.quality = findQuality(quality)!!
+    }
+  }
+
+  fun setAutoMaxQuality(quality: ReadableMap?) {
+    if (quality != null) {
+      player?.setAutoMaxQuality(findQuality(quality)!!)
+    }
+  }
+
+  fun setAutoQualityMode(autoQualityMode: Boolean) {
+    player?.isAutoQualityMode = autoQualityMode
+  }
+
   fun onDurationChange(duration: Long) {
     val reactContext = context as ReactContext
     val data = Arguments.createMap()
@@ -172,7 +202,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
 
     reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.QUALITY_CHANGED.toString(), data)
   }
-  
+
   fun seekTo(position: Long) {
     player?.seekTo(TimeUnit.SECONDS.toMillis(position))
   }

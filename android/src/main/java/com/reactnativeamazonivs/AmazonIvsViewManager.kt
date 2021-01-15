@@ -1,6 +1,7 @@
 package com.reactnativeamazonivs
 
 import com.facebook.react.bridge.ReadableArray
+import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.common.MapBuilder
 import com.facebook.react.uimanager.SimpleViewManager
 import com.facebook.react.uimanager.ThemedReactContext
@@ -80,6 +81,21 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>()  {
   @ReactProp(name = "logLevel")
   fun setLogLevel(view: AmazonIvsView, logLevel: Double) {
     view.setVolume(logLevel)
+  }
+
+  @ReactProp(name = "quality")
+  fun setQuality(view: AmazonIvsView, quality: ReadableMap?) {
+    view.setQuality(quality)
+  }
+
+  @ReactProp(name = "autoMaxQuality")
+  fun setAutoMaxQuality(view: AmazonIvsView, quality: ReadableMap?) {
+    view.setAutoMaxQuality(quality)
+  }
+
+  @ReactProp(name = "autoQualityMode")
+  fun setAutoQualityMode(view: AmazonIvsView, autoQualityMode: Boolean) {
+    view.setAutoQualityMode(autoQualityMode)
   }
 
   override fun createViewInstance(reactContext: ThemedReactContext): AmazonIvsView {
