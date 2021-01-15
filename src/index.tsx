@@ -46,6 +46,8 @@ type MediaPlayerProps = {
   autoMaxQuality?: Quality | null;
   autoQualityMode?: boolean;
   breakpoints?: number[];
+  initialBitrate?: number;
+  maxBitrate?: number;
   onSeek?(event: NativeSyntheticEvent<{ position: number }>): void;
   onData?(event: NativeSyntheticEvent<{ playerData: PlayerData }>): void;
   onVideo?(event: NativeSyntheticEvent<{ videoData: VideoData }>): void;
@@ -91,6 +93,8 @@ type Props = {
   autoMaxQuality?: Quality | null;
   autoQualityMode?: boolean;
   breakpoints: number[];
+  initialBitrate?: number;
+  maxBitrate?: number;
   onSeek?(position: number): void;
   onData?(data: PlayerData): void;
   onVideo?(data: VideoData): void;
@@ -126,6 +130,8 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
       autoMaxQuality,
       autoQualityMode,
       breakpoints = [],
+      initialBitrate,
+      maxBitrate,
       onSeek,
       onData,
       onVideo,
@@ -307,6 +313,8 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
           autoMaxQuality={autoMaxQuality}
           autoQualityMode={autoQualityMode}
           breakpoints={breakpoints}
+          initialBitrate={initialBitrate}
+          maxBitrate={maxBitrate}
           onVideo={onVideo ? onVideoHandler : undefined}
           onData={onDataHandler}
           onSeek={onSeekHandler}

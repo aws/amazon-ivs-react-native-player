@@ -122,14 +122,14 @@ type: `{ width: number, height: number }`
 
 ### initialBitrate _(optional)_
 
-Some description. // TODO: proper description here
+Sets the initial starting bitrate when using `autoQualityMode`. This determines the initial quality for an adaptive stream, when no bandwidth estimate value has been determined.
 
 Android only
 type: `number`
 
 ### maxBitrate _(optional)_
 
-Some description. // TODO: proper description here
+Sets the max bitrate when using `autoQualityMode`. Allows you to control resource usage in the case of multiple players.
 
 Android only
 type: `number`

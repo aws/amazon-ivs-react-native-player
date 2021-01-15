@@ -99,6 +99,16 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>() {
     view.setAutoQualityMode(autoQualityMode)
   }
 
+  @ReactProp(name = "initialBitrate")
+  fun setInitialBitrate(view: AmazonIvsView, bitrate: Double) {
+    view.setInitialBitrate(bitrate)
+  }
+
+  @ReactProp(name = "maxBitrate")
+  fun setMaxBitrate(view: AmazonIvsView, bitrate: Double) {
+    view.setMaxBitrate(bitrate)
+  }
+
   override fun createViewInstance(reactContext: ThemedReactContext): AmazonIvsView {
     return AmazonIvsView(reactContext)
   }

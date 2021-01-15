@@ -168,6 +168,14 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.CUE.toString(), data)
   }
 
+  fun setInitialBitrate(bitrate: Double) {
+    player?.setAutoInitialBitrate(bitrate.toInt())
+  }
+
+  fun setMaxBitrate(bitrate: Double) {
+    player?.setAutoMaxBitrate(bitrate.toInt())
+  }
+
   fun onTextMetadataCue(cue: TextMetadataCue) {
     val reactContext = context as ReactContext
 
