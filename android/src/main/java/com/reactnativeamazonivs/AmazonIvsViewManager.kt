@@ -17,7 +17,9 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>()  {
   override fun getExportedCustomDirectEventTypeConstants(): MutableMap<String, Any> {
     return MapBuilder.of(
       AmazonIvsView.Events.STATE_CHANGED.toString(), MapBuilder.of("registrationName", AmazonIvsView.Events.STATE_CHANGED.toString()),
-      AmazonIvsView.Events.DURATION_CHANGED.toString(), MapBuilder.of("registrationName", AmazonIvsView.Events.DURATION_CHANGED.toString()))
+      AmazonIvsView.Events.DURATION_CHANGED.toString(), MapBuilder.of("registrationName", AmazonIvsView.Events.DURATION_CHANGED.toString()),
+      AmazonIvsView.Events.ERROR.toString(), MapBuilder.of("registrationName", AmazonIvsView.Events.ERROR.toString()),
+      AmazonIvsView.Events.QUALITY_CHANGED.toString(), MapBuilder.of("registrationName", AmazonIvsView.Events.QUALITY_CHANGED.toString()))
   }
 
   override fun getCommandsMap(): Map<String, Int>? {

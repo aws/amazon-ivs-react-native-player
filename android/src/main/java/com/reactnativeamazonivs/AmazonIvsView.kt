@@ -18,8 +18,8 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
   enum class Events(private val mName: String) {
     STATE_CHANGED("onPlayerStateChange"),
     DURATION_CHANGED("onDurationChange"),
-    ERROR("onError");
-
+    ERROR("onError"),
+    QUALITY_CHANGED("onQualityChange");
 
     override fun toString(): String {
       return mName
@@ -49,9 +49,8 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
         Log.i("PLAYER", "onSeekCompleted");
       }
 
-      override fun onQualityChanged(p0: Quality) {
-        // TODO: implement
-        Log.i("PLAYER", "onQualityChanged");
+      override fun onQualityChanged(quality: Quality) {
+        onQualityChange(quality)
       }
 
       override fun onVideoSizeChanged(p0: Int, p1: Int) {
@@ -100,21 +99,6 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     player?.setLooping(looping)
   }
 
-  fun onPlayerStateChange(state: Player.State) {
-    val reactContext = context as ReactContext
-    val data = Arguments.createMap()
-    data.putInt("state", state.ordinal)
-
-    when (state) {
-      Player.State.READY -> {
-        // TODO: handle paused (etc.) props here
-        player!!.play()
-      };
-    }
-
-    reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.STATE_CHANGED.toString(), data)
-  }
-
   fun onDurationChange(duration: Long) {
     val reactContext = context as ReactContext
     val data = Arguments.createMap()
@@ -144,5 +128,37 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
 
   fun pause() {
     player?.pause()
+  }
+
+  fun onPlayerStateChange(state: Player.State) {
+    val reactContext = context as ReactContext
+    val data = Arguments.createMap()
+    data.putInt("state", state.ordinal)
+
+    when (state) {
+      Player.State.READY -> {
+        // TODO: handle paused (etc.) props here
+        player!!.play()
+      };
+    }
+
+    reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.STATE_CHANGED.toString(), data)
+  }
+
+  fun onQualityChange(quality: Quality) {
+    val reactContext = context as ReactContext
+
+    val newQuality = Arguments.createMap()
+    newQuality.putString("name", quality.name)
+    newQuality.putString("codecs", quality.codecs)
+    newQuality.putInt("bitrate", quality.bitrate)
+    newQuality.putInt("framerate", quality.framerate.toInt())
+    newQuality.putInt("width", quality.width)
+    newQuality.putInt("height", quality.height)
+
+    val data = Arguments.createMap()
+    data.putMap("quality", newQuality)
+
+    reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.QUALITY_CHANGED.toString(), data)
   }
 }
