@@ -58,9 +58,18 @@ export default function PlayerPlaygroundScreen() {
   const [lockPosition, setLockPosition] = useState(false);
   const [positionSlider, setPositionSlider] = useState(0);
   const [breakpoints, setBreakpoints] = useState<number[]>(INITIAL_BREAKPOINTS);
+  const [, setOpenSheet] = useState(false);
 
-  const handleSettingsOpen = React.useCallback(() => {
-    sheetRef?.current?.expand();
+  const handleToggleSettings = React.useCallback(() => {
+    setOpenSheet((prev) => {
+      if (prev) {
+        sheetRef?.current?.collapse();
+      } else {
+        sheetRef?.current?.expand();
+      }
+
+      return !prev;
+    });
   }, []);
 
   const handleFullscreenPress = React.useCallback(() => {
@@ -157,7 +166,7 @@ export default function PlayerPlaygroundScreen() {
           icon="cog"
           size={25}
           color="lightgrey"
-          onPress={handleSettingsOpen}
+          onPress={handleToggleSettings}
         />
       </SafeAreaView>
       <SafeAreaView>
