@@ -8,7 +8,6 @@ import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReactContext
 import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.events.RCTEventEmitter
-import java.math.BigDecimal
 import java.util.concurrent.TimeUnit
 
 class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(context) {
@@ -18,7 +17,9 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
 
   enum class Events(private val mName: String) {
     STATE_CHANGED("onPlayerStateChange"),
-    DURATION_CHANGED("onDurationChange");
+    DURATION_CHANGED("onDurationChange"),
+    ERROR("onError");
+
 
     override fun toString(): String {
       return mName
@@ -63,8 +64,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
       }
 
       override fun onError(e: PlayerException) {
-        // TODO: implement
-        Log.e("PLAYER", e.errorMessage)
+        onError(e.errorMessage)
       }
     }
 
@@ -121,6 +121,14 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     data.putInt("duration", TimeUnit.MILLISECONDS.toSeconds(duration).toInt())
 
     reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.DURATION_CHANGED.toString(), data)
+  }
+
+  fun onError(error: String) {
+    val reactContext = context as ReactContext
+    val data = Arguments.createMap()
+    data.putString("error", error)
+
+    reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.ERROR.toString(), data)
   }
 
   private val mLayoutRunnable = Runnable {
