@@ -30,6 +30,8 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     playerView = PlayerView(context)
     player = playerView!!.player
 
+    playerView?.controlsEnabled = false
+
     val playerListener = object : Player.Listener() {
       override fun onStateChanged(state: Player.State) {
         onPlayerStateChange(state)
