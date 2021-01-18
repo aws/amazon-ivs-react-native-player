@@ -247,10 +247,6 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
 
         reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.LOAD.toString(), onLoadData)
       }
-      Player.State.READY -> {
-        // TODO: handle paused (etc.) props here
-        player!!.play()
-      };
     }
 
     val onStateChangeData = Arguments.createMap()

@@ -22,7 +22,9 @@ const SettingsInputItem = ({
   const finalValue = useDebounce(internalValue, 1000);
 
   useEffect(() => {
-    onChangeText(finalValue.trim());
+    if (finalValue.trim().length > 0) {
+      onChangeText(finalValue.trim());
+    }
   }, [finalValue, onChangeText]);
 
   return (
