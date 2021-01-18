@@ -71,39 +71,32 @@ type: `boolean`
 
 ### playbackRate _(optional)_
 
-Sets playback rate that the video will be player.
-Minimal value is `0.5`. Maximum is `2.0`.
+The video-playback rate.
+Supported range: `0.5` to `2.0`.
 
 default: `1.0`
 type: `number`
 
 ### volume _(optional)_
 
-Set audio volume. This setting is independent from device volume.
-Minimal value is `0.0`. Maximum is `1.0`.
+Volume of the audio track, if any. This setting is independent from device volume.
+Supported range: `0.0` to `1.0`.
 
 default: `1.0`
 type: `number`
 
 ### quality _(optional)_
 
-Specifies what video/stream quality should be used for playback.
+Specifies what video/stream quality should be used for playback. Setting the property to `null` implicitly enables autoQualityMode, and a new quality will be selected asynchronously.
 Available qualites for current video/stream can be read from `onData` callback.
 
-type: [`Quality`](./types.md#Quality)
+type: [`Quality | null`](./types.md#Quality)
 
 ### autoMaxQuality _(optional)_
 
-Specifies maximum quality that can be used when `autoQualityMode` is turned on.
+Specifies maximum quality that can be used when `autoQualityMode` is turned on. This can be used to control resource usage. The quality you provide here is applied to the current stream.
 
 default: `undefined`
-type: [`Quality`](./types.md#Quality)
-
-### maxQuality _(optional)_
-
-Specifies maximum quality that can be used.
-
-Android only
 type: [`Quality`](./types.md#Quality)
 
 ### autoQualityMode _(optional)_
@@ -112,13 +105,6 @@ Automatically select video quality based on the quality of the internet connecti
 
 default: `true`
 type: `boolean`
-
-### maxVideoSize _(optional)_
-
-Some description. // TODO: proper description here
-
-Android only
-type: `{ width: number, height: number }`
 
 ### initialBitrate _(optional)_
 
@@ -309,7 +295,7 @@ function App() {
 
 ### seekTo
 
-Some description. // TODO: proper description here
+Seeks to the given time in the stream and begins playing at that position if `play()` has been called. If no stream is loaded the seek will be be deferred until load is called. The position will update to the seeked time. Specified value should be in seconds.
 
 type: `(position: number, completionHandler: function?) => void`
 

@@ -1,7 +1,6 @@
 package com.reactnativeamazonivs
 
 import android.net.Uri
-import android.util.Log
 import android.widget.FrameLayout
 import com.amazonaws.ivs.player.*
 import com.facebook.react.bridge.Arguments
@@ -10,7 +9,6 @@ import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.common.MapBuilder
 import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.events.RCTEventEmitter
-import java.nio.ByteBuffer
 import java.util.concurrent.TimeUnit
 
 class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(context) {
