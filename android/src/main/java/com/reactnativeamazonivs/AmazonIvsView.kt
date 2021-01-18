@@ -7,6 +7,7 @@ import com.amazonaws.ivs.player.*
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReactContext
 import com.facebook.react.bridge.ReadableMap
+import com.facebook.react.common.MapBuilder
 import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.events.RCTEventEmitter
 import java.nio.ByteBuffer
@@ -27,7 +28,8 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     LOAD("onLoad"),
     LOAD_START("onLoadStart"),
     REBUFFER("onBuffer"),
-    SEEK("onSeek");
+    SEEK("onSeek"),
+    DATA("onData"),;
 
     override fun toString(): String {
       return mName
@@ -247,6 +249,28 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
 
         reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.LOAD.toString(), onLoadData)
       }
+      Player.State.READY -> {
+        val data = Arguments.createMap()
+        val playerData = Arguments.createMap()
+        playerData.putString("version", player?.version)
+        playerData.putString("sessionId", player?.sessionId)
+
+        val qualities = Arguments.createArray()
+        for (quality in player!!.qualities) {
+          val parsedQuality = Arguments.createMap()
+          parsedQuality.putString("name", quality.name)
+          parsedQuality.putString("codecs", quality.codecs)
+          parsedQuality.putInt("bitrate", quality.bitrate)
+          parsedQuality.putInt("framerate", quality.framerate.toInt())
+          parsedQuality.putInt("width", quality.width)
+          parsedQuality.putInt("height", quality.height)
+          qualities.pushMap(parsedQuality)
+        }
+        playerData.putArray("qualities", qualities)
+        data.putMap("playerData", playerData)
+
+        reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.DATA.toString(), data)
+      };
     }
 
     val onStateChangeData = Arguments.createMap()
