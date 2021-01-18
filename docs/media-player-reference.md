@@ -141,13 +141,6 @@ Only works with live streams.
 
 type: `boolean`
 
-### playerConfig _(optional)_
-
-Some description. // TODO: proper description here
-
-Web only
-type: `{ wasmBinary: string, wasmWorker: string }`
-
 ### onBuffer _(optional)_
 
 Indicates that the player is buffering from a previous PLAYING state.
