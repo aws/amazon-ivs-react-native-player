@@ -33,7 +33,8 @@ const UPDATED_BREAKPOINTS = [5, 15, 30, 45, 60, 120, 240, 480, 960, 1920];
 export default function PlayerPlaygroundScreen() {
   const sheetRef = React.useRef<BottomSheet>(null);
   const mediaPlayerRef = React.useRef<MediaPlayerRef>(null);
-  const [isPlaying, setIsPlaying] = useState(true);
+  const [autoplay, setAutoplay] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(autoplay);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [paused, setPaused] = useState(false);
   const [url, setUrl] = useState(
@@ -45,7 +46,6 @@ export default function PlayerPlaygroundScreen() {
   const [qualities, setQualities] = useState<Quality[]>([]);
   const [autoQualityMode, setAutoQualityMode] = useState(true);
   const [looping, setLooping] = useState(false);
-  const [autoplay, setAutoplay] = useState(true);
   const [buffering, setBuffering] = useState(false);
   const [duration, setDuration] = useState<number | null>(null);
   const [liveLowLatency, setLiveLowLatency] = useState(true);
