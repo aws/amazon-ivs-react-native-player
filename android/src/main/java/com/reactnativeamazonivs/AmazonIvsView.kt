@@ -26,7 +26,8 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     METADATA_CUE("onTextMetadataCue"),
     LOAD("onLoad"),
     LOAD_START("onLoadStart"),
-    REBUFFER("onBuffer");
+    REBUFFER("onBuffer"),
+    SEEK("onSeek");
 
     override fun toString(): String {
       return mName
@@ -35,7 +36,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
 
   init {
     playerView = PlayerView(context)
-    player = playerView!!.player
+    player = playerView?.player
 
     playerView?.controlsEnabled = false
 
@@ -52,9 +53,8 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
         onBuffer()
       }
 
-      override fun onSeekCompleted(p0: Long) {
-        // TODO: implement
-        Log.i("PLAYER", "onSeekCompleted");
+      override fun onSeekCompleted(position: Long) {
+        onSeek(position)
       }
 
       override fun onQualityChanged(quality: Quality) {
@@ -78,7 +78,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
       }
     }
 
-    player!!.addListener(playerListener);
+    player?.addListener(playerListener);
     addView(playerView)
   }
 
@@ -204,6 +204,14 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     data.putString("error", error)
 
     reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.ERROR.toString(), data)
+  }
+
+  fun onSeek(position: Long) {
+    val reactContext = context as ReactContext
+    val data = Arguments.createMap()
+    data.putInt("position", TimeUnit.MILLISECONDS.toSeconds(position).toInt())
+
+    reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.SEEK.toString(), data)
   }
 
   private val mLayoutRunnable = Runnable {
