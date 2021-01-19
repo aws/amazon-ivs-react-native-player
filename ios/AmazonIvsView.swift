@@ -30,6 +30,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
     private var playerObserverToken: Any?
     private var timePointObserver: Any?
     private var oldQualities: [IVSQuality] = [];
+    private var lastLiveLatency: Double?;
     
     override init(frame: CGRect) {
         self.muted = player.muted
@@ -201,7 +202,17 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
     func addPlayerObserver() {
         playerObserverToken = player.addPeriodicTimeObserver(forInterval: CMTime(seconds: 1, preferredTimescale: CMTimeScale(NSEC_PER_SEC)), queue: .main) {
             [weak self] time in
-            self?.onLiveLatencyChange?(["liveLatency": (self?.player.liveLatency.value ?? nil) as Any])
+            if self?.lastLiveLatency != self?.player.liveLatency.seconds {
+                if let liveLatency = self?.player.liveLatency.seconds {
+                    let parsedValue = 1000*liveLatency
+                    self?.onLiveLatencyChange?(["liveLatency": parsedValue])
+                } else {
+                    self?.onLiveLatencyChange?(["liveLatency": NSNull()])
+                }
+
+                self?.lastLiveLatency = self?.player.liveLatency.seconds
+            }
+
             self?.onBandwidthEstimateChange?(["bandwidthEstimate": (self?.player.bandwidthEstimate ?? nil) as Any])
 
             if self?.onVideo != nil {

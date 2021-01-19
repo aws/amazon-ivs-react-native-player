@@ -7,16 +7,20 @@ import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.LifecycleEventListener
 import com.facebook.react.bridge.ReactContext
 import com.facebook.react.bridge.ReadableMap
-import com.facebook.react.common.MapBuilder
 import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.events.RCTEventEmitter
+import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.concurrent.timerTask
 
 class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(context), LifecycleEventListener {
   private var playerView: PlayerView? = null
   private var player: Player? = null
   private var streamUri: Uri? = null
   private val playerListener: Player.Listener?
+
+  var playerObserver: Timer? = null
+  private var lastLiveLatency: Long? = null
 
   enum class Events(private val mName: String) {
     STATE_CHANGED("onPlayerStateChange"),
@@ -29,7 +33,8 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     LOAD_START("onLoadStart"),
     REBUFFER("onBuffer"),
     SEEK("onSeek"),
-    DATA("onData"),;
+    DATA("onData"),
+    LIVE_LATENCY_CHANGED("onLiveLatencyChange");
 
     override fun toString(): String {
       return mName
@@ -82,6 +87,11 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
 
     player?.addListener(playerListener);
     addView(playerView)
+
+    playerObserver = Timer("observerInterval", false)
+    playerObserver?.schedule(timerTask {
+      intervalHandler()
+    }, 0, 1000)
   }
 
   fun setStreamUrl(streamUrl: String) {
@@ -300,6 +310,23 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.REBUFFER.toString(), Arguments.createMap())
   }
 
+  private fun intervalHandler() {
+    val reactContext = context as ReactContext
+
+    if (lastLiveLatency != player?.liveLatency) {
+      val liveLatencyData = Arguments.createMap()
+
+      player?.liveLatency?.let { liveLatency ->
+        liveLatencyData.putInt("liveLatency", liveLatency.toInt())
+      } ?: run {
+        liveLatencyData.putNull("liveLatency")
+      }
+      reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.LIVE_LATENCY_CHANGED.toString(), liveLatencyData)
+
+      lastLiveLatency = player?.liveLatency
+    }
+  }
+
   override fun onHostResume() {}
 
   override fun onHostPause() {}
@@ -308,5 +335,8 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     player?.removeListener(playerListener!!)
     player?.release()
     player = null
+
+    playerObserver?.cancel()
+    playerObserver = null
   }
 }

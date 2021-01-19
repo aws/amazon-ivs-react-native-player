@@ -149,7 +149,7 @@ type: `(error: string) => void`
 
 ### onLiveLatencyChange _(optional)_
 
-Callback that return changes in live latency.
+Callback that return changes in live latency. Value is milliseconds.
 
 type: `(liveLatency: number) => void`
 
