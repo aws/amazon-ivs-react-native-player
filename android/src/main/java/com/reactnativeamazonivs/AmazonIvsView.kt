@@ -4,6 +4,7 @@ import android.net.Uri
 import android.widget.FrameLayout
 import com.amazonaws.ivs.player.*
 import com.facebook.react.bridge.Arguments
+import com.facebook.react.bridge.LifecycleEventListener
 import com.facebook.react.bridge.ReactContext
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.common.MapBuilder
@@ -11,10 +12,11 @@ import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.events.RCTEventEmitter
 import java.util.concurrent.TimeUnit
 
-class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(context) {
+class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(context), LifecycleEventListener {
   private var playerView: PlayerView? = null
   private var player: Player? = null
   private var streamUri: Uri? = null
+  private val playerListener: Player.Listener?
 
   enum class Events(private val mName: String) {
     STATE_CHANGED("onPlayerStateChange"),
@@ -40,7 +42,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
 
     playerView?.controlsEnabled = false
 
-    val playerListener = object : Player.Listener() {
+    playerListener = object : Player.Listener() {
       override fun onStateChanged(state: Player.State) {
         onPlayerStateChange(state)
       }
@@ -296,5 +298,15 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
   fun onBuffer() {
     val reactContext = context as ReactContext
     reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.REBUFFER.toString(), Arguments.createMap())
+  }
+
+  override fun onHostResume() {}
+
+  override fun onHostPause() {}
+
+  override fun onHostDestroy() {
+    player?.removeListener(playerListener!!)
+    player?.release()
+    player = null
   }
 }
