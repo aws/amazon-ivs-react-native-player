@@ -21,6 +21,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
 
   var playerObserver: Timer? = null
   private var lastLiveLatency: Long? = null
+  private var lastBandwidthEstimate: Long? = null
 
   enum class Events(private val mName: String) {
     STATE_CHANGED("onPlayerStateChange"),
@@ -34,7 +35,8 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     REBUFFER("onBuffer"),
     SEEK("onSeek"),
     DATA("onData"),
-    LIVE_LATENCY_CHANGED("onLiveLatencyChange");
+    LIVE_LATENCY_CHANGED("onLiveLatencyChange"),
+    BANDWIDTH_ESTIMATE_CHANGED("onBandwidthEstimateChange");
 
     override fun toString(): String {
       return mName
@@ -324,6 +326,20 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
       reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.LIVE_LATENCY_CHANGED.toString(), liveLatencyData)
 
       lastLiveLatency = player?.liveLatency
+    }
+
+    if (lastBandwidthEstimate != player?.bandwidthEstimate) {
+      lastBandwidthEstimate
+      val bandwidthEstimateData = Arguments.createMap()
+
+      player?.bandwidthEstimate?.let { bandwidthEstimate ->
+        bandwidthEstimateData.putInt("bandwidthEstimate", bandwidthEstimate.toInt())
+      } ?: run {
+        bandwidthEstimateData.putNull("bandwidthEstimate")
+      }
+      reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.BANDWIDTH_ESTIMATE_CHANGED.toString(), bandwidthEstimateData)
+
+      lastBandwidthEstimate = player?.bandwidthEstimate
     }
   }
 

@@ -31,7 +31,8 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
     private var timePointObserver: Any?
     private var oldQualities: [IVSQuality] = [];
     private var lastLiveLatency: Double?;
-    
+    private var lastBandwidthEstimate: Int?;
+
     override init(frame: CGRect) {
         self.muted = player.muted
         self.looping = player.looping
@@ -213,7 +214,10 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
                 self?.lastLiveLatency = self?.player.liveLatency.seconds
             }
 
-            self?.onBandwidthEstimateChange?(["bandwidthEstimate": (self?.player.bandwidthEstimate ?? nil) as Any])
+            if self?.lastBandwidthEstimate != self?.player.bandwidthEstimate {
+                self?.onBandwidthEstimateChange?(["bandwidthEstimate": (self?.player.bandwidthEstimate ?? nil) as Any])
+                self?.lastBandwidthEstimate = self?.player.bandwidthEstimate
+            }
 
             if self?.onVideo != nil {
                 let videoData: [String: Any] = [
