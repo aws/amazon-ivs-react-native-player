@@ -79,6 +79,7 @@ const VIEW_NAME = 'AmazonIvs';
 const MediaPlayer = requireNativeComponent<MediaPlayerProps>(VIEW_NAME);
 
 type Props = {
+  style?: ViewStyle;
   paused?: boolean;
   muted?: boolean;
   looping?: boolean;
@@ -116,6 +117,7 @@ type Props = {
 const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
   (
     {
+      style,
       streamUrl,
       paused,
       muted,
@@ -295,7 +297,7 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
     };
 
     return (
-      <View style={styles.container} ref={ref as any}>
+      <View style={[styles.container, style]} ref={ref as any}>
         <MediaPlayer
           muted={muted}
           looping={looping}

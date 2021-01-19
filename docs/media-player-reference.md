@@ -27,6 +27,13 @@ function App() {
 
 ## Props
 
+### style _(optional)_
+
+Style of MediaPlayer wrapper.
+
+default: `undefined`
+type: `StyleProp<ViewStyle>`
+
 ### streamUrl _(optional)_
 
 An URL of the the stream to load. Should be in a valid URL format.
