@@ -1,14 +1,12 @@
 import * as React from 'react';
-import { useState, useMemo } from 'react';
-import { SafeAreaView, StyleSheet, View } from 'react-native';
+import { useState, useMemo, useCallback, useEffect } from 'react';
+import { Dimensions, StyleSheet, View } from 'react-native';
 import MediaPlayer, {
   MediaPlayerRef,
   LogLevel,
   PlayerState,
 } from 'react-native-amazon-ivs';
 import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
-import SettingsInputItem from './components/SettingsInputItem';
-import SettingsSwitchItem from './components/SettingsSwitchItem';
 import {
   IconButton,
   Title,
@@ -16,26 +14,37 @@ import {
   Button,
   Text,
 } from 'react-native-paper';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Slider from '@react-native-community/slider';
-import Orientation from 'react-native-orientation-locker';
-import { parseSeconds } from './helpers';
-import SettingsItem from './components/SettingsItem';
+import type { StackNavigationProp } from '@react-navigation/stack';
+import { useNavigation } from '@react-navigation/native';
+import { parseSeconds } from '../helpers';
+import SettingsItem from '../components/SettingsItem';
 import type { Quality } from 'src/types';
-import QualitiesPicker from './components/QualitiesPicker';
-import SettingsSliderItem from './components/SettingsSliderItem';
-import LogLevelPicker from './components/LogLevelPicker';
+import QualitiesPicker from '../components/QualitiesPicker';
+import SettingsSliderItem from '../components/SettingsSliderItem';
+import LogLevelPicker from '../components/LogLevelPicker';
+import { Position } from '../constants';
+import SettingsInputItem from '../components/SettingsInputItem';
+import SettingsSwitchItem from '../components/SettingsSwitchItem';
+import type { RootStackParamList } from '../App';
 
 const INITIAL_PLAYBACK_RATE = 1;
 const INITIAL_PROGRESS_INTERVAL = 1;
 const INITIAL_BREAKPOINTS = [10, 20, 40, 55, 60, 130, 250, 490, 970, 1930];
 const UPDATED_BREAKPOINTS = [5, 15, 30, 45, 60, 120, 240, 480, 960, 1920];
 
-export default function PlayerPlaygroundScreen() {
+type PlaygroundScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  'PlaygroundExample'
+>;
+
+export default function PlaygroundExample() {
+  const { setOptions } = useNavigation<PlaygroundScreenNavigationProp>();
   const sheetRef = React.useRef<BottomSheet>(null);
   const mediaPlayerRef = React.useRef<MediaPlayerRef>(null);
   const [autoplay, setAutoplay] = useState(true);
   const [isPlaying, setIsPlaying] = useState(autoplay);
-  const [isFullscreen, setIsFullscreen] = useState(false);
   const [paused, setPaused] = useState(false);
   const [url, setUrl] = useState(
     'https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8'
@@ -59,6 +68,29 @@ export default function PlayerPlaygroundScreen() {
   const [positionSlider, setPositionSlider] = useState(0);
   const [breakpoints, setBreakpoints] = useState<number[]>(INITIAL_BREAKPOINTS);
   const [, setOpenSheet] = useState(false);
+  const [orientation, setOrientation] = useState(Position.PORTRAIT);
+
+  const onDimensionChange = useCallback(
+    ({ window: { width, height } }) => {
+      if (width < height) {
+        setOrientation(Position.PORTRAIT);
+
+        setOptions({ headerShown: true, gestureEnabled: true });
+      } else {
+        setOrientation(Position.LANDSCAPE);
+        setOptions({ headerShown: false, gestureEnabled: false });
+      }
+    },
+    [setOptions]
+  );
+
+  useEffect(() => {
+    Dimensions.addEventListener('change', onDimensionChange);
+
+    return () => {
+      Dimensions.removeEventListener('change', onDimensionChange);
+    };
+  }, [onDimensionChange]);
 
   const handleToggleSettings = React.useCallback(() => {
     setOpenSheet((prev) => {
@@ -69,18 +101,6 @@ export default function PlayerPlaygroundScreen() {
       }
 
       return !prev;
-    });
-  }, []);
-
-  const handleFullscreenPress = React.useCallback(() => {
-    Orientation.getOrientation((orientation) => {
-      if (orientation === 'PORTRAIT') {
-        Orientation.lockToLandscape();
-        setIsFullscreen(true);
-      } else {
-        Orientation.lockToPortrait();
-        setIsFullscreen(false);
-      }
     });
   }, []);
 
@@ -155,68 +175,66 @@ export default function PlayerPlaygroundScreen() {
           onTimePoint={(timePoint) => console.log('time point', timePoint)}
         />
       </View>
-      <SafeAreaView style={styles.settingsIcon}>
-        <IconButton
-          icon={isFullscreen ? 'fullscreen-exit' : 'fullscreen'}
-          size={25}
-          color="lightgrey"
-          onPress={handleFullscreenPress}
-        />
-        <IconButton
-          icon="cog"
-          size={25}
-          color="lightgrey"
-          onPress={handleToggleSettings}
-        />
-      </SafeAreaView>
-      <SafeAreaView>
-        <View style={styles.playButtonContainer}>
-          <View style={styles.positionContainer}>
-            <View style={styles.durationsContainer}>
-              {duration && position !== null ? (
-                <Text style={styles.positionText}>
-                  {parseSeconds(position ? position : 0)}
-                </Text>
-              ) : (
-                <Text />
-              )}
-              {duration ? (
-                <Text style={styles.positionText}>
-                  {parseSeconds(duration)}
-                </Text>
-              ) : null}
-            </View>
+      {orientation === Position.PORTRAIT ? (
+        <>
+          <SafeAreaView style={styles.icon}>
+            <IconButton
+              icon="cog"
+              size={25}
+              color="lightgrey"
+              onPress={handleToggleSettings}
+            />
+          </SafeAreaView>
+          <SafeAreaView>
+            <View style={styles.playButtonContainer}>
+              <View style={styles.positionContainer}>
+                <View style={styles.durationsContainer}>
+                  {duration && position !== null ? (
+                    <Text style={styles.positionText}>
+                      {parseSeconds(position ? position : 0)}
+                    </Text>
+                  ) : (
+                    <Text />
+                  )}
+                  {duration ? (
+                    <Text style={styles.positionText}>
+                      {parseSeconds(duration)}
+                    </Text>
+                  ) : null}
+                </View>
 
-            {duration ? (
-              <Slider
-                minimumValue={0}
-                maximumValue={duration}
-                value={positionSlider}
-                onValueChange={setPosition}
-                onSlidingComplete={slidingCompleteHandler}
-                onTouchStart={() => setLockPosition(true)}
-                onTouchEnd={() => {
-                  setLockPosition(false);
-                  setPositionSlider(position ?? 0);
+                {duration ? (
+                  <Slider
+                    minimumValue={0}
+                    maximumValue={duration}
+                    value={positionSlider}
+                    onValueChange={setPosition}
+                    onSlidingComplete={slidingCompleteHandler}
+                    onTouchStart={() => setLockPosition(true)}
+                    onTouchEnd={() => {
+                      setLockPosition(false);
+                      setPositionSlider(position ?? 0);
+                    }}
+                  />
+                ) : null}
+              </View>
+
+              <IconButton
+                icon={isPlaying ? 'pause' : 'play'}
+                size={40}
+                color="white"
+                onPress={() => {
+                  isPlaying
+                    ? mediaPlayerRef.current?.pause()
+                    : mediaPlayerRef.current?.play();
+                  setIsPlaying((prev) => !prev);
                 }}
+                style={styles.playIcon}
               />
-            ) : null}
-          </View>
-
-          <IconButton
-            icon={isPlaying ? 'pause' : 'play'}
-            size={40}
-            color="white"
-            onPress={() => {
-              isPlaying
-                ? mediaPlayerRef.current?.pause()
-                : mediaPlayerRef.current?.play();
-              setIsPlaying(!isPlaying);
-            }}
-            style={styles.playIcon}
-          />
-        </View>
-      </SafeAreaView>
+            </View>
+          </SafeAreaView>
+        </>
+      ) : null}
       <BottomSheet ref={sheetRef} index={0} snapPoints={snapPoints}>
         <BottomSheetScrollView>
           <View style={styles.settings}>
@@ -342,7 +360,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  settingsIcon: {
+  icon: {
     position: 'absolute',
     top: 15,
     left: 0,

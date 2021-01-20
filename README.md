@@ -1,6 +1,6 @@
 # react-native-amazon-ivs
 
-// TODO: Add some details about the package. That it is RN wrapper for native SDKs.
+This package implements native binding for Amazon IVS Player for iOS and Android.
 
 ## Installation
 
@@ -18,13 +18,17 @@ pod install
 
 ## Usage
 
-// TODO: add proper usage example below
-
 ```tsx
+import MediaPlayer from 'react-native-amazon-ivs';
 
+const URL = 'https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8';
+
+function App() {
+  return <MediaPlayer streamUrl={URL} />
+}
 ```
 
-A more detailed guide about usage can be found [herr](./docs/usage-guide.md)
+A more detailed guide about usage can be found [here](./docs/usage-guide.md)
 
 ## MediaPlayer component
 
@@ -36,3 +40,8 @@ A more detailed guide about usage can be found [herr](./docs/usage-guide.md)
 ## Contributing
 
 See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
+
+## Troubleshooting
+
+To hide Home Indicator on iOS when video is in full screen, use this library:
+https://github.com/flowkey/react-native-home-indicator

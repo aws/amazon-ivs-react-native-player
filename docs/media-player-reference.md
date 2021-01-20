@@ -45,7 +45,7 @@ type: `string`
 
 Opening a player or specifying new `streamUrl` will make it automatically play, when it is ready.
 
-default: `false`
+default: `true`
 type: `boolean`
 
 ### looping _(optional)_
@@ -262,7 +262,9 @@ A reference method that will play the stream/video if it is stopped. For a strea
 type: `() => void`
 
 ```tsx
-import MediaPlayer from "react-native-amazon-ivs";
+import MediaPlayer from 'react-native-amazon-ivs';
+
+const URL = 'https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8';
 
 function App() {
   const mediaPlayerRef = React.useRef<MediaPlayerRef>(null);
@@ -271,7 +273,7 @@ function App() {
 
   return (
     <>
-      <MediaPlayer ref={mediaPlayerRef} streamUrl="https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8" />
+      <MediaPlayer ref={mediaPlayerRef} streamUrl={URL} />
       <Button onPress={handlePlay} title="Play">
     </>
   );
@@ -285,7 +287,9 @@ A reference method that will pause the stream/video if it is playing. For a stre
 type: `() => void`
 
 ```tsx
-import MediaPlayer from "react-native-amazon-ivs";
+import MediaPlayer from 'react-native-amazon-ivs';
+
+const URL = 'https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8';
 
 function App() {
   const mediaPlayerRef = React.useRef<MediaPlayerRef>(null);
@@ -294,7 +298,7 @@ function App() {
 
   return (
     <>
-      <MediaPlayer ref={mediaPlayerRef} streamUrl="https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8" />
+      <MediaPlayer ref={mediaPlayerRef} streamUrl={URL} />
       <Button onPress={handlePause} title="Pause">
     </>
   );
@@ -308,7 +312,9 @@ Seeks to the given time in the stream and begins playing at that position if `pl
 type: `(position: number, completionHandler: function?) => void`
 
 ```tsx
-import MediaPlayer from "react-native-amazon-ivs";
+import MediaPlayer from 'react-native-amazon-ivs';
+
+const URL = 'https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8';
 
 function App() {
   const mediaPlayerRef = React.useRef<MediaPlayerRef>(null);
@@ -317,7 +323,7 @@ function App() {
 
   return (
     <>
-      <MediaPlayer ref={mediaPlayerRef} streamUrl="https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8" />
+      <MediaPlayer ref={mediaPlayerRef} streamUrl={URL} />
       <Button onPress={handleSeekTo} title="Pause">
     </>
   );

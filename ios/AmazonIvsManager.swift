@@ -2,9 +2,9 @@ import Foundation
 
 @objc(AmazonIvsManager)
 class AmazonIvsManager: RCTViewManager {
-  override func view() -> UIView! {
-    return AmazonIvsView()
-  }
+    override func view() -> UIView! {
+      return AmazonIvsView()
+    }
     
     @objc func play(_ node: NSNumber) {
         DispatchQueue.main.async {

@@ -93,7 +93,7 @@ type Props = {
   quality?: Quality | null;
   autoMaxQuality?: Quality | null;
   autoQualityMode?: boolean;
-  breakpoints: number[];
+  breakpoints?: number[];
   initialBitrate?: number;
   maxBitrate?: number;
   onSeek?(position: number): void;
@@ -122,7 +122,7 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
       paused,
       muted,
       looping,
-      autoplay,
+      autoplay = true,
       liveLowLatency,
       playbackRate,
       logLevel,
