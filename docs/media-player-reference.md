@@ -169,6 +169,7 @@ type: `({ qualities: Quality, version: string, sessionId: string }) => void`
 
 Callback that return changes in duration, bitrate, framesDropped, and framesDecoded.
 Duration returns null if no stream is loaded or the stream length is infinite or unknown.
+framesDropped and framesDecoded are only available on iOS.
 
 type: `({ duration: number | null, bitrate: number, framesDropped: number, framesDecoded: number }) => void`
 

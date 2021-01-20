@@ -22,6 +22,8 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
   var playerObserver: Timer? = null
   private var lastLiveLatency: Long? = null
   private var lastBandwidthEstimate: Long? = null
+  private var lastBitrate: Long? = null
+  private var lastDuration: Long? = null
 
   enum class Events(private val mName: String) {
     STATE_CHANGED("onPlayerStateChange"),
@@ -36,7 +38,8 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     SEEK("onSeek"),
     DATA("onData"),
     LIVE_LATENCY_CHANGED("onLiveLatencyChange"),
-    BANDWIDTH_ESTIMATE_CHANGED("onBandwidthEstimateChange");
+    BANDWIDTH_ESTIMATE_CHANGED("onBandwidthEstimateChange"),
+    VIDEO("onVideo");
 
     override fun toString(): String {
       return mName
@@ -340,6 +343,40 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
       reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.BANDWIDTH_ESTIMATE_CHANGED.toString(), bandwidthEstimateData)
 
       lastBandwidthEstimate = player?.bandwidthEstimate
+    }
+
+    if (lastBitrate != player?.averageBitrate || lastDuration != player?.duration) {
+      val onVideoData = Arguments.createMap()
+      val videoData = Arguments.createMap()
+
+      player?.duration?.let { duration ->
+        val parsedDuration = getDuration(duration)
+        if (parsedDuration != null) videoData.putInt("duration", parsedDuration) else videoData.putNull("duration")
+      } ?: run {
+        videoData.putNull("duration")
+      }
+
+      player?.averageBitrate?.let { averageBitrate ->
+        videoData.putInt("bitrate", averageBitrate.toInt())
+      } ?: run {
+        videoData.putNull("bitrate")
+      }
+
+      onVideoData.putMap("videoData", videoData)
+      reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.VIDEO.toString(), onVideoData)
+
+      lastBitrate = player?.averageBitrate
+      lastDuration = player?.duration
+    }
+  }
+
+  private fun getDuration(duration: Long): Int? {
+    val durationInSeconds = TimeUnit.MILLISECONDS.toSeconds(duration).toInt()
+
+    return if (durationInSeconds == 0) {
+      null
+    } else {
+      durationInSeconds
     }
   }
 

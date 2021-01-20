@@ -32,6 +32,10 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
     private var oldQualities: [IVSQuality] = [];
     private var lastLiveLatency: Double?;
     private var lastBandwidthEstimate: Int?;
+    private var lastBitrate: Int?;
+    private var lastDuration: CMTime?;
+    private var lastFramesDropped: Int?;
+    private var lastFramesDecoded: Int?;
 
     override init(frame: CGRect) {
         self.muted = player.muted
@@ -219,15 +223,25 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
                 self?.lastBandwidthEstimate = self?.player.bandwidthEstimate
             }
 
-            if self?.onVideo != nil {
+            if
+                self?.lastBitrate != self?.player.videoBitrate ||
+                self?.lastDuration != self?.player.duration ||
+                self?.lastFramesDecoded != self?.player.videoFramesDecoded ||
+                self?.lastFramesDropped != self?.player.videoFramesDropped ||
+                self?.onVideo != nil {
                 let videoData: [String: Any] = [
                     "duration": self?.getDuration(self!.player.duration) ?? NSNull(),
                     "bitrate": self?.player.videoBitrate ?? NSNull(),
                     "framesDropped": self?.player.videoFramesDropped ?? NSNull(),
                     "framesDecoded": self?.player.videoFramesDecoded ?? NSNull()
                 ]
-                
+
                 self?.onVideo?(["videoData": videoData])
+
+                self?.lastBitrate = self?.player.videoBitrate
+                self?.lastDuration = self?.player.duration
+                self?.lastFramesDropped = self?.player.videoFramesDropped
+                self?.lastFramesDecoded = self?.player.videoFramesDecoded
             }
         }
     }
