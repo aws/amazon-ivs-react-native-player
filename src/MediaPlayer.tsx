@@ -13,23 +13,15 @@ import {
   View,
   NativeSyntheticEvent,
 } from 'react-native';
-import { LogLevel } from './enums';
+import type { LogLevel } from './enums';
 import type {
   Quality,
   PlayerData,
   TextCue,
   TextMetadataCue,
   VideoData,
+  MediaPlayerRef,
 } from './types';
-export { PlayerState } from './enums';
-
-export type MediaPlayerRef = {
-  play: () => void;
-  pause: () => void;
-  seekTo: (position: number) => void;
-};
-
-export { LogLevel };
 
 type MediaPlayerProps = {
   style?: ViewStyle;

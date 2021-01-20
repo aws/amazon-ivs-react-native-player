@@ -34,3 +34,9 @@ export type TextMetadataCue = {
   text: string;
   textDescription: string;
 };
+
+export type MediaPlayerRef = {
+  play: () => void;
+  pause: () => void;
+  seekTo: (position: number) => void;
+};
