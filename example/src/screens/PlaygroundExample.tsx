@@ -1,12 +1,12 @@
 import * as React from 'react';
-import { useState, useMemo, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Dimensions, StyleSheet, View } from 'react-native';
 import MediaPlayer, {
   MediaPlayerRef,
   LogLevel,
   PlayerState,
 } from 'react-native-amazon-ivs';
-import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import BottomSheet from 'reanimated-bottom-sheet';
 import {
   IconButton,
   Title,
@@ -95,9 +95,9 @@ export default function PlaygroundExample() {
   const handleToggleSettings = React.useCallback(() => {
     setOpenSheet((prev) => {
       if (prev) {
-        sheetRef?.current?.collapse();
+        sheetRef?.current?.snapTo(1);
       } else {
-        sheetRef?.current?.expand();
+        sheetRef?.current?.snapTo(0);
       }
 
       return !prev;
@@ -107,8 +107,6 @@ export default function PlaygroundExample() {
   const slidingCompleteHandler = (value: number) => {
     mediaPlayerRef?.current?.seekTo(value);
   };
-
-  const snapPoints = useMemo(() => [0, '80%'], []);
 
   return (
     <View style={styles.container}>
@@ -230,10 +228,19 @@ export default function PlaygroundExample() {
           </SafeAreaView>
         </>
       ) : null}
-      <BottomSheet ref={sheetRef} index={0} snapPoints={snapPoints}>
-        <BottomSheetScrollView>
-          <View style={styles.settings}>
+      <BottomSheet
+        ref={sheetRef}
+        initialSnap={1}
+        snapPoints={['80%', 0]}
+        enabledContentTapInteraction={false}
+        onCloseEnd={() => setOpenSheet(false)}
+        renderHeader={() => (
+          <View style={styles.settingsHeader}>
             <Title style={styles.settingsTitle}>Settings</Title>
+          </View>
+        )}
+        renderContent={() => (
+          <View style={styles.settings}>
             <SettingsInputItem
               label="url"
               onChangeText={setUrl}
@@ -321,8 +328,8 @@ export default function PlaygroundExample() {
               </Button>
             </SettingsItem>
           </View>
-        </BottomSheetScrollView>
-      </BottomSheet>
+        )}
+      />
     </View>
   );
 }
@@ -368,6 +375,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     alignItems: 'flex-start',
+    backgroundColor: '#fff',
+  },
+  settingsHeader: {
+    backgroundColor: '#fff',
+    alignItems: 'center',
   },
   positionText: {
     color: 'white',
