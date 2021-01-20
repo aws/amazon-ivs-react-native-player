@@ -120,7 +120,6 @@ export default function PlaygroundExample() {
             style={styles.loader}
           />
         ) : null}
-
         <MediaPlayer
           ref={mediaPlayerRef}
           paused={paused}
@@ -185,53 +184,49 @@ export default function PlaygroundExample() {
               onPress={handleToggleSettings}
             />
           </SafeAreaView>
-          <SafeAreaView>
-            <View style={styles.playButtonContainer}>
-              <View style={styles.positionContainer}>
-                <View style={styles.durationsContainer}>
-                  {duration && position !== null ? (
-                    <Text style={styles.positionText}>
-                      {parseSeconds(position ? position : 0)}
-                    </Text>
-                  ) : (
-                    <Text />
-                  )}
-                  {duration ? (
-                    <Text style={styles.positionText}>
-                      {parseSeconds(duration)}
-                    </Text>
-                  ) : null}
-                </View>
-
+          <SafeAreaView style={styles.playButtonContainer}>
+            <View style={styles.positionContainer}>
+              <View style={styles.durationsContainer}>
+                {duration && position !== null ? (
+                  <Text style={styles.positionText}>
+                    {parseSeconds(position ? position : 0)}
+                  </Text>
+                ) : (
+                  <Text />
+                )}
                 {duration ? (
-                  <Slider
-                    minimumValue={0}
-                    maximumValue={duration}
-                    value={positionSlider}
-                    onValueChange={setPosition}
-                    onSlidingComplete={slidingCompleteHandler}
-                    onTouchStart={() => setLockPosition(true)}
-                    onTouchEnd={() => {
-                      setLockPosition(false);
-                      setPositionSlider(position ?? 0);
-                    }}
-                  />
+                  <Text style={styles.positionText}>
+                    {parseSeconds(duration)}
+                  </Text>
                 ) : null}
               </View>
-
-              <IconButton
-                icon={isPlaying ? 'pause' : 'play'}
-                size={40}
-                color="white"
-                onPress={() => {
-                  isPlaying
-                    ? mediaPlayerRef.current?.pause()
-                    : mediaPlayerRef.current?.play();
-                  setIsPlaying((prev) => !prev);
-                }}
-                style={styles.playIcon}
-              />
+              {duration ? (
+                <Slider
+                  minimumValue={0}
+                  maximumValue={duration}
+                  value={positionSlider}
+                  onValueChange={setPosition}
+                  onSlidingComplete={slidingCompleteHandler}
+                  onTouchStart={() => setLockPosition(true)}
+                  onTouchEnd={() => {
+                    setLockPosition(false);
+                    setPositionSlider(position ?? 0);
+                  }}
+                />
+              ) : null}
             </View>
+            <IconButton
+              icon={isPlaying ? 'pause' : 'play'}
+              size={40}
+              color="white"
+              onPress={() => {
+                isPlaying
+                  ? mediaPlayerRef.current?.pause()
+                  : mediaPlayerRef.current?.play();
+                setIsPlaying((prev) => !prev);
+              }}
+              style={styles.playIcon}
+            />
           </SafeAreaView>
         </>
       ) : null}
