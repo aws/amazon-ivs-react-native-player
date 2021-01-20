@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { ScrollView } from 'react-native-gesture-handler';
 import { Button } from 'react-native-paper';
 import type { Quality } from 'src/types';
 
@@ -9,7 +10,7 @@ type Props = {
 };
 
 const QualitiesPicker = ({ quality, qualities, setQuality }: Props) => (
-  <>
+  <ScrollView horizontal>
     <Button
       mode={!quality ? 'contained' : 'outlined'}
       compact
@@ -27,7 +28,7 @@ const QualitiesPicker = ({ quality, qualities, setQuality }: Props) => (
         {qualityOption.name}
       </Button>
     ))}
-  </>
+  </ScrollView>
 );
 
 export default QualitiesPicker;

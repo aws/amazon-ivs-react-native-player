@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Button } from 'react-native-paper';
 import { LogLevel } from 'react-native-amazon-ivs';
+import { ScrollView } from 'react-native-gesture-handler';
 
 type Props = {
   logLevel: LogLevel;
@@ -8,7 +9,7 @@ type Props = {
 };
 
 const LogLevelPicker = ({ logLevel, setLogLevel }: Props) => (
-  <>
+  <ScrollView horizontal>
     <Button
       mode={logLevel === LogLevel.IVSLogLevelDebug ? 'contained' : 'outlined'}
       compact
@@ -37,7 +38,7 @@ const LogLevelPicker = ({ logLevel, setLogLevel }: Props) => (
     >
       Error
     </Button>
-  </>
+  </ScrollView>
 );
 
 export default LogLevelPicker;
