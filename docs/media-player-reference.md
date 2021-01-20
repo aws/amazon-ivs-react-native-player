@@ -1,6 +1,6 @@
 # Media Player component - reference
 
-Media Player components allows setup and interaction with native implementation of Amazon IVS player on iOS and Android.
+Media Player component allows setup and interaction with native implementation of Amazon IVS player on iOS and Android.
 This document contains information about available props, callbacks, and refs.
 
 Amazon IVS documentation:
