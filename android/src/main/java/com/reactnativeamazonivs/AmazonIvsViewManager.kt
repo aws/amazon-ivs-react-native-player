@@ -112,4 +112,9 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>() {
   override fun createViewInstance(reactContext: ThemedReactContext): AmazonIvsView {
     return AmazonIvsView(reactContext)
   }
+
+  override fun onDropViewInstance(view: AmazonIvsView) {
+    super.onDropViewInstance(view)
+    view.cleanup()
+  }
 }

@@ -49,8 +49,8 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
   init {
     playerView = PlayerView(context)
     player = playerView?.player
-
     playerView?.controlsEnabled = false
+    (context as ThemedReactContext).addLifecycleEventListener(this)
 
     playerListener = object : Player.Listener() {
       override fun onStateChanged(state: Player.State) {
@@ -380,11 +380,19 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     }
   }
 
-  override fun onHostResume() {}
+  override fun onHostResume() {
+    play()
+  }
 
-  override fun onHostPause() {}
+  override fun onHostPause() {
+    pause()
+  }
 
   override fun onHostDestroy() {
+    cleanup()
+  }
+
+  fun cleanup() {
     player?.removeListener(playerListener!!)
     player?.release()
     player = null
