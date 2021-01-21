@@ -5,6 +5,7 @@ import MediaPlayer, {
   MediaPlayerRef,
   LogLevel,
   PlayerState,
+  Quality,
 } from 'react-native-amazon-ivs';
 import BottomSheet from 'reanimated-bottom-sheet';
 import {
@@ -20,7 +21,6 @@ import type { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/native';
 import { parseSeconds } from '../helpers';
 import SettingsItem from '../components/SettingsItem';
-import type { Quality } from 'src/types';
 import QualitiesPicker from '../components/QualitiesPicker';
 import SettingsSliderItem from '../components/SettingsSliderItem';
 import LogLevelPicker from '../components/LogLevelPicker';

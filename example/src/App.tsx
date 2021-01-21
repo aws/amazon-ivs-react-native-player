@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Provider, DefaultTheme, Appbar } from 'react-native-paper';
-import PlaygroundExample from './screens/PlaygroundExample';
 import { NavigationContainer } from '@react-navigation/native';
 import {
   createStackNavigator,
@@ -10,6 +9,7 @@ import {
   SafeAreaProvider,
   initialWindowMetrics,
 } from 'react-native-safe-area-context';
+import PlaygroundExample from './screens/PlaygroundExample';
 import Home from './screens/Home';
 import SimpleExample from './screens/SimpleExample';
 import AdvancedExample from './screens/AdvancedExample';

@@ -2,8 +2,8 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { TextInput } from 'react-native-paper';
-import SettingsItem from './SettingsItem';
 import { useDebounce } from '../hooks';
+import SettingsItem from './SettingsItem';
 
 type Props = {
   label: string;

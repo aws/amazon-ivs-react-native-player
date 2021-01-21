@@ -2,10 +2,10 @@ import * as React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Card, Paragraph } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
-import type { RootStackParamList } from '../App';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import { ScrollView } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import type { RootStackParamList } from '../App';
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
 
