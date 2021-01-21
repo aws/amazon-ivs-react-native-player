@@ -17,7 +17,7 @@ function Home() {
       <View style={styles.description}>
         <Paragraph>React Native Amazon IVS Player - examples</Paragraph>
       </View>
-      <ScrollView>
+      <ScrollView style={styles.list}>
         <Card
           style={styles.card}
           onPress={() => {
@@ -63,12 +63,14 @@ function Home() {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 10,
     flex: 1,
   },
   description: {
-    paddingHorizontal: 10,
-    marginBottom: 10,
+    marginTop: 10,
+    paddingHorizontal: 20,
+  },
+  list: {
+    padding: 10,
   },
   card: {
     marginBottom: 10,

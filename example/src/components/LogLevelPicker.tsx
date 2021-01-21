@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Button } from 'react-native-paper';
 import { LogLevel } from 'react-native-amazon-ivs';
-import { ScrollView } from 'react-native-gesture-handler';
+import { StyleSheet, View } from 'react-native';
 
 type Props = {
   logLevel: LogLevel;
@@ -9,8 +9,9 @@ type Props = {
 };
 
 const LogLevelPicker = ({ logLevel, setLogLevel }: Props) => (
-  <ScrollView horizontal>
+  <View style={styles.container}>
     <Button
+      style={styles.button}
       mode={logLevel === LogLevel.IVSLogLevelDebug ? 'contained' : 'outlined'}
       compact
       onPress={() => setLogLevel(LogLevel.IVSLogLevelDebug)}
@@ -18,6 +19,7 @@ const LogLevelPicker = ({ logLevel, setLogLevel }: Props) => (
       Debug
     </Button>
     <Button
+      style={styles.button}
       mode={logLevel === LogLevel.IVSLogLevelInfo ? 'contained' : 'outlined'}
       compact
       onPress={() => setLogLevel(LogLevel.IVSLogLevelInfo)}
@@ -25,6 +27,7 @@ const LogLevelPicker = ({ logLevel, setLogLevel }: Props) => (
       Info
     </Button>
     <Button
+      style={styles.button}
       mode={logLevel === LogLevel.IVSLogLevelWarning ? 'contained' : 'outlined'}
       compact
       onPress={() => setLogLevel(LogLevel.IVSLogLevelWarning)}
@@ -32,13 +35,27 @@ const LogLevelPicker = ({ logLevel, setLogLevel }: Props) => (
       Warning
     </Button>
     <Button
+      style={styles.button}
       mode={logLevel === LogLevel.IVSLogLevelError ? 'contained' : 'outlined'}
       compact
       onPress={() => setLogLevel(LogLevel.IVSLogLevelError)}
     >
       Error
     </Button>
-  </ScrollView>
+  </View>
 );
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    flexShrink: 1,
+  },
+  button: {
+    marginBottom: 5,
+    marginHorizontal: 5,
+    minWidth: 60,
+  },
+});
 
 export default LogLevelPicker;

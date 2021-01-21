@@ -58,7 +58,6 @@ export default function PlaygroundExample() {
   const [buffering, setBuffering] = useState(false);
   const [duration, setDuration] = useState<number | null>(null);
   const [liveLowLatency, setLiveLowLatency] = useState(true);
-  // min - 0.5 max - 2.0
   const [playbackRate, setPlaybackRate] = useState(1);
   const [logLevel, setLogLevel] = useState(LogLevel.IVSLogLevelError);
   const [progressInterval, setProgressInterval] = useState(1);
@@ -174,14 +173,13 @@ export default function PlaygroundExample() {
       </View>
       {orientation === Position.PORTRAIT ? (
         <>
-          <SafeAreaView style={styles.icon}>
-            <IconButton
-              icon="cog"
-              size={25}
-              color="lightgrey"
-              onPress={handleToggleSettings}
-            />
-          </SafeAreaView>
+          <IconButton
+            style={styles.icon}
+            icon="cog"
+            size={25}
+            color="lightgrey"
+            onPress={handleToggleSettings}
+          />
           <SafeAreaView style={styles.playButtonContainer}>
             <View style={styles.positionContainer}>
               <View style={styles.durationsContainer}>
@@ -364,11 +362,8 @@ const styles = StyleSheet.create({
   },
   icon: {
     position: 'absolute',
-    top: 15,
-    left: 0,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
+    top: 5,
+    right: 0,
   },
   settings: {
     padding: 15,
