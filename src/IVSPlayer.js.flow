@@ -37,7 +37,7 @@ declare type Props = {|
   maxBitrate?: number,
   onSeek?: (position: number) => void,
   onData?: (data: PlayerData) => void,
-  onVideo?: (data: VideoData) => void,
+  onVideoStatistics?: (data: VideoData) => void,
   onPlayerStateChange?: (state: number) => void,
   onDurationChange?: (duration: number | null) => void,
   onQualityChange?: (quality: Quality | null) => void,

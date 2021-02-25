@@ -6,7 +6,7 @@ import AmazonIVSPlayer
 class AmazonIvsView: UIView, IVSPlayer.Delegate {
     @objc var onSeek: RCTDirectEventBlock?
     @objc var onData: RCTDirectEventBlock?
-    @objc var onVideo: RCTDirectEventBlock?
+    @objc var onVideoStatistics: RCTDirectEventBlock?
     @objc var onPlayerStateChange: RCTDirectEventBlock?
     @objc var onDurationChange: RCTDirectEventBlock?
     @objc var onQualityChange: RCTDirectEventBlock?
@@ -228,7 +228,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
                 self?.lastDuration != self?.player.duration ||
                 self?.lastFramesDecoded != self?.player.videoFramesDecoded ||
                 self?.lastFramesDropped != self?.player.videoFramesDropped ||
-                self?.onVideo != nil {
+                self?.onVideoStatistics != nil {
                 let videoData: [String: Any] = [
                     "duration": self?.getDuration(self!.player.duration) ?? NSNull(),
                     "bitrate": self?.player.videoBitrate ?? NSNull(),
@@ -236,7 +236,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
                     "framesDecoded": self?.player.videoFramesDecoded ?? NSNull()
                 ]
 
-                self?.onVideo?(["videoData": videoData])
+                self?.onVideoStatistics?(["videoData": videoData])
 
                 self?.lastBitrate = self?.player.videoBitrate
                 self?.lastDuration = self?.player.duration

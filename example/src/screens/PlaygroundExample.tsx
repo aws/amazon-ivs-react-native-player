@@ -166,7 +166,7 @@ export default function PlaygroundExample() {
             console.log('bandwidth estimate', bandwidthEstimate)
           }
           onData={(data) => setQualities(data.qualities)}
-          onVideo={(video) => console.log('onVideo', video)}
+          onVideoStatistics={(video) => console.log('onVideoStatistics', video)}
           onError={(error) => console.log('error', error)}
           onTimePoint={(timePoint) => console.log('time point', timePoint)}
         />

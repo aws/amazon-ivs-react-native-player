@@ -42,7 +42,9 @@ type IVSPlayerProps = {
   maxBitrate?: number;
   onSeek?(event: NativeSyntheticEvent<{ position: number }>): void;
   onData?(event: NativeSyntheticEvent<{ playerData: PlayerData }>): void;
-  onVideo?(event: NativeSyntheticEvent<{ videoData: VideoData }>): void;
+  onVideoStatistics?(
+    event: NativeSyntheticEvent<{ videoData: VideoData }>
+  ): void;
   onPlayerStateChange?(event: NativeSyntheticEvent<{ state: number }>): void;
   onDurationChange?(
     event: NativeSyntheticEvent<{ duration: number | null }>
@@ -90,7 +92,7 @@ type Props = {
   maxBitrate?: number;
   onSeek?(position: number): void;
   onData?(data: PlayerData): void;
-  onVideo?(data: VideoData): void;
+  onVideoStatistics?(data: VideoData): void;
   onPlayerStateChange?(state: number): void;
   onDurationChange?(duration: number | null): void;
   onQualityChange?(quality: Quality | null): void;
@@ -128,7 +130,7 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
       maxBitrate,
       onSeek,
       onData,
-      onVideo,
+      onVideoStatistics,
       onPlayerStateChange,
       onDurationChange,
       onQualityChange,
@@ -255,11 +257,11 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
       onTextCue?.(textCue);
     };
 
-    const onVideoHandler = (
+    const onVideoStatisticsHandler = (
       event: NativeSyntheticEvent<{ videoData: VideoData }>
     ) => {
       const { videoData } = event.nativeEvent;
-      onVideo?.(videoData);
+      onVideoStatistics?.(videoData);
     };
 
     const onTextMetadataCueHandler = (
@@ -307,7 +309,9 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
           breakpoints={breakpoints}
           initialBitrate={initialBitrate}
           maxBitrate={maxBitrate}
-          onVideo={onVideo ? onVideoHandler : undefined}
+          onVideoStatistics={
+            onVideoStatistics ? onVideoStatisticsHandler : undefined
+          }
           onData={onDataHandler}
           onSeek={onSeekHandler}
           onQualityChange={onQualityChangeHandler}

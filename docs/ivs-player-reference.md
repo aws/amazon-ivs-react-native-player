@@ -165,7 +165,7 @@ Callback that returns qualities, version, and sessionId, when new data is presen
 
 type: `({ qualities: Quality, version: string, sessionId: string }) => void`
 
-### onVideo _(optional)_
+### onVideoStatistics _(optional)_
 
 Callback that return changes in duration, bitrate, framesDropped, and framesDecoded.
 Duration returns null if no stream is loaded or the stream length is infinite or unknown.

@@ -39,7 +39,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     DATA("onData"),
     LIVE_LATENCY_CHANGED("onLiveLatencyChange"),
     BANDWIDTH_ESTIMATE_CHANGED("onBandwidthEstimateChange"),
-    VIDEO("onVideo");
+    VIDEO_STATISTICS("onVideoStatistics");
 
     override fun toString(): String {
       return mName
@@ -363,7 +363,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
       }
 
       onVideoData.putMap("videoData", videoData)
-      reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.VIDEO.toString(), onVideoData)
+      reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.VIDEO_STATISTICS.toString(), onVideoData)
 
       lastBitrate = player?.averageBitrate
       lastDuration = player?.duration
