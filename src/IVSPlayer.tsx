@@ -20,10 +20,10 @@ import type {
   TextCue,
   TextMetadataCue,
   VideoData,
-  MediaPlayerRef,
+  IVSPlayerRef,
 } from './types';
 
-type MediaPlayerProps = {
+type IVSPlayerProps = {
   style?: ViewStyle;
   ref: any;
   muted?: boolean;
@@ -68,7 +68,7 @@ type MediaPlayerProps = {
 
 const VIEW_NAME = 'AmazonIvs';
 
-const MediaPlayer = requireNativeComponent<MediaPlayerProps>(VIEW_NAME);
+const IVSPlayer = requireNativeComponent<IVSPlayerProps>(VIEW_NAME);
 
 type Props = {
   style?: ViewStyle;
@@ -106,7 +106,7 @@ type Props = {
   onTimePoint?(position: number): void;
 };
 
-const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
+const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
   (
     {
       style,
@@ -290,7 +290,7 @@ const PlayerContainer = React.forwardRef<MediaPlayerRef, Props>(
 
     return (
       <View style={[styles.container, style]} ref={ref as any}>
-        <MediaPlayer
+        <IVSPlayer
           muted={muted}
           looping={looping}
           liveLowLatency={liveLowLatency}
@@ -344,4 +344,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PlayerContainer;
+export default IVSPlayerContainer;

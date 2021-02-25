@@ -35,7 +35,7 @@ export type TextMetadataCue = {
   textDescription: string;
 };
 
-export type MediaPlayerRef = {
+export type IVSPlayerRef = {
   play: () => void;
   pause: () => void;
   seekTo: (position: number) => void;

@@ -19,23 +19,23 @@ pod install
 ## Usage
 
 ```tsx
-import MediaPlayer from 'react-native-amazon-ivs';
+import IVSPlayer from 'react-native-amazon-ivs';
 
 const URL = 'https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8';
 
 function App() {
-  return <MediaPlayer streamUrl={URL} />
+  return <IVSPlayer streamUrl={URL} />;
 }
 ```
 
 A more detailed guide about usage can be found [here](./docs/usage-guide.md)
 
-## MediaPlayer component
+## IVSPlayer component
 
-`MediaPlayer` is a component that can render a video stream based on the passed URL.
+`IVSPlayer` is a component that can render a video stream based on the passed URL.
 
-- [Props documentation](./docs/media-player-reference.md#props)
-- [Ref methods documentation](./docs/media-player-reference.md#ref-methods)
+- [Props documentation](./docs/ivs-player-reference.md#props)
+- [Ref methods documentation](./docs/ivs-player-reference.md#ref-methods)
 
 ## Contributing
 

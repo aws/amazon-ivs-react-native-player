@@ -1,6 +1,6 @@
-# Media Player component - reference
+# IVS Player component - reference
 
-Media Player component allows setup and interaction with native implementation of Amazon IVS player on iOS and Android.
+IVS Player component allows setup and interaction with native implementation of Amazon IVS player on iOS and Android.
 This document contains information about available props, callbacks, and refs.
 
 Amazon IVS documentation:
@@ -15,12 +15,12 @@ https://aws.github.io/amazon-ivs-player-docs/1.2.0/ios/index.html
 Web reference:
 https://aws.github.io/amazon-ivs-player-docs/1.2.0/web/
 
-```ts
-import MediaPlayer from 'react-native-amazon-ivs';
+```tsx
+import IVSPlayer from 'react-native-amazon-ivs';
 
 function App() {
   return (
-    <MediaPlayer streamUrl="https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8" />
+    <IVSPlayer streamUrl="https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8" />
   );
 }
 ```
@@ -29,7 +29,7 @@ function App() {
 
 ### style _(optional)_
 
-Style of MediaPlayer wrapper.
+Style of IVSPlayer wrapper.
 
 default: `undefined`
 type: `StyleProp<ViewStyle>`
@@ -210,7 +210,7 @@ type: `number`
 
 Callback that returns current player position. Only called when position is included in `breakpoints` prop array.
 
-!!!WARNING!!! You need to specify `breakpoint` for this callback to be called called. !!!WARNING!!!
+**!!!WARNING!!!** You need to specify `breakpoints` for this callback to be called. **!!!WARNING!!!**
 
 iOS only
 type: `(position: number) => number`
@@ -262,18 +262,18 @@ A reference method that will play the stream/video if it is stopped. For a strea
 type: `() => void`
 
 ```tsx
-import MediaPlayer from 'react-native-amazon-ivs';
+import IVSPlayer, { IVSPlayerRef } from 'react-native-amazon-ivs';
 
 const URL = 'https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8';
 
 function App() {
-  const mediaPlayerRef = React.useRef<MediaPlayerRef>(null);
+  const mediaPlayerRef = React.useRef<IVSPlayerRef>(null);
 
   const handlePlay = () => { mediaPlayerRef.current?.play() };
 
   return (
     <>
-      <MediaPlayer ref={mediaPlayerRef} streamUrl={URL} />
+      <IVSPlayer ref={mediaPlayerRef} streamUrl={URL} />
       <Button onPress={handlePlay} title="Play">
     </>
   );
@@ -287,18 +287,18 @@ A reference method that will pause the stream/video if it is playing. For a stre
 type: `() => void`
 
 ```tsx
-import MediaPlayer from 'react-native-amazon-ivs';
+import IVSPlayer, { IVSPlayerRef } from 'react-native-amazon-ivs';
 
 const URL = 'https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8';
 
 function App() {
-  const mediaPlayerRef = React.useRef<MediaPlayerRef>(null);
+  const mediaPlayerRef = React.useRef<IVSPlayerRef>(null);
 
   const handlePause = () => { mediaPlayerRef.current?.pause() };
 
   return (
     <>
-      <MediaPlayer ref={mediaPlayerRef} streamUrl={URL} />
+      <IVSPlayer ref={mediaPlayerRef} streamUrl={URL} />
       <Button onPress={handlePause} title="Pause">
     </>
   );
@@ -312,18 +312,18 @@ Seeks to the given time in the stream and begins playing at that position if `pl
 type: `(position: number, completionHandler: function?) => void`
 
 ```tsx
-import MediaPlayer from 'react-native-amazon-ivs';
+import IVSPlayer, { IVSPlayerRef } from 'react-native-amazon-ivs';
 
 const URL = 'https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8';
 
 function App() {
-  const mediaPlayerRef = React.useRef<MediaPlayerRef>(null);
+  const mediaPlayerRef = React.useRef<IVSPlayerRef>(null);
 
   const handleSeekTo = () => { mediaPlayerRef.current?.seekTo({ position: 15 }) };
 
   return (
     <>
-      <MediaPlayer ref={mediaPlayerRef} streamUrl={URL} />
+      <IVSPlayer ref={mediaPlayerRef} streamUrl={URL} />
       <Button onPress={handleSeekTo} title="Pause">
     </>
   );

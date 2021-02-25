@@ -7,5 +7,5 @@
 
 declare export * from './enums'
 declare export * from './types'
-import MediaPlayer from './MediaPlayer';
-declare export default typeof MediaPlayer;
+import IVSPlayer from './IVSPlayer';
+declare export default typeof IVSPlayer;

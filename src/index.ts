@@ -1,5 +1,5 @@
 export * from './enums';
 export * from './types';
-import MediaPlayer from './MediaPlayer';
+import IVSPlayer from './IVSPlayer';
 
-export default MediaPlayer;
+export default IVSPlayer;

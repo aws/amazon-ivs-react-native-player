@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { useState, useCallback, useEffect } from 'react';
 import { Dimensions, StyleSheet, View } from 'react-native';
-import MediaPlayer, {
-  MediaPlayerRef,
+import IVSPlayer, {
+  IVSPlayerRef,
   LogLevel,
   PlayerState,
   Quality,
@@ -42,7 +42,7 @@ type PlaygroundScreenNavigationProp = StackNavigationProp<
 export default function PlaygroundExample() {
   const { setOptions } = useNavigation<PlaygroundScreenNavigationProp>();
   const sheetRef = React.useRef<BottomSheet>(null);
-  const mediaPlayerRef = React.useRef<MediaPlayerRef>(null);
+  const mediaPlayerRef = React.useRef<IVSPlayerRef>(null);
   const [autoplay, setAutoplay] = useState(true);
   const [isPlaying, setIsPlaying] = useState(autoplay);
   const [paused, setPaused] = useState(false);
@@ -117,7 +117,7 @@ export default function PlaygroundExample() {
             style={styles.loader}
           />
         ) : null}
-        <MediaPlayer
+        <IVSPlayer
           ref={mediaPlayerRef}
           paused={paused}
           muted={muted}

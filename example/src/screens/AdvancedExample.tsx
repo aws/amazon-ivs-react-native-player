@@ -1,9 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Dimensions, StyleSheet, View } from 'react-native';
-import MediaPlayer, {
-  MediaPlayerRef,
-  PlayerState,
-} from 'react-native-amazon-ivs';
+import IVSPlayer, { IVSPlayerRef, PlayerState } from 'react-native-amazon-ivs';
 import { IconButton, ActivityIndicator, Text } from 'react-native-paper';
 import Slider from '@react-native-community/slider';
 import type { StackNavigationProp } from '@react-navigation/stack';
@@ -20,7 +17,7 @@ type AdvancedScreenNavigationProp = StackNavigationProp<
 
 export default function AdvancedExample() {
   const { setOptions } = useNavigation<AdvancedScreenNavigationProp>();
-  const mediaPlayerRef = React.useRef<MediaPlayerRef>(null);
+  const mediaPlayerRef = React.useRef<IVSPlayerRef>(null);
   const [paused, setPaused] = useState(false);
   const [buffering, setBuffering] = useState(false);
   const [duration, setDuration] = useState<number | null>(null);
@@ -65,7 +62,7 @@ export default function AdvancedExample() {
             style={styles.loader}
           />
         ) : null}
-        <MediaPlayer
+        <IVSPlayer
           ref={mediaPlayerRef}
           autoplay={true}
           paused={paused}
