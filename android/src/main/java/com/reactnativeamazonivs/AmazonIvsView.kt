@@ -126,10 +126,6 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     player?.playbackRate = playbackRate.toFloat()
   }
 
-  fun setLooping(looping: Boolean) {
-    player?.setLooping(looping)
-  }
-
   fun setLogLevel(logLevel: Double) {
     when (logLevel.toInt()) {
       0 -> player?.setLogLevel(Player.LogLevel.DEBUG)
@@ -183,10 +179,6 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     data.putMap("textCue", textCue)
 
     reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.CUE.toString(), data)
-  }
-
-  fun setInitialBitrate(bitrate: Double) {
-    player?.setAutoInitialBitrate(bitrate.toInt())
   }
 
   fun setMaxBitrate(bitrate: Double) {

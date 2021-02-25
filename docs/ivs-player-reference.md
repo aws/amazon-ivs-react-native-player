@@ -48,13 +48,6 @@ Opening a player or specifying new `streamUrl` will make it automatically play, 
 default: `true`
 type: `boolean`
 
-### looping _(optional)_
-
-Only works with videos. When turned on it will loop the video instead of stopping at the end.
-
-default: `false`
-type: `boolean`
-
 ### logLevel _(optional)_
 
 Specifies level of logging information from player to the console.
@@ -112,13 +105,6 @@ Automatically select video quality based on the quality of the internet connecti
 
 default: `true`
 type: `boolean`
-
-### initialBitrate _(optional)_
-
-Sets the initial starting bitrate when using `autoQualityMode`. This determines the initial quality for an adaptive stream, when no bandwidth estimate value has been determined.
-
-Android only
-type: `number`
 
 ### maxBitrate _(optional)_
 

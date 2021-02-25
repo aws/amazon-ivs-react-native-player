@@ -27,7 +27,6 @@ type IVSPlayerProps = {
   style?: ViewStyle;
   ref: any;
   muted?: boolean;
-  looping?: boolean;
   liveLowLatency?: boolean;
   playbackRate?: number;
   streamUrl?: string;
@@ -38,7 +37,6 @@ type IVSPlayerProps = {
   autoMaxQuality?: Quality | null;
   autoQualityMode?: boolean;
   breakpoints?: number[];
-  initialBitrate?: number;
   maxBitrate?: number;
   onSeek?(event: NativeSyntheticEvent<{ position: number }>): void;
   onData?(event: NativeSyntheticEvent<{ playerData: PlayerData }>): void;
@@ -76,7 +74,6 @@ type Props = {
   style?: ViewStyle;
   paused?: boolean;
   muted?: boolean;
-  looping?: boolean;
   autoplay?: boolean;
   streamUrl?: string;
   liveLowLatency?: boolean;
@@ -88,7 +85,6 @@ type Props = {
   autoMaxQuality?: Quality | null;
   autoQualityMode?: boolean;
   breakpoints?: number[];
-  initialBitrate?: number;
   maxBitrate?: number;
   onSeek?(position: number): void;
   onData?(data: PlayerData): void;
@@ -115,7 +111,6 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
       streamUrl,
       paused,
       muted,
-      looping,
       autoplay = true,
       liveLowLatency,
       playbackRate,
@@ -126,7 +121,6 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
       autoMaxQuality,
       autoQualityMode,
       breakpoints = [],
-      initialBitrate,
       maxBitrate,
       onSeek,
       onData,
@@ -294,7 +288,6 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
       <View style={[styles.container, style]} ref={ref as any}>
         <IVSPlayer
           muted={muted}
-          looping={looping}
           liveLowLatency={liveLowLatency}
           style={styles.mediaPlayer}
           ref={mediaPlayerRef}
@@ -307,7 +300,6 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
           autoMaxQuality={autoMaxQuality}
           autoQualityMode={autoQualityMode}
           breakpoints={breakpoints}
-          initialBitrate={initialBitrate}
           maxBitrate={maxBitrate}
           onVideoStatistics={
             onVideoStatistics ? onVideoStatisticsHandler : undefined

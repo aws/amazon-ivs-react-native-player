@@ -39,7 +39,6 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
 
     override init(frame: CGRect) {
         self.muted = player.muted
-        self.looping = player.looping
         self.liveLowLatency = player.isLiveLowLatency
         self.autoQualityMode = player.autoQualityMode
         self.playbackRate = NSNumber(value: player.playbackRate)
@@ -93,12 +92,6 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
     @objc var playbackRate: NSNumber {
         didSet {
             player.playbackRate = Float(truncating: playbackRate)
-        }
-    }
-
-    @objc var looping: Bool {
-        didSet {
-            player.looping = looping
         }
     }
 

@@ -54,7 +54,6 @@ export default function PlaygroundExample() {
   const [autoMaxQuality, setAutoMaxQuality] = useState<Quality | null>(null);
   const [qualities, setQualities] = useState<Quality[]>([]);
   const [autoQualityMode, setAutoQualityMode] = useState(true);
-  const [looping, setLooping] = useState(false);
   const [buffering, setBuffering] = useState(false);
   const [duration, setDuration] = useState<number | null>(null);
   const [liveLowLatency, setLiveLowLatency] = useState(true);
@@ -121,7 +120,6 @@ export default function PlaygroundExample() {
           ref={mediaPlayerRef}
           paused={paused}
           muted={muted}
-          looping={looping}
           autoplay={autoplay}
           liveLowLatency={liveLowLatency}
           streamUrl={url}
@@ -276,11 +274,6 @@ export default function PlaygroundExample() {
               label="Muted"
               value={muted}
               onValueChange={setMuted}
-            />
-            <SettingsSwitchItem
-              label="Looping"
-              onValueChange={setLooping}
-              value={looping}
             />
             <SettingsSwitchItem
               label="Autoplay"

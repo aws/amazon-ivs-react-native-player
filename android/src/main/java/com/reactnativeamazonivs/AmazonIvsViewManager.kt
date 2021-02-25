@@ -74,11 +74,6 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>() {
     view.setPlaybackRate(playbackRate)
   }
 
-  @ReactProp(name = "looping")
-  fun setLooping(view: AmazonIvsView, looping: Boolean) {
-    view.setLooping(looping)
-  }
-
   @ReactProp(name = "logLevel")
   fun setLogLevel(view: AmazonIvsView, logLevel: Double) {
     view.setLogLevel(logLevel)
@@ -97,11 +92,6 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>() {
   @ReactProp(name = "autoQualityMode")
   fun setAutoQualityMode(view: AmazonIvsView, autoQualityMode: Boolean) {
     view.setAutoQualityMode(autoQualityMode)
-  }
-
-  @ReactProp(name = "initialBitrate")
-  fun setInitialBitrate(view: AmazonIvsView, bitrate: Double) {
-    view.setInitialBitrate(bitrate)
   }
 
   @ReactProp(name = "maxBitrate")
