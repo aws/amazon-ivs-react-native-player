@@ -142,7 +142,7 @@ export default function PlaygroundExample() {
           onQualityChange={(newQuality) =>
             console.log('quality changed', newQuality)
           }
-          onBuffer={() => setBuffering(true)}
+          onRebuffering={() => setBuffering(true)}
           onLoadStart={() => console.log('loadStart')}
           onLoad={(loadedDuration) =>
             console.log('load ', loadedDuration, ' - duration')

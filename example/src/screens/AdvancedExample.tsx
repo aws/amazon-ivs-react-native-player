@@ -68,7 +68,7 @@ export default function AdvancedExample() {
           paused={paused}
           streamUrl={URL}
           onDurationChange={setDuration}
-          onBuffer={() => setBuffering(true)}
+          onRebuffering={() => setBuffering(true)}
           onPlayerStateChange={(state) => {
             if (state === PlayerState.Playing || state === PlayerState.Idle) {
               setBuffering(false);

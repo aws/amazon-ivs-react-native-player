@@ -34,7 +34,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     METADATA_CUE("onTextMetadataCue"),
     LOAD("onLoad"),
     LOAD_START("onLoadStart"),
-    REBUFFER("onBuffer"),
+    REBUFFERING("onRebuffering"),
     SEEK("onSeek"),
     DATA("onData"),
     LIVE_LATENCY_CHANGED("onLiveLatencyChange"),
@@ -62,7 +62,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
       }
 
       override fun onRebuffering() {
-        onBuffer()
+        onRebuffering()
       }
 
       override fun onSeekCompleted(position: Long) {
@@ -302,9 +302,9 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.QUALITY_CHANGED.toString(), data)
   }
 
-  fun onBuffer() {
+  fun onRebuffering() {
     val reactContext = context as ReactContext
-    reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.REBUFFER.toString(), Arguments.createMap())
+    reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.REBUFFERING.toString(), Arguments.createMap())
   }
 
   private fun intervalHandler() {

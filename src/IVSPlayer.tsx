@@ -48,7 +48,7 @@ type IVSPlayerProps = {
     event: NativeSyntheticEvent<{ duration: number | null }>
   ): void;
   onQualityChange?(event: NativeSyntheticEvent<{ quality: Quality }>): void;
-  onBuffer?(): void;
+  onRebuffering?(): void;
   onLoadStart?(): void;
   onLoad?(event: NativeSyntheticEvent<{ duration: number | null }>): void;
   onLiveLatencyChange?(
@@ -92,7 +92,7 @@ type Props = {
   onPlayerStateChange?(state: number): void;
   onDurationChange?(duration: number | null): void;
   onQualityChange?(quality: Quality | null): void;
-  onBuffer?(): void;
+  onRebuffering?(): void;
   onLoadStart?(): void;
   onLoad?(duration: number | null): void;
   onLiveLatencyChange?(liveLatency: number): void;
@@ -128,7 +128,7 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
       onPlayerStateChange,
       onDurationChange,
       onQualityChange,
-      onBuffer,
+      onRebuffering,
       onLoadStart,
       onLoad,
       onLiveLatencyChange,
@@ -309,7 +309,7 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
           onQualityChange={onQualityChangeHandler}
           onPlayerStateChange={onPlayerStateChangeHandler}
           onDurationChange={onDurationChangeHandler}
-          onBuffer={onBuffer}
+          onRebuffering={onRebuffering}
           onLoadStart={onLoadStart}
           onLoad={onLoadHandler}
           onTextCue={onTextCueHandler}

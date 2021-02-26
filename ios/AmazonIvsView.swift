@@ -10,7 +10,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
     @objc var onPlayerStateChange: RCTDirectEventBlock?
     @objc var onDurationChange: RCTDirectEventBlock?
     @objc var onQualityChange: RCTDirectEventBlock?
-    @objc var onBuffer: RCTDirectEventBlock?
+    @objc var onRebuffering: RCTDirectEventBlock?
     @objc var onLoadStart: RCTDirectEventBlock?
     @objc var onLoad: RCTDirectEventBlock?
     @objc var onTextCue: RCTDirectEventBlock?
@@ -392,7 +392,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
     }
 
     func playerWillRebuffer(_ player: IVSPlayer) {
-        onBuffer?(["": NSNull()])
+        onRebuffering?(["": NSNull()])
     }
 
     func player(_ player: IVSPlayer, didFailWithError error: Error) {

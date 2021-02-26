@@ -120,7 +120,7 @@ Only works with live streams.
 
 type: `boolean`
 
-### onBuffer _(optional)_
+### onRebuffering _(optional)_
 
 Indicates that the player is buffering from a previous PLAYING state.
 Excludes user actions such as seeking, starting or resuming the stream.
