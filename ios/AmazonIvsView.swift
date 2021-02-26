@@ -366,7 +366,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
     }
 
     func player(_ player: IVSPlayer, didOutputCue cue: IVSCue) {
-        if let cue = cue as? IVSTextCue, onTextCue != nil {
+        if let cue = cue as? IVSTextCue {
             let textCue: [String: Any] = [
                 "type": cue.type.rawValue,
                 "line": cue.line,
@@ -376,10 +376,10 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
                 "textAlignment": cue.textAlignment
             ]
 
-            onTextCue!(["textCue": textCue])
+            onTextCue?(["textCue": textCue])
         }
 
-        if let cue = cue as? IVSTextMetadataCue, onTextMetadataCue != nil {
+        if let cue = cue as? IVSTextMetadataCue {
             let textMetadataCue = [
                 "type": cue.type.rawValue,
                 "text": cue.text,
@@ -387,7 +387,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
 
             ]
 
-            onTextMetadataCue!(["textMetadataCue": textMetadataCue])
+            onTextMetadataCue?(["textMetadataCue": textMetadataCue])
         }
     }
 
