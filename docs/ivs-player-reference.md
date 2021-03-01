@@ -148,7 +148,7 @@ type: `({ qualities: Quality, version: string, sessionId: string }) => void`
 ### onVideoStatistics _(optional)_
 
 Callback that return changes in duration, bitrate, framesDropped, and framesDecoded.
-Duration returns null if no stream is loaded or the stream length is infinite or unknown.
+Duration returns null if no stream is loaded. It returns Infinity if stream length is infinite or unknown.
 framesDropped and framesDecoded are only available on iOS.
 
 type: `({ duration: number | null, bitrate: number, framesDropped: number, framesDecoded: number }) => void`
@@ -217,7 +217,7 @@ type: [`(textMetadataCue: TextMetadataCue => void)`](./types.md#TextMetadataCue)
 ### onDurationChange _(optional)_
 
 Callback that returns changes to the duration of video/stream.
-This returns null if no stream is loaded or the stream length is infinite or unknown.
+This returns null if no stream is loaded. It returns Infinity if stream length is infinite or unknown.
 
 type: `(duration: number | null) => void`
 

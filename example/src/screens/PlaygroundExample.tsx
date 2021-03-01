@@ -178,20 +178,20 @@ export default function PlaygroundExample() {
           <SafeAreaView style={styles.playButtonContainer}>
             <View style={styles.positionContainer}>
               <View style={styles.durationsContainer}>
-                {duration && position !== null ? (
+                {duration && duration !== Infinity && position !== null ? (
                   <Text style={styles.positionText}>
                     {parseSeconds(position ? position : 0)}
                   </Text>
                 ) : (
                   <Text />
                 )}
-                {duration ? (
+                {duration && duration !== Infinity ? (
                   <Text style={styles.positionText}>
                     {parseSeconds(duration)}
                   </Text>
                 ) : null}
               </View>
-              {duration ? (
+              {duration && duration !== Infinity ? (
                 <Slider
                   minimumValue={0}
                   maximumValue={duration}

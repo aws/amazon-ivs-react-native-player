@@ -9,6 +9,7 @@ import com.facebook.react.bridge.ReactContext
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.events.RCTEventEmitter
+import java.lang.Double.POSITIVE_INFINITY
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.timerTask
@@ -200,7 +201,8 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
   fun onDurationChange(duration: Long) {
     val reactContext = context as ReactContext
     val data = Arguments.createMap()
-    data.putInt("duration", TimeUnit.MILLISECONDS.toSeconds(duration).toInt())
+    val parsedDuration = getDuration(duration);
+    data.putDouble("duration", parsedDuration)
 
     reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.DURATION_CHANGED.toString(), data)
   }
@@ -328,7 +330,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
 
       player?.duration?.let { duration ->
         val parsedDuration = getDuration(duration)
-        if (parsedDuration != null) videoData.putInt("duration", parsedDuration) else videoData.putNull("duration")
+        videoData.putDouble("duration", parsedDuration)
       } ?: run {
         videoData.putNull("duration")
       }
@@ -347,13 +349,12 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     }
   }
 
-  private fun getDuration(duration: Long): Int? {
+  private fun getDuration(duration: Long): Double {
     val durationInSeconds = TimeUnit.MILLISECONDS.toSeconds(duration).toInt()
-
     return if (durationInSeconds == 0) {
-      null
+      POSITIVE_INFINITY // live video
     } else {
-      durationInSeconds
+      durationInSeconds.toDouble()
     }
   }
 

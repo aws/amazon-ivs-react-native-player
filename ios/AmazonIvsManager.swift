@@ -20,7 +20,7 @@ class AmazonIvsManager: RCTViewManager {
         }
     }
     
-    @objc func seekTo(_ node: NSNumber, position: NSNumber) {
+    @objc func seekTo(_ node: NSNumber, position: Double) {
         DispatchQueue.main.async {
             let component = self.bridge.uiManager.view(forReactTag: node) as! AmazonIvsView
             component.seek(position: position)

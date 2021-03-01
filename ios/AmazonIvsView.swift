@@ -39,10 +39,10 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
         self.muted = player.muted
         self.liveLowLatency = player.isLiveLowLatency
         self.autoQualityMode = player.autoQualityMode
-        self.playbackRate = NSNumber(value: player.playbackRate)
+        self.playbackRate = Double(player.playbackRate)
         self.logLevel = NSNumber(value: player.logLevel.rawValue)
         self.progressInterval = 1
-        self.volume = NSNumber(value: player.volume)
+        self.volume = Double(player.volume)
         self.breakpoints = []
 
         super.init(frame: frame)
@@ -87,9 +87,9 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
         }
     }
 
-    @objc var playbackRate: NSNumber {
+    @objc var playbackRate: Double {
         didSet {
-            player.playbackRate = Float(truncating: playbackRate)
+            player.playbackRate = Float(playbackRate)
         }
     }
 
@@ -132,11 +132,11 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
         return quality
     }
 
-    private func getDuration(_ duration: CMTime) -> Double? {
+    private func getDuration(_ duration: CMTime) -> Double {
         if duration.isNumeric {
             return duration.seconds;
         } else {
-            return nil
+            return Double.infinity; // live video
         }
     }
     
@@ -148,9 +148,9 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
         }
     }
 
-    @objc var volume: NSNumber {
+    @objc var volume: Double {
         didSet {
-            player.volume = Float(truncating: volume)
+            player.volume = Float(volume)
         }
     }
 
@@ -186,8 +186,8 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
         player.pause()
     }
 
-    @objc func seek(position: NSNumber) {
-        let parsedTime = CMTimeMakeWithSeconds(Float64(truncating: position), preferredTimescale: 1000000)
+    @objc func seek(position: Double) {
+        let parsedTime = CMTimeMakeWithSeconds(position, preferredTimescale: 1000000)
         player.seek(to: parsedTime)
     }
 
@@ -305,7 +305,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
 
         if state == IVSPlayer.State.playing, finishedLoading == false {
             let duration = getDuration(player.duration)
-            onLoad?(["duration": duration ?? NSNull()])
+            onLoad?(["duration": duration ])
             finishedLoading = true
         }
         
@@ -338,7 +338,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
 
     func player(_ player: IVSPlayer, didChangeDuration duration: CMTime) {
         let parsedDuration = getDuration(duration)
-        onDurationChange?(["duration": parsedDuration ?? NSNull()])
+        onDurationChange?(["duration": parsedDuration])
     }
 
     func player(_ player: IVSPlayer, didChangeQuality quality: IVSQuality?) {
