@@ -59,9 +59,6 @@ type IVSPlayerProps = {
     event: NativeSyntheticEvent<{ textMetadataCue: TextMetadataCue }>
   ): void;
   onProgress?(event: NativeSyntheticEvent<{ position: number }>): void;
-  onBandwidthEstimateChange?(
-    event: NativeSyntheticEvent<{ bandwidthEstimate: number }>
-  ): void;
   onError?(event: NativeSyntheticEvent<{ error: string }>): void;
   onTimePoint?(event: NativeSyntheticEvent<{ position: number }>): void;
 };
@@ -99,7 +96,6 @@ type Props = {
   onTextCue?(textCue: TextCue): void;
   onTextMetadataCue?(textMetadataCue: TextMetadataCue): void;
   onProgress?(progress: number): void;
-  onBandwidthEstimateChange?(bandwidthEstimate: number): void;
   onError?(error: string): void;
   onTimePoint?(position: number): void;
 };
@@ -135,7 +131,6 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
       onTextCue,
       onTextMetadataCue,
       onProgress,
-      onBandwidthEstimateChange,
       onError,
       onTimePoint,
     },
@@ -230,13 +225,6 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
       onLiveLatencyChange?.(liveLatency);
     };
 
-    const onBandwidthEstimateChangeHandler = (
-      event: NativeSyntheticEvent<{ bandwidthEstimate: number }>
-    ) => {
-      const { bandwidthEstimate } = event.nativeEvent;
-      onBandwidthEstimateChange?.(bandwidthEstimate);
-    };
-
     const onDataHandler = (
       event: NativeSyntheticEvent<{ playerData: PlayerData }>
     ) => {
@@ -317,11 +305,6 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
           onProgress={onProgressHandler}
           onLiveLatencyChange={
             onLiveLatencyChange ? onLiveLatencyChangeHandler : undefined
-          }
-          onBandwidthEstimateChange={
-            onBandwidthEstimateChange
-              ? onBandwidthEstimateChangeHandler
-              : undefined
           }
           onError={onErrorHandler}
           onTimePoint={onTimePointHandler}

@@ -139,12 +139,6 @@ Callback that return changes in live latency. Value is milliseconds.
 
 type: `(liveLatency: number) => void`
 
-### onBandwidthEstimateChange _(optional)_
-
-Callback that returns changes in bandthwidth estimate.
-
-type: `(bandwithEstimate: number) => void`
-
 ### onData _(optional)_
 
 Callback that returns qualities, version, and sessionId, when new data is present.

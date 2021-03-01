@@ -13,6 +13,6 @@ class AmazonIvsPackage : ReactPackage {
     }
 
     override fun createViewManagers(reactContext: ReactApplicationContext): List<ViewManager<*, *>> {
-      return Arrays.asList<ViewManager<*, *>>(AmazonIvsViewManager())
+      return listOf<ViewManager<*, *>>(AmazonIvsViewManager())
     }
 }

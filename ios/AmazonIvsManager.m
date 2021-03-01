@@ -29,7 +29,6 @@ RCT_EXPORT_VIEW_PROPERTY(onLiveLatencyChange, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onTextCue, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onTextMetadataCue, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onProgress, RCTDirectEventBlock)
-RCT_EXPORT_VIEW_PROPERTY(onBandwidthEstimateChange, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onError, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onTimePoint, RCTDirectEventBlock)
 @end

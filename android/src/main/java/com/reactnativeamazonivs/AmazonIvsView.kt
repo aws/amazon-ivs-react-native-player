@@ -21,7 +21,6 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
 
   var playerObserver: Timer? = null
   private var lastLiveLatency: Long? = null
-  private var lastBandwidthEstimate: Long? = null
   private var lastBitrate: Long? = null
   private var lastDuration: Long? = null
 
@@ -38,7 +37,6 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     SEEK("onSeek"),
     DATA("onData"),
     LIVE_LATENCY_CHANGED("onLiveLatencyChange"),
-    BANDWIDTH_ESTIMATE_CHANGED("onBandwidthEstimateChange"),
     VIDEO_STATISTICS("onVideoStatistics");
 
     override fun toString(): String {
@@ -323,19 +321,6 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
       lastLiveLatency = player?.liveLatency
     }
 
-    if (lastBandwidthEstimate != player?.bandwidthEstimate) {
-      lastBandwidthEstimate
-      val bandwidthEstimateData = Arguments.createMap()
-
-      player?.bandwidthEstimate?.let { bandwidthEstimate ->
-        bandwidthEstimateData.putInt("bandwidthEstimate", bandwidthEstimate.toInt())
-      } ?: run {
-        bandwidthEstimateData.putNull("bandwidthEstimate")
-      }
-      reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.BANDWIDTH_ESTIMATE_CHANGED.toString(), bandwidthEstimateData)
-
-      lastBandwidthEstimate = player?.bandwidthEstimate
-    }
 
     if (lastBitrate != player?.averageBitrate || lastDuration != player?.duration) {
       val onVideoData = Arguments.createMap()

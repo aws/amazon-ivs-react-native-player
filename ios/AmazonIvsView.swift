@@ -15,7 +15,6 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
     @objc var onLoad: RCTDirectEventBlock?
     @objc var onTextCue: RCTDirectEventBlock?
     @objc var onTextMetadataCue: RCTDirectEventBlock?
-    @objc var onBandwidthEstimateChange: RCTDirectEventBlock?
     @objc var onLiveLatencyChange: RCTDirectEventBlock?
     @objc var onProgress: RCTDirectEventBlock?
     @objc var onTimePoint: RCTDirectEventBlock?
@@ -31,7 +30,6 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
     private var timePointObserver: Any?
     private var oldQualities: [IVSQuality] = [];
     private var lastLiveLatency: Double?;
-    private var lastBandwidthEstimate: Int?;
     private var lastBitrate: Int?;
     private var lastDuration: CMTime?;
     private var lastFramesDropped: Int?;
@@ -209,11 +207,6 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
                 }
 
                 self?.lastLiveLatency = self?.player.liveLatency.seconds
-            }
-
-            if self?.lastBandwidthEstimate != self?.player.bandwidthEstimate {
-                self?.onBandwidthEstimateChange?(["bandwidthEstimate": (self?.player.bandwidthEstimate ?? nil) as Any])
-                self?.lastBandwidthEstimate = self?.player.bandwidthEstimate
             }
 
             if

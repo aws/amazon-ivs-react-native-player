@@ -160,9 +160,6 @@ export default function PlaygroundExample() {
               setPositionSlider(newPosition);
             }
           }}
-          onBandwidthEstimateChange={(bandwidthEstimate) =>
-            console.log('bandwidth estimate', bandwidthEstimate)
-          }
           onData={(data) => setQualities(data.qualities)}
           onVideoStatistics={(video) => console.log('onVideoStatistics', video)}
           onError={(error) => console.log('error', error)}

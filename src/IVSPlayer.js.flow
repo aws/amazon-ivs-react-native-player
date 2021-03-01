@@ -46,7 +46,6 @@ declare type Props = {|
   onTextCue?: (textCue: TextCue) => void,
   onTextMetadataCue?: (textMetadataCue: TextMetadataCue) => void,
   onProgress?: (progress: number) => void,
-  onBandwidthEstimateChange?: (bandwidthEstimate: number) => void,
   onError?: (error: string) => void,
   onTimePoint?: (position: number) => void,
 |};
