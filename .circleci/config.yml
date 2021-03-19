@@ -58,7 +58,14 @@ jobs:
           name: Typecheck files
           command: |
             yarn typescript
-
+  test:
+    executor: default
+    steps:
+      - attach_project
+      - run:
+          name: Integration tests
+          command: |
+            yarn test
 workflows:
   build-and-test:
     jobs:
@@ -67,5 +74,8 @@ workflows:
           requires:
             - install-dependencies
       - typescript:
+          requires:
+            - install-dependencies
+      - test:
           requires:
             - install-dependencies

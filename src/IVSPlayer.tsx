@@ -25,6 +25,7 @@ import type {
 
 type IVSPlayerProps = {
   style?: ViewStyle;
+  testID?: string;
   ref: any;
   muted?: boolean;
   liveLowLatency?: boolean;
@@ -275,6 +276,7 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
     return (
       <View style={[styles.container, style]} ref={ref as any}>
         <IVSPlayer
+          testID="IVSPlayer"
           muted={muted}
           liveLowLatency={liveLowLatency}
           style={styles.mediaPlayer}
