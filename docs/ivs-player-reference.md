@@ -176,7 +176,6 @@ type: `() => void`
 
 Callback that returns current player position. Its interval can be configured using `progressInterval` prop.
 
-iOS only
 type: `(position: number) => void`
 
 ### progressInterval _(optional)_

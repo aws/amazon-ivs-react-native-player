@@ -38,7 +38,8 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     SEEK("onSeek"),
     DATA("onData"),
     LIVE_LATENCY_CHANGED("onLiveLatencyChange"),
-    VIDEO_STATISTICS("onVideoStatistics");
+    VIDEO_STATISTICS("onVideoStatistics"),
+    PROGRESS("onProgress");
 
     override fun toString(): String {
       return mName
@@ -61,7 +62,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
       }
 
       override fun onRebuffering() {
-        onRebuffering()
+        onPlayerRebuffering()
       }
 
       override fun onSeekCompleted(position: Long) {
@@ -223,6 +224,14 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.SEEK.toString(), data)
   }
 
+  fun onProgress(position: Long) {
+    val reactContext = context as ReactContext
+    val data = Arguments.createMap()
+    data.putInt("position", TimeUnit.MILLISECONDS.toSeconds(position).toInt())
+
+    reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.PROGRESS.toString(), data)
+  }
+
   private val mLayoutRunnable = Runnable {
     measure(
       MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
@@ -302,7 +311,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.QUALITY_CHANGED.toString(), data)
   }
 
-  fun onRebuffering() {
+  fun onPlayerRebuffering() {
     val reactContext = context as ReactContext
     reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.REBUFFERING.toString(), Arguments.createMap())
   }
@@ -346,6 +355,11 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
 
       lastBitrate = player?.averageBitrate
       lastDuration = player?.duration
+    }
+    player?.position?.let { position ->
+      if (position > 0) {
+        onProgress(position)
+      }
     }
   }
 
