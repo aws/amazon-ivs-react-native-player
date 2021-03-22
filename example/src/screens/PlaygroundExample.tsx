@@ -19,7 +19,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Slider from '@react-native-community/slider';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/native';
-import { parseSeconds } from '../helpers';
+import { parseSecondsToString } from '../helpers';
 import SettingsItem from '../components/SettingsItem';
 import QualitiesPicker from '../components/QualitiesPicker';
 import SettingsSliderItem from '../components/SettingsSliderItem';
@@ -164,63 +164,66 @@ export default function PlaygroundExample() {
           onVideoStatistics={(video) => console.log('onVideoStatistics', video)}
           onError={(error) => console.log('error', error)}
           onTimePoint={(timePoint) => console.log('time point', timePoint)}
-        />
-      </View>
-      {orientation === Position.PORTRAIT ? (
-        <>
-          <IconButton
-            style={styles.icon}
-            icon="cog"
-            size={25}
-            color="lightgrey"
-            onPress={handleToggleSettings}
-          />
-          <SafeAreaView style={styles.playButtonContainer}>
-            <View style={styles.positionContainer}>
-              <View style={styles.durationsContainer}>
-                {duration && duration !== Infinity && position !== null ? (
-                  <Text style={styles.positionText}>
-                    {parseSeconds(position ? position : 0)}
-                  </Text>
-                ) : (
-                  <Text />
-                )}
-                {duration && duration !== Infinity ? (
-                  <Text style={styles.positionText}>
-                    {parseSeconds(duration)}
-                  </Text>
-                ) : null}
-              </View>
-              {duration && duration !== Infinity ? (
-                <Slider
-                  minimumValue={0}
-                  maximumValue={duration}
-                  value={positionSlider}
-                  onValueChange={setPosition}
-                  onSlidingComplete={slidingCompleteHandler}
-                  onTouchStart={() => setLockPosition(true)}
-                  onTouchEnd={() => {
-                    setLockPosition(false);
-                    setPositionSlider(position ?? 0);
+        >
+          {orientation === Position.PORTRAIT ? (
+            <>
+              <IconButton
+                style={styles.icon}
+                icon="cog"
+                size={25}
+                color="lightgrey"
+                onPress={handleToggleSettings}
+              />
+              <SafeAreaView style={styles.playButtonContainer}>
+                <View style={styles.positionContainer}>
+                  <View style={styles.durationsContainer}>
+                    {duration && position !== null ? (
+                      <Text style={styles.positionText}>
+                        {parseSecondsToString(position ? position : 0)}
+                      </Text>
+                    ) : (
+                      <Text />
+                    )}
+                    {duration && duration !== Infinity ? (
+                      <Text style={styles.positionText}>
+                        {parseSecondsToString(duration)}
+                      </Text>
+                    ) : null}
+                  </View>
+                  {duration ? (
+                    <Slider
+                      disabled={!duration || duration === Infinity}
+                      minimumValue={0}
+                      maximumValue={duration === Infinity ? 100 : duration}
+                      value={duration === Infinity ? 100 : positionSlider}
+                      onValueChange={setPosition}
+                      onSlidingComplete={slidingCompleteHandler}
+                      onTouchStart={() => setLockPosition(true)}
+                      onTouchEnd={() => {
+                        setLockPosition(false);
+                        setPositionSlider(position ?? 0);
+                      }}
+                    />
+                  ) : null}
+                </View>
+                <IconButton
+                  icon={isPlaying ? 'pause' : 'play'}
+                  size={40}
+                  color="white"
+                  onPress={() => {
+                    isPlaying
+                      ? mediaPlayerRef.current?.pause()
+                      : mediaPlayerRef.current?.play();
+                    setIsPlaying((prev) => !prev);
                   }}
+                  style={styles.playIcon}
                 />
-              ) : null}
-            </View>
-            <IconButton
-              icon={isPlaying ? 'pause' : 'play'}
-              size={40}
-              color="white"
-              onPress={() => {
-                isPlaying
-                  ? mediaPlayerRef.current?.pause()
-                  : mediaPlayerRef.current?.play();
-                setIsPlaying((prev) => !prev);
-              }}
-              style={styles.playIcon}
-            />
-          </SafeAreaView>
-        </>
-      ) : null}
+              </SafeAreaView>
+            </>
+          ) : null}
+        </IVSPlayer>
+      </View>
+
       <BottomSheet
         ref={sheetRef}
         initialSnap={1}

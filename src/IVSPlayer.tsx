@@ -99,6 +99,7 @@ type Props = {
   onProgress?(progress: number): void;
   onError?(error: string): void;
   onTimePoint?(position: number): void;
+  children?: React.ReactNode;
 };
 
 const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
@@ -134,6 +135,7 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
       onProgress,
       onError,
       onTimePoint,
+      children,
     },
     ref
   ) => {
@@ -311,6 +313,7 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
           onError={onErrorHandler}
           onTimePoint={onTimePointHandler}
         />
+        <View style={styles.children}>{children}</View>
       </View>
     );
   }
@@ -322,6 +325,11 @@ const styles = StyleSheet.create({
   },
   mediaPlayer: {
     flex: 1,
+  },
+  children: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
   },
 });
 

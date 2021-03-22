@@ -27,6 +27,12 @@ function App() {
 
 ## Props
 
+### children _(optional)_
+
+Can be used to display something `absolutely` on top of the video player.
+
+type: `React.ReactNode`
+
 ### style _(optional)_
 
 Style of IVSPlayer wrapper.
