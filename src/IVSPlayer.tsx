@@ -13,7 +13,7 @@ import {
   View,
   NativeSyntheticEvent,
 } from 'react-native';
-import type { LogLevel } from './enums';
+import type { LogLevel, PlayerState } from './enums';
 import type {
   Quality,
   PlayerData,
@@ -44,7 +44,9 @@ type IVSPlayerProps = {
   onVideoStatistics?(
     event: NativeSyntheticEvent<{ videoData: VideoData }>
   ): void;
-  onPlayerStateChange?(event: NativeSyntheticEvent<{ state: number }>): void;
+  onPlayerStateChange?(
+    event: NativeSyntheticEvent<{ state: PlayerState }>
+  ): void;
   onDurationChange?(
     event: NativeSyntheticEvent<{ duration: number | null }>
   ): void;
@@ -87,7 +89,7 @@ type Props = {
   onSeek?(position: number): void;
   onData?(data: PlayerData): void;
   onVideoStatistics?(data: VideoData): void;
-  onPlayerStateChange?(state: number): void;
+  onPlayerStateChange?(state: PlayerState): void;
   onDurationChange?(duration: number | null): void;
   onQualityChange?(quality: Quality | null): void;
   onRebuffering?(): void;

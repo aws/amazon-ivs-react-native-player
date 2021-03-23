@@ -259,6 +259,16 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
         NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: UIApplication.willEnterForegroundNotification, object: nil)
     }
+    
+    private func mapPlayerState(state: IVSPlayer.State) -> String {
+        switch state {
+        case IVSPlayer.State.playing: return "Playing"
+        case IVSPlayer.State.buffering: return "Buffering"
+        case IVSPlayer.State.ready: return "Ready"
+        case IVSPlayer.State.idle: return "Idle"
+        case IVSPlayer.State.ended: return "Ended"
+        }
+    }
 
     func addProgressObserver() {
         progressObserverToken = player.addPeriodicTimeObserver(forInterval: CMTime(seconds: Double(truncating: progressInterval), preferredTimescale: CMTimeScale(NSEC_PER_SEC)), queue: .main) {
@@ -301,7 +311,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
     }
 
     func player(_ player: IVSPlayer, didChangeState state: IVSPlayer.State) {
-        onPlayerStateChange?(["state": state.rawValue])
+        onPlayerStateChange?(["state": mapPlayerState(state: state)])
 
         if state == IVSPlayer.State.playing, finishedLoading == false {
             let duration = getDuration(player.duration)

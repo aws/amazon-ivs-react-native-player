@@ -290,7 +290,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     }
 
     val onStateChangeData = Arguments.createMap()
-    onStateChangeData.putInt("state", state.ordinal)
+    onStateChangeData.putString("state", mapPlayerState(state))
     reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.STATE_CHANGED.toString(), onStateChangeData)
   }
 
@@ -369,6 +369,16 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
       POSITIVE_INFINITY // live video
     } else {
       durationInSeconds.toDouble()
+    }
+  }
+
+  private fun mapPlayerState(state: Player.State): String {
+    return when(state) {
+      Player.State.PLAYING -> "Playing"
+      Player.State.BUFFERING -> "Buffering"
+      Player.State.READY -> "Ready"
+      Player.State.IDLE -> "Idle"
+      Player.State.ENDED -> "Ended"
     }
   }
 
