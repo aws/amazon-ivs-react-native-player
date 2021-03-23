@@ -190,7 +190,7 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
     };
 
     const onPlayerStateChangeHandler = (
-      event: NativeSyntheticEvent<{ state: number }>
+      event: NativeSyntheticEvent<{ state: PlayerState }>
     ) => {
       const { state } = event.nativeEvent;
       onPlayerStateChange?.(state);

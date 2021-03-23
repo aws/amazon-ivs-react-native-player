@@ -6,9 +6,9 @@ export enum LogLevel {
 }
 
 export enum PlayerState {
-  Idle,
-  Ready,
-  Buffering,
-  Playing,
-  Ended,
+  Idle = 'Idle',
+  Ready = 'Ready',
+  Buffering = 'Buffering',
+  Playing = 'Playing',
+  Ended = 'Ended',
 }
