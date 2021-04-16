@@ -6,10 +6,11 @@ type Props = {
   label: string;
   children?: any;
   style?: StyleProp<ViewStyle>;
+  testID?: string;
 };
 
-const SettingsItem = ({ label, children, style }: Props) => (
-  <View style={[styles.container, style]}>
+const SettingsItem = ({ label, children, style, testID }: Props) => (
+  <View style={[styles.container, style]} testID={testID}>
     <Caption style={styles.label}>{label.toUpperCase()}</Caption>
     {children}
   </View>

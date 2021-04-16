@@ -86,7 +86,7 @@ export default function AdvancedExample() {
               <View style={styles.positionContainer}>
                 <View style={styles.durationsContainer}>
                   {duration && position !== null ? (
-                    <Text style={styles.positionText}>
+                    <Text style={styles.positionText} testID="videoPosition">
                       {parseSecondsToString(position ? position : 0)}
                     </Text>
                   ) : (
@@ -98,7 +98,7 @@ export default function AdvancedExample() {
                     </Text>
                   ) : null}
                 </View>
-                {duration ? (
+                {duration && !Number.isNaN(duration) ? (
                   <Slider
                     disabled={!duration || duration === Infinity}
                     minimumValue={0}
@@ -115,6 +115,7 @@ export default function AdvancedExample() {
                 ) : null}
               </View>
               <IconButton
+                testID="playPauseButton"
                 icon={paused ? 'play' : 'pause'}
                 size={40}
                 color="white"

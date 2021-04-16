@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
+import { TextInput } from 'react-native-paper';
 import Slider from '@react-native-community/slider';
 import SettingsItem from './SettingsItem';
 
@@ -10,6 +11,7 @@ type Props = {
   maximumValue?: number;
   step?: number;
   onValueChange: (value: number) => void;
+  testID?: string;
 };
 
 const SettingsSliderItem = ({
@@ -19,24 +21,33 @@ const SettingsSliderItem = ({
   minimumValue,
   maximumValue,
   onValueChange,
+  testID,
 }: Props) => {
   return (
     <SettingsItem label={label}>
       <Slider
-        style={styles.flex1}
+        style={styles.slider}
         minimumValue={minimumValue}
         maximumValue={maximumValue}
         step={step}
         value={value}
         onValueChange={onValueChange}
       />
+      <TextInput
+        value={value.toFixed(1)}
+        onChangeText={(val) => val && onValueChange(parseFloat(val))}
+        dense
+        mode="outlined"
+        testID={testID}
+      />
     </SettingsItem>
   );
 };
 
 const styles = StyleSheet.create({
-  flex1: {
+  slider: {
     flex: 1,
+    marginRight: 10,
   },
 });
 

@@ -72,6 +72,7 @@ const IVSPlayer = requireNativeComponent<IVSPlayerProps>(VIEW_NAME);
 
 type Props = {
   style?: ViewStyle;
+  testID?: string;
   paused?: boolean;
   muted?: boolean;
   autoplay?: boolean;
@@ -200,7 +201,7 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
       event: NativeSyntheticEvent<{ duration: number | null }>
     ) => {
       const { duration } = event.nativeEvent;
-      onDurationChange?.(duration);
+      onDurationChange?.(duration && duration > 0 ? duration : Infinity);
     };
 
     const onQualityChangeHandler = (

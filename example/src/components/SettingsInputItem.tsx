@@ -6,6 +6,7 @@ import { useDebounce } from '../hooks';
 import SettingsItem from './SettingsItem';
 
 type Props = {
+  testID?: string;
   label: string;
   onChangeText: (text: string) => void;
   value: string;
@@ -30,6 +31,7 @@ const SettingsInputItem = ({
   return (
     <SettingsItem label={label}>
       <TextInput
+        testID={`${label}Input`}
         mode="outlined"
         value={internalValue}
         onChangeText={setInternalValue}

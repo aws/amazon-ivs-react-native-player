@@ -1,5 +1,5 @@
 export const parseSecondsToString = (seconds: number) => {
-  if (seconds === Infinity) {
+  if (seconds === Infinity || Number.isNaN(seconds) || seconds < 0) {
     return 'live';
   }
 

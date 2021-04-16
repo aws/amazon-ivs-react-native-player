@@ -76,6 +76,28 @@ We use [TypeScript](https://www.typescriptlang.org/) for type checking, [ESLint]
 
 Our pre-commit hooks verify that the linter and tests pass when committing.
 
+### e2e testing
+
+The package includes e2e Detox tests for iOS and Android.
+
+To run tests locally on Android:
+
+- First, you need to install detox on your machine - https://github.com/wix/Detox
+- Trigger `yarn e2e:build:android` to build the app. To test app in release mode use `yarn e2e:build:android:release` script
+- Make sure you have opened Android emulator. Your emulator name should be the same as in `.detoxrc.json` configuration file - `devices > emulator` section for development and `devices > emulator` for release
+- If you test the app in debug mode run the packager - `yarn start` in `/example`
+- Run `yarn e2e:test:android` or `yarn e2e:test:android:release` to trigger tests
+
+To run tests locally on iOS:
+
+- First, you need to install detox on your machine - https://github.com/wix/Detox
+- Trigger `yarn e2e:build:ios` to build the app. To test app in release mode use `yarn e2e:build:ios:release` script
+- Make sure you have opened ios simulator
+- If you test the app in debug mode run the packager - `yarn start` in `/example`
+- Run `yarn e2e:test:ios` or `yarn e2e:test:ios:release` to trigger tests
+
+In order to modify existing tests or create new ones open `e2e` directory. There is a separate `*.e2e.js` file for each test suite.
+
 ### Scripts
 
 The `package.json` file contains various scripts for common tasks:
@@ -87,6 +109,14 @@ The `package.json` file contains various scripts for common tasks:
 - `yarn example start`: start the Metro server for the example app.
 - `yarn example android`: run the example app on Android.
 - `yarn example ios`: run the example app on iOS.
+- `e2e:build:android`: build android for e2e detox tests - debug mode
+- `e2e:build:ios`: build ios for e2e detox tests - debug mode
+- `e2e:test:android`: run Android e2e tests in Detox - debug mode
+- `e2e:test:ios`: run ios e2e tests in Detox - debug mode
+- `e2e:build:android:release`: build android for e2e detox tests - release mode
+- `e2e:build:ios:release`: build ios for e2e detox tests - release mode
+- `e2e:test:android:release`: run Android e2e tests in Detox - release mode
+- `e2e:test:ios:release`: run ios e2e tests in Detox - release mode
 
 ### Sending a pull request
 

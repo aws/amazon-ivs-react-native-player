@@ -257,11 +257,8 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     when (state) {
       Player.State.PLAYING -> {
         val onLoadData = Arguments.createMap()
-        if (player!!.duration > 0) {
-          onLoadData.putInt("duration", TimeUnit.MILLISECONDS.toSeconds(player!!.duration).toInt())
-        } else {
-          onLoadData.putNull("duration")
-        }
+        val parsedDuration = getDuration(player!!.duration);
+        onLoadData.putDouble("duration", parsedDuration)
 
         reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.LOAD.toString(), onLoadData)
       }
@@ -357,7 +354,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
       lastDuration = player?.duration
     }
     player?.position?.let { position ->
-      if (position > 0) {
+      if (position > 0 && player?.state === Player.State.PLAYING) {
         onProgress(position)
       }
     }
@@ -365,11 +362,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
 
   private fun getDuration(duration: Long): Double {
     val durationInSeconds = TimeUnit.MILLISECONDS.toSeconds(duration).toInt()
-    return if (durationInSeconds == 0) {
-      POSITIVE_INFINITY // live video
-    } else {
-      durationInSeconds.toDouble()
-    }
+    return durationInSeconds.toDouble()
   }
 
   private fun mapPlayerState(state: Player.State): String {

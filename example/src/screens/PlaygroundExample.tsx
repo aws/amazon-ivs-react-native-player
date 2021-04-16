@@ -1,21 +1,20 @@
 import * as React from 'react';
 import { useState, useCallback, useEffect } from 'react';
-import { Dimensions, StyleSheet, View } from 'react-native';
+import { Dimensions, StyleSheet, View, ScrollView } from 'react-native';
 import IVSPlayer, {
   IVSPlayerRef,
   LogLevel,
   PlayerState,
   Quality,
 } from 'react-native-amazon-ivs';
-import BottomSheet from 'reanimated-bottom-sheet';
 import {
   IconButton,
-  Title,
   ActivityIndicator,
   Button,
   Text,
+  Portal,
+  Title,
 } from 'react-native-paper';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import Slider from '@react-native-community/slider';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/native';
@@ -41,11 +40,11 @@ type PlaygroundScreenNavigationProp = StackNavigationProp<
 
 export default function PlaygroundExample() {
   const { setOptions } = useNavigation<PlaygroundScreenNavigationProp>();
-  const sheetRef = React.useRef<BottomSheet>(null);
   const mediaPlayerRef = React.useRef<IVSPlayerRef>(null);
-  const [autoplay, setAutoplay] = useState(true);
-  const [isPlaying, setIsPlaying] = useState(autoplay);
-  const [paused, setPaused] = useState(false);
+  const [isModalOpened, setIsModalOpened] = useState(false);
+  const [autoplay, setAutoplay] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [paused, setPaused] = useState(true);
   const [url, setUrl] = useState(
     'https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8'
   );
@@ -65,8 +64,16 @@ export default function PlaygroundExample() {
   const [lockPosition, setLockPosition] = useState(false);
   const [positionSlider, setPositionSlider] = useState(0);
   const [breakpoints, setBreakpoints] = useState<number[]>(INITIAL_BREAKPOINTS);
-  const [, setOpenSheet] = useState(false);
   const [orientation, setOrientation] = useState(Position.PORTRAIT);
+  const [logs, setLogs] = useState<string[]>([]);
+
+  const log = useCallback(
+    (text: string) => {
+      console.log(text);
+      setLogs((logs) => [text, ...logs.slice(0, 30)]);
+    },
+    [setLogs]
+  );
 
   const onDimensionChange = useCallback(
     ({ window: { width, height } }) => {
@@ -90,18 +97,6 @@ export default function PlaygroundExample() {
     };
   }, [onDimensionChange]);
 
-  const handleToggleSettings = React.useCallback(() => {
-    setOpenSheet((prev) => {
-      if (prev) {
-        sheetRef?.current?.snapTo(1);
-      } else {
-        sheetRef?.current?.snapTo(0);
-      }
-
-      return !prev;
-    });
-  }, []);
-
   const slidingCompleteHandler = (value: number) => {
     mediaPlayerRef?.current?.seekTo(value);
   };
@@ -116,6 +111,7 @@ export default function PlaygroundExample() {
             style={styles.loader}
           />
         ) : null}
+
         <IVSPlayer
           ref={mediaPlayerRef}
           paused={paused}
@@ -136,19 +132,26 @@ export default function PlaygroundExample() {
             if (state === PlayerState.Playing || state === PlayerState.Idle) {
               setBuffering(false);
             }
-            console.log('state changed', state);
+            log(`state changed: ${state}`);
           }}
-          onDurationChange={setDuration}
+          onDurationChange={(duration) => {
+            setDuration(duration);
+            log(`duration changed: ${parseSecondsToString(duration || 0)}`);
+          }}
           onQualityChange={(newQuality) =>
-            console.log('quality changed', newQuality)
+            log(`quality changed: ${newQuality?.name}`)
           }
           onRebuffering={() => setBuffering(true)}
-          onLoadStart={() => console.log('loadStart')}
+          onLoadStart={() => log(`load started`)}
           onLoad={(loadedDuration) =>
-            console.log('load ', loadedDuration, ' - duration')
+            log(
+              `loaded duration changed: ${parseSecondsToString(
+                loadedDuration || 0
+              )}`
+            )
           }
           onLiveLatencyChange={(liveLatency) =>
-            console.log('live latency', liveLatency)
+            console.log(`live latency changed: ${liveLatency}`)
           }
           onTextCue={(textCue) => console.log('text cue', textCue)}
           onTextMetadataCue={(textMetadataCue) =>
@@ -159,6 +162,11 @@ export default function PlaygroundExample() {
               setPosition(newPosition);
               setPositionSlider(newPosition);
             }
+            console.log(
+              `progress changed: ${parseSecondsToString(
+                position ? position : 0
+              )}`
+            );
           }}
           onData={(data) => setQualities(data.qualities)}
           onVideoStatistics={(video) => console.log('onVideoStatistics', video)}
@@ -167,31 +175,34 @@ export default function PlaygroundExample() {
         >
           {orientation === Position.PORTRAIT ? (
             <>
-              <IconButton
+              <Button
+                testID="settingsIcon"
                 style={styles.icon}
                 icon="cog"
-                size={25}
-                color="lightgrey"
-                onPress={handleToggleSettings}
-              />
-              <SafeAreaView style={styles.playButtonContainer}>
+                color="gray"
+                onPress={() => setIsModalOpened(true)}
+              >
+                Settings
+              </Button>
+              <View style={styles.playButtonContainer}>
                 <View style={styles.positionContainer}>
                   <View style={styles.durationsContainer}>
                     {duration && position !== null ? (
-                      <Text style={styles.positionText}>
+                      <Text style={styles.positionText} testID="videoPosition">
                         {parseSecondsToString(position ? position : 0)}
                       </Text>
                     ) : (
                       <Text />
                     )}
-                    {duration && duration !== Infinity ? (
-                      <Text style={styles.positionText}>
+                    {duration ? (
+                      <Text style={styles.positionText} testID="durationLabel">
                         {parseSecondsToString(duration)}
                       </Text>
                     ) : null}
                   </View>
-                  {duration ? (
+                  {duration && !Number.isNaN(duration) ? (
                     <Slider
+                      testID="durationSlider"
                       disabled={!duration || duration === Infinity}
                       minimumValue={0}
                       maximumValue={duration === Infinity ? 100 : duration}
@@ -207,6 +218,7 @@ export default function PlaygroundExample() {
                   ) : null}
                 </View>
                 <IconButton
+                  testID="playPauseButton"
                   icon={isPlaying ? 'pause' : 'play'}
                   size={40}
                   color="white"
@@ -218,109 +230,136 @@ export default function PlaygroundExample() {
                   }}
                   style={styles.playIcon}
                 />
-              </SafeAreaView>
+              </View>
             </>
           ) : null}
         </IVSPlayer>
+        <View style={styles.logs}>
+          {logs.map((log, index) => (
+            <Text key={index} style={styles.log} accessibilityLabel={log}>
+              {log}
+            </Text>
+          ))}
+        </View>
       </View>
-
-      <BottomSheet
-        ref={sheetRef}
-        initialSnap={1}
-        snapPoints={['80%', 0]}
-        enabledContentTapInteraction={false}
-        onCloseEnd={() => setOpenSheet(false)}
-        renderHeader={() => (
-          <View style={styles.settingsHeader}>
-            <Title style={styles.settingsTitle}>Settings</Title>
+      <Portal>
+        {isModalOpened && (
+          <View style={styles.modalContentContainer}>
+            <View style={styles.modalContent}>
+              <View style={styles.modalHeader}>
+                <Title>Settings</Title>
+                <Button
+                  testID="closeIcon"
+                  icon="close"
+                  color="gray"
+                  onPress={() => setIsModalOpened(false)}
+                >
+                  Close
+                </Button>
+              </View>
+              <ScrollView testID="modalScrollView">
+                <View style={styles.settings}>
+                  <SettingsInputItem
+                    label="url"
+                    onChangeText={setUrl}
+                    value={url}
+                    multiline
+                  />
+                  <SettingsItem label="Quality" testID="qualitiesPicker">
+                    <QualitiesPicker
+                      quality={quality}
+                      qualities={qualities}
+                      setQuality={setQuality}
+                    />
+                  </SettingsItem>
+                  <SettingsSliderItem
+                    label={`Playback Rate: ${playbackRate}`}
+                    minimumValue={0.5}
+                    maximumValue={2}
+                    step={0.1}
+                    value={playbackRate || INITIAL_PLAYBACK_RATE}
+                    onValueChange={(value) =>
+                      setPlaybackRate(Number(value.toFixed(1)))
+                    }
+                    testID="playbackRate"
+                  />
+                  <SettingsSliderItem
+                    label={`Progress Interval: ${progressInterval}`}
+                    minimumValue={1}
+                    maximumValue={5}
+                    step={1}
+                    value={progressInterval || INITIAL_PROGRESS_INTERVAL}
+                    onValueChange={(value) =>
+                      setProgressInterval(Number(value))
+                    }
+                    testID="progressInterval"
+                  />
+                  <SettingsSwitchItem
+                    label="Muted"
+                    value={muted}
+                    onValueChange={setMuted}
+                    testID="muted"
+                  />
+                  <SettingsSwitchItem
+                    label="Autoplay"
+                    onValueChange={setAutoplay}
+                    value={autoplay}
+                    testID="autoplay"
+                  />
+                  <SettingsSwitchItem
+                    label="Paused"
+                    onValueChange={setPaused}
+                    value={paused}
+                    testID="paused"
+                  />
+                  <SettingsSliderItem
+                    label={`Volume: ${volume.toFixed(1)}`}
+                    minimumValue={0}
+                    maximumValue={1}
+                    step={0.1}
+                    value={volume}
+                    onValueChange={setVolume}
+                    testID="volume"
+                  />
+                  <SettingsSwitchItem
+                    label="Live Low Latency"
+                    onValueChange={setLiveLowLatency}
+                    value={liveLowLatency}
+                    testID="liveLowLatency"
+                  />
+                  <SettingsItem label="Log Level" testID="logLevelPicker">
+                    <LogLevelPicker
+                      logLevel={logLevel}
+                      setLogLevel={setLogLevel}
+                    />
+                  </SettingsItem>
+                  <SettingsSwitchItem
+                    label="Auto Quality"
+                    onValueChange={setAutoQualityMode}
+                    value={autoQualityMode}
+                    testID="autoQuality"
+                  />
+                  <SettingsItem
+                    label="Auto Max Quality"
+                    testID="autoMaxQualityPicker"
+                  >
+                    <QualitiesPicker
+                      quality={autoMaxQuality}
+                      qualities={qualities}
+                      setQuality={setAutoMaxQuality}
+                    />
+                  </SettingsItem>
+                  <SettingsItem label="Breakpoints">
+                    <Button onPress={() => setBreakpoints(UPDATED_BREAKPOINTS)}>
+                      Add
+                    </Button>
+                  </SettingsItem>
+                </View>
+              </ScrollView>
+            </View>
           </View>
         )}
-        renderContent={() => (
-          <View style={styles.settings}>
-            <SettingsInputItem
-              label="url"
-              onChangeText={setUrl}
-              value={url}
-              multiline
-            />
-            <SettingsItem label="Quality">
-              <QualitiesPicker
-                quality={quality}
-                qualities={qualities}
-                setQuality={setQuality}
-              />
-            </SettingsItem>
-            <SettingsItem label={`Playback Rate: ${playbackRate}`}>
-              <Slider
-                style={styles.flex1}
-                minimumValue={0.5}
-                maximumValue={2}
-                step={0.1}
-                value={INITIAL_PLAYBACK_RATE}
-                onValueChange={(value) =>
-                  setPlaybackRate(Number(value.toFixed(1)))
-                }
-              />
-            </SettingsItem>
-            <SettingsSliderItem
-              label={`Progress Interval: ${progressInterval}`}
-              minimumValue={1}
-              maximumValue={5}
-              step={1}
-              value={INITIAL_PROGRESS_INTERVAL}
-              onValueChange={(value) => setProgressInterval(Number(value))}
-            />
-            <SettingsSwitchItem
-              label="Muted"
-              value={muted}
-              onValueChange={setMuted}
-            />
-            <SettingsSwitchItem
-              label="Autoplay"
-              onValueChange={setAutoplay}
-              value={autoplay}
-            />
-            <SettingsSwitchItem
-              label="Paused"
-              onValueChange={setPaused}
-              value={paused}
-            />
-            <SettingsSliderItem
-              label={`Volume: ${volume.toFixed(1)}`}
-              minimumValue={0}
-              maximumValue={1}
-              step={0.1}
-              value={volume}
-              onValueChange={setVolume}
-            />
-            <SettingsSwitchItem
-              label="Live Low Latency"
-              onValueChange={setLiveLowLatency}
-              value={liveLowLatency}
-            />
-            <SettingsItem label="Log Level">
-              <LogLevelPicker logLevel={logLevel} setLogLevel={setLogLevel} />
-            </SettingsItem>
-            <SettingsSwitchItem
-              label="Auto Quality"
-              onValueChange={setAutoQualityMode}
-              value={autoQualityMode}
-            />
-            <SettingsItem label="Auto Max Quality">
-              <QualitiesPicker
-                quality={autoMaxQuality}
-                qualities={qualities}
-                setQuality={setAutoMaxQuality}
-              />
-            </SettingsItem>
-            <SettingsItem label="Breakpoints">
-              <Button onPress={() => setBreakpoints(UPDATED_BREAKPOINTS)}>
-                Add
-              </Button>
-            </SettingsItem>
-          </View>
-        )}
-      />
+      </Portal>
     </View>
   );
 }
@@ -337,9 +376,8 @@ const styles = StyleSheet.create({
   },
   playButtonContainer: {
     alignItems: 'center',
-    justifyContent: 'center',
     position: 'absolute',
-    bottom: 15,
+    bottom: 10,
     width: '100%',
   },
   playIcon: {
@@ -363,7 +401,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     alignItems: 'flex-start',
-    backgroundColor: '#fff',
   },
   settingsHeader: {
     backgroundColor: '#fff',
@@ -382,5 +419,31 @@ const styles = StyleSheet.create({
     position: 'absolute',
     zIndex: 1,
     alignSelf: 'center',
+  },
+  logs: {
+    top: 0,
+    width: '100%',
+    height: 250,
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
+    backgroundColor: '#e2e2e2',
+    padding: 10,
+    paddingTop: 20,
+  },
+  log: {
+    fontSize: 7,
+  },
+  modalContentContainer: {
+    paddingHorizontal: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
+  },
+  modalContent: { backgroundColor: 'white', borderRadius: 4, height: '80%' },
+  modalHeader: {
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
   },
 });

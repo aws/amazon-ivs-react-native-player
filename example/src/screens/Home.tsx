@@ -1,9 +1,8 @@
 import * as React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, ScrollView } from 'react-native';
 import { Card, Paragraph } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
-import { ScrollView } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import type { RootStackParamList } from '../App';
 
@@ -19,6 +18,7 @@ function Home() {
       </View>
       <ScrollView style={styles.list}>
         <Card
+          testID="Simple"
           style={styles.card}
           onPress={() => {
             navigate('SimpleExample');
@@ -30,6 +30,7 @@ function Home() {
           </Card.Content>
         </Card>
         <Card
+          testID="Advanced"
           style={styles.card}
           onPress={() => {
             navigate('AdvancedExample');
@@ -43,6 +44,7 @@ function Home() {
           </Card.Content>
         </Card>
         <Card
+          testID="Playground"
           style={styles.card}
           onPress={() => {
             navigate('PlaygroundExample');
