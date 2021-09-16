@@ -46,3 +46,11 @@ See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the 
 
 To hide Home Indicator on iOS when video is in full screen, use this library:
 https://github.com/flowkey/react-native-home-indicator
+
+## Security
+
+See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
+
+## License
+
+This project is licensed under the Apache-2.0 License.
