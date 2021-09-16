@@ -51,9 +51,9 @@ yarn test
 
 When updating/changing Typescript types, please remember to also update their Flow equivalents.
 
-To edit the Swift files, open `example/ios/AmazonIvsExample.xcworkspace` in XCode and find the source files at `Pods > Development Pods > react-native-amazon-ivs`.
+To edit the Swift files, open `example/ios/AmazonIvsExample.xcworkspace` in XCode and find the source files at `Pods > Development Pods > amazon-ivs-react-native`.
 
-To edit the Kotlin files, open `example/android` in Android studio and find the source files at `reactnativeamazonivs` under `Android`.
+To edit the Kotlin files, open `example/android` in Android studio and find the source files at `amazonivsreactnative` under `Android`.
 
 ### Commit message convention
 

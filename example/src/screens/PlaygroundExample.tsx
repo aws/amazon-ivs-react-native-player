@@ -6,7 +6,7 @@ import IVSPlayer, {
   LogLevel,
   PlayerState,
   Quality,
-} from 'react-native-amazon-ivs';
+} from 'amazon-ivs-react-native';
 import {
   IconButton,
   ActivityIndicator,
@@ -23,7 +23,7 @@ import SettingsItem from '../components/SettingsItem';
 import QualitiesPicker from '../components/QualitiesPicker';
 import SettingsSliderItem from '../components/SettingsSliderItem';
 import LogLevelPicker from '../components/LogLevelPicker';
-import { Position } from '../constants';
+import { Position, URL } from '../constants';
 import SettingsInputItem from '../components/SettingsInputItem';
 import SettingsSwitchItem from '../components/SettingsSwitchItem';
 import type { RootStackParamList } from '../App';
@@ -42,12 +42,9 @@ export default function PlaygroundExample() {
   const { setOptions } = useNavigation<PlaygroundScreenNavigationProp>();
   const mediaPlayerRef = React.useRef<IVSPlayerRef>(null);
   const [isModalOpened, setIsModalOpened] = useState(false);
-  const [autoplay, setAutoplay] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [paused, setPaused] = useState(true);
-  const [url, setUrl] = useState(
-    'https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8'
-  );
+  const [autoplay, setAutoplay] = useState(true);
+  const [paused, setPaused] = useState(false);
+  const [url, setUrl] = useState(URL);
   const [muted, setMuted] = useState(false);
   const [quality, setQuality] = useState<Quality | null>(null);
   const [autoMaxQuality, setAutoMaxQuality] = useState<Quality | null>(null);
@@ -219,14 +216,11 @@ export default function PlaygroundExample() {
                 </View>
                 <IconButton
                   testID="playPauseButton"
-                  icon={isPlaying ? 'pause' : 'play'}
+                  icon={paused ? 'play' : 'pause'}
                   size={40}
                   color="white"
                   onPress={() => {
-                    isPlaying
-                      ? mediaPlayerRef.current?.pause()
-                      : mediaPlayerRef.current?.play();
-                    setIsPlaying((prev) => !prev);
+                    setPaused((prev) => !prev);
                   }}
                   style={styles.playIcon}
                 />

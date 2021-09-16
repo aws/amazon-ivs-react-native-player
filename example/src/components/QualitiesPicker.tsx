@@ -2,7 +2,7 @@ import * as React from 'react';
 import { StyleSheet } from 'react-native';
 import { View } from 'react-native';
 import { Button } from 'react-native-paper';
-import type { Quality } from 'react-native-amazon-ivs';
+import type { Quality } from 'amazon-ivs-react-native';
 
 type Props = {
   quality: Quality | null;

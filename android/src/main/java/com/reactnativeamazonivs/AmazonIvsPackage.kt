@@ -1,4 +1,4 @@
-package com.reactnativeamazonivs
+package com.amazonivsreactnative
 
 import java.util.Arrays
 

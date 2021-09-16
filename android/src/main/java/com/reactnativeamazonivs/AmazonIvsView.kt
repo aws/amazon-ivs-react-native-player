@@ -1,4 +1,4 @@
-package com.reactnativeamazonivs
+package com.amazonivsreactnative
 
 import android.net.Uri
 import android.widget.FrameLayout

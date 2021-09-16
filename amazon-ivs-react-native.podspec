@@ -3,7 +3,7 @@ require "json"
 package = JSON.parse(File.read(File.join(__dir__, "package.json")))
 
 Pod::Spec.new do |s|
-  s.name         = "react-native-amazon-ivs"
+  s.name         = "amazon-ivs-react-native"
   s.version      = package["version"]
   s.summary      = package["description"]
   s.homepage     = package["homepage"]
@@ -11,12 +11,12 @@ Pod::Spec.new do |s|
   s.authors      = package["author"]
 
   s.platforms    = { :ios => "10.0" }
-  s.source       = { :git => "https://github.com/callstack-internal/react-native-amazon-ivs.git", :tag => "#{s.version}" }
+  s.source       = { :git => "https://github.com/callstack-internal/amazon-ivs-react-native.git", :tag => "#{s.version}" }
 
 
   s.source_files = "ios/**/*.{h,m,mm,swift}"
 
 
   s.dependency "React-Core"
-  s.dependency "AmazonIVSPlayer"
+  s.dependency "AmazonIVSPlayer", "~> 1.4.1"
 end

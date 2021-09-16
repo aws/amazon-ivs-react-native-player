@@ -1,4 +1,4 @@
-package com.example.reactnativeamazonivs;
+package com.example.amazonivsreactnative;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

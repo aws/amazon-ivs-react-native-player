@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Dimensions, StyleSheet, View } from 'react-native';
-import IVSPlayer, { IVSPlayerRef, PlayerState } from 'react-native-amazon-ivs';
+import IVSPlayer, { IVSPlayerRef, PlayerState } from 'amazon-ivs-react-native';
 import { IconButton, ActivityIndicator, Text } from 'react-native-paper';
 import Slider from '@react-native-community/slider';
 import type { StackNavigationProp } from '@react-navigation/stack';

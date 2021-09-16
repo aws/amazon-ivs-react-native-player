@@ -1,7 +1,7 @@
 {
-  "name": "react-native-amazon-ivs",
+  "name": "amazon-ivs-react-native",
   "version": "0.1.0",
-  "description": "react-native-amazon-ivs",
+  "description": "amazon-ivs-react-native",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
   "types": "lib/typescript/src/index.d.ts",
@@ -13,7 +13,7 @@
     "android",
     "ios",
     "cpp",
-    "react-native-amazon-ivs.podspec",
+    "amazon-ivs-react-native.podspec",
     "!lib/typescript/example",
     "!android/build",
     "!ios/build",
@@ -45,13 +45,13 @@
     "ios",
     "android"
   ],
-  "repository": "https://github.com/callstack-internal/react-native-amazon-ivs",
+  "repository": "https://github.com/callstack-internal/amazon-ivs-react-native",
   "author": "callstack",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/callstack-internal/react-native-amazon-ivs/issues"
+    "url": "https://github.com/callstack-internal/amazon-ivs-react-native/issues"
   },
-  "homepage": "https://github.com/callstack-internal/react-native-amazon-ivs#readme",
+  "homepage": "https://github.com/callstack-internal/amazon-ivs-react-native#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },

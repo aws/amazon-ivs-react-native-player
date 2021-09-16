@@ -218,7 +218,7 @@
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				C1D60D28B925C94BD88E79D7 /* [CP] Copy Pods Resources */,
-				74C8111694498FBFD91EB3AA /* [CP] Embed Pods Frameworks */,
+				8B5D06D0890513C65BF71607 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -401,7 +401,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		74C8111694498FBFD91EB3AA /* [CP] Embed Pods Frameworks */ = {
+		8B5D06D0890513C65BF71607 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -578,7 +578,7 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.reactnativeamazonivs;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.amazonivsreactnative;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AmazonIvsExample.app/AmazonIvsExample";
 			};
@@ -598,7 +598,7 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.reactnativeamazonivs;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.amazonivsreactnative;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AmazonIvsExample.app/AmazonIvsExample";
 			};
@@ -621,7 +621,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.reactnativeamazonivs;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.amazonivsreactnative;
 				PRODUCT_NAME = AmazonIvsExample;
 				SWIFT_OBJC_BRIDGING_HEADER = "AmazonIvsExample-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -647,7 +647,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.reactnativeamazonivs;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.amazonivsreactnative;
 				PRODUCT_NAME = AmazonIvsExample;
 				SWIFT_OBJC_BRIDGING_HEADER = "AmazonIvsExample-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
