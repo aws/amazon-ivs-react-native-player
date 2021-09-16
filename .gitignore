@@ -61,3 +61,6 @@ lib/
 artifacts
 
 test-butler-app.apk
+
+# react-native-config codegen
+example/ios/tmp.xcconfig
