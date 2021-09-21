@@ -1,0 +1,175 @@
+{
+  "name": "amazon-ivs-react-native",
+  "version": "1.0.0-beta",
+  "description": "amazon-ivs-react-native",
+  "main": "lib/commonjs/index",
+  "module": "lib/module/index",
+  "types": "lib/typescript/src/index.d.ts",
+  "react-native": "src/index",
+  "source": "src/index",
+  "files": [
+    "src",
+    "lib",
+    "android",
+    "ios",
+    "cpp",
+    "amazon-ivs-react-native.podspec",
+    "!lib/typescript/example",
+    "!android/build",
+    "!ios/build",
+    "!**/__tests__",
+    "!**/__fixtures__",
+    "!**/__mocks__"
+  ],
+  "scripts": {
+    "test": "jest",
+    "typescript": "tsc --noEmit",
+    "lint": "eslint \"**/*.{js,ts,tsx}\"",
+    "prepare": "bob build",
+    "release": "release-it",
+    "example": "yarn --cwd example",
+    "pods": "cd example && pod-install --quiet",
+    "bootstrap": "yarn example && yarn && yarn pods",
+    "e2e:build:android": "detox build --configuration android",
+    "e2e:build:ios": "detox build --configuration ios",
+    "e2e:test:android": "yarn get:testbutler && detox test --configuration android --take-screenshots failing --loglevel verbose",
+    "e2e:test:ios": "detox test --configuration ios --take-screenshots failing --loglevel verbose",
+    "e2e:build:android:release": "detox build --configuration android.emu.release",
+    "e2e:build:ios:release": "detox build --configuration ios.sim.release",
+    "e2e:test:android:release": "yarn get:testbutler && detox test --configuration android.emu.release --headless --take-screenshots failing",
+    "e2e:test:ios:release": "detox test --configuration ios.sim.release --take-screenshots failing",
+    "get:testbutler": "curl -f -o ./test-butler-app.apk https://linkedin.bintray.com/maven/com/linkedin/testbutler/test-butler-app/2.1.0/test-butler-app-2.1.0.apk"
+  },
+  "keywords": [
+    "react-native",
+    "ios",
+    "android"
+  ],
+  "repository": "https://github.com/aws/amazon-ivs-react-native",
+  "author": "AWS",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/aws/amazon-ivs-react-native/issues"
+  },
+  "homepage": "https://github.com/aws/amazon-ivs-react-native#readme",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "devDependencies": {
+    "@callstack/eslint-config": "^10.1.0",
+    "@commitlint/config-conventional": "^11.0.0",
+    "@react-native-community/eslint-config": "^2.0.0",
+    "@release-it/conventional-changelog": "^2.0.0",
+    "@testing-library/jest-native": "^4.0.1",
+    "@testing-library/react-native": "^7.2.0",
+    "@types/jest": "^26.0.0",
+    "@types/react": "^16.9.19",
+    "@types/react-native": "0.62.13",
+    "commitlint": "^11.0.0",
+    "detox": "^18.7.1",
+    "eslint": "^7.18.0",
+    "eslint-config-prettier": "^7.0.0",
+    "eslint-plugin-detox": "^1.0.0",
+    "eslint-plugin-prettier": "^3.1.3",
+    "husky": "^4.2.5",
+    "jest": "^26.0.1",
+    "jest-circus": "^26.6.3",
+    "pod-install": "^0.1.0",
+    "prettier": "^2.0.5",
+    "react": "16.13.1",
+    "react-native": "0.63.4",
+    "react-native-builder-bob": "^0.18.1",
+    "react-test-renderer": "16.13.1",
+    "release-it": "^14.2.2",
+    "typescript": "^4.1.3",
+    "@babel/runtime": "^7.12.5"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*"
+  },
+  "jest": {
+    "preset": "react-native",
+    "setupFilesAfterEnv": [
+      "@testing-library/jest-native/extend-expect"
+    ],
+    "modulePathIgnorePatterns": [
+      "<rootDir>/example/node_modules",
+      "<rootDir>/lib/"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "yarn lint && yarn typescript"
+    }
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "release-it": {
+    "git": {
+      "commitMessage": "chore: release ${version}",
+      "tagName": "v${version}"
+    },
+    "npm": {
+      "publish": true
+    },
+    "github": {
+      "release": true
+    },
+    "plugins": {
+      "@release-it/conventional-changelog": {
+        "preset": "angular"
+      }
+    }
+  },
+  "eslintConfig": {
+    "root": true,
+    "extends": "@callstack/eslint-config/react",
+    "rules": {
+      "prettier/prettier": [
+        "error",
+        {
+          "quoteProps": "consistent",
+          "singleQuote": true,
+          "tabWidth": 2,
+          "trailingComma": "es5",
+          "useTabs": false
+        }
+      ],
+      "import/no-unresolved": "off",
+      "import/no-extraneous-dependencies": "off"
+    },
+    "plugins": [
+      "detox"
+    ]
+  },
+  "eslintIgnore": [
+    "node_modules/",
+    "lib/"
+  ],
+  "prettier": {
+    "quoteProps": "consistent",
+    "singleQuote": true,
+    "tabWidth": 2,
+    "trailingComma": "es5",
+    "useTabs": false
+  },
+  "react-native-builder-bob": {
+    "source": "src",
+    "output": "lib",
+    "targets": [
+      "commonjs",
+      "module",
+      [
+        "typescript",
+        {
+          "project": "tsconfig.build.json"
+        }
+      ]
+    ]
+  }
+}

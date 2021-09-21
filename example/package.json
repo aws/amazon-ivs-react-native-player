@@ -1,0 +1,39 @@
+{
+  "name": "amazon-ivs-react-native-example",
+  "description": "Example app for amazon-ivs-react-native",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "start": "react-native start"
+  },
+  "dependencies": {
+    "@react-native-community/masked-view": "^0.1.10",
+    "@react-native-community/slider": "^4.1.4",
+    "@react-navigation/native": "^5.9.0",
+    "@react-navigation/stack": "^5.13.0",
+    "appcenter": "^4.2.0",
+    "appcenter-analytics": "^4.2.0",
+    "appcenter-crashes": "^4.2.0",
+    "react": "16.13.1",
+    "react-native": "0.63.4",
+    "react-native-config": "^1.4.3",
+    "react-native-gesture-handler": "^1.9.0",
+    "react-native-orientation-locker": "^1.2.0",
+    "react-native-paper": "^4.5.0",
+    "react-native-reanimated": "^1.13.2",
+    "react-native-safe-area-context": "^3.1.9",
+    "react-native-screens": "^2.16.1",
+    "react-native-vector-icons": "^7.1.0",
+    "reanimated-bottom-sheet": "^1.0.0-alpha.22"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.10",
+    "@babel/runtime": "^7.12.5",
+    "@types/react-native": "0.63.40",
+    "@types/react-native-vector-icons": "^6.4.6",
+    "babel-plugin-module-resolver": "^4.0.0",
+    "metro-react-native-babel-preset": "^0.64.0"
+  }
+}

@@ -1,0 +1,131 @@
+version: 2.1
+
+orbs:
+  rn: react-native-community/react-native@5.5.0
+
+commands:
+  attach_project:
+    steps:
+      - attach_workspace:
+          at: ~/project
+
+jobs:
+  install-dependencies:
+    executor: rn/linux_js
+    steps:
+      - checkout
+      - attach_project
+      - restore_cache:
+          keys:
+            - dependencies-{{ checksum "package.json" }}
+            - dependencies-
+      - restore_cache:
+          keys:
+            - dependencies-example-{{ checksum "example/package.json" }}
+            - dependencies-example-
+      - run:
+          name: Install dependencies
+          command: |
+            yarn install --cwd example --frozen-lockfile
+            yarn install --frozen-lockfile
+      - save_cache:
+          key: dependencies-{{ checksum "package.json" }}
+          paths: node_modules
+      - save_cache:
+          key: dependencies-example-{{ checksum "example/package.json" }}
+          paths: example/node_modules
+      - persist_to_workspace:
+          root: .
+          paths: .
+  lint:
+    executor: rn/linux_js
+    steps:
+      - attach_project
+      - run:
+          name: Lint files
+          command: |
+            yarn lint
+
+  typescript:
+    executor: rn/linux_js
+    steps:
+      - attach_project
+      - run:
+          name: Typecheck files
+          command: |
+            yarn typescript
+  test:
+    executor: rn/linux_js
+    steps:
+      - attach_project
+      - run:
+          name: Integration tests
+          command: |
+            yarn test
+  e2e-ios:
+    executor:
+      name: rn/macos
+      xcode_version: '11.4.0'
+    steps:
+      - attach_workspace:
+          at: .
+      - rn/setup_macos_executor:
+          node_version: '12.10.0'
+      - rn/ios_simulator_start:
+          device: 'iPhone 11'
+      - run:
+          command: yarn install --frozen-lockfile
+          name: yarn install
+      - rn/pod_install:
+          pod_install_directory: 'example/ios'
+      - run:
+          command: yarn e2e:build:ios:release
+          name: build for detox
+      - run:
+          command: yarn e2e:test:ios:release
+          name: test detox
+      - store_artifacts:
+          path: ./artifacts
+  e2e-android:
+    executor:
+      name: rn/macos
+      xcode_version: '11.4.0'
+    steps:
+      - attach_workspace:
+          at: .
+      - rn/setup_macos_executor:
+          node_version: '12.10.0'
+      - run:
+          command: yarn install --frozen-lockfile
+          name: yarn install
+      - rn/android_emulator_start:
+          logcat_grep: 'com.amazon.ivsplayer'
+      - run:
+          command: yarn e2e:build:android:release
+          name: build for detox
+      - run:
+          no_output_timeout: 60m
+          command: yarn e2e:test:android:release
+          name: test detox
+      - store_artifacts:
+          path: ./artifacts
+
+workflows:
+  build-and-test:
+    jobs:
+      - install-dependencies
+      - lint:
+          requires:
+            - install-dependencies
+      - typescript:
+          requires:
+            - install-dependencies
+      - test:
+          requires:
+            - install-dependencies
+      - e2e-android:
+          requires:
+            - install-dependencies
+      - e2e-ios:
+          requires:
+            - install-dependencies
