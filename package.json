@@ -1,6 +1,6 @@
 {
   "name": "amazon-ivs-react-native",
-  "version": "0.1.0",
+  "version": "1.0.0-beta",
   "description": "amazon-ivs-react-native",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -45,13 +45,13 @@
     "ios",
     "android"
   ],
-  "repository": "https://github.com/callstack-internal/amazon-ivs-react-native",
-  "author": "callstack",
+  "repository": "https://github.com/aws/amazon-ivs-react-native",
+  "author": "AWS",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/callstack-internal/amazon-ivs-react-native/issues"
+    "url": "https://github.com/aws/amazon-ivs-react-native/issues"
   },
-  "homepage": "https://github.com/callstack-internal/amazon-ivs-react-native#readme",
+  "homepage": "https://github.com/aws/amazon-ivs-react-native#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
