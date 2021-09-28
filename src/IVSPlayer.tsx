@@ -249,7 +249,14 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
       event: NativeSyntheticEvent<{ videoData: VideoData }>
     ) => {
       const { videoData } = event.nativeEvent;
-      onVideoStatistics?.(videoData);
+      const statistics: VideoData = {
+        ...videoData,
+        duration:
+          videoData.duration && videoData.duration > 0
+            ? videoData.duration
+            : Infinity,
+      };
+      onVideoStatistics?.(statistics);
     };
 
     const onTextMetadataCueHandler = (
