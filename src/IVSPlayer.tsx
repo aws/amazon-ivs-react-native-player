@@ -105,11 +105,11 @@ type Props = {
   children?: React.ReactNode;
 };
 
-function parseDuration(duration?: number | null) {
-  if (duration == null || duration == undefined) {
-    return duration
+function parseDuration(duration: number | null) {
+  if (duration == null) {
+    return duration;
   }
-  return duration > 0 ? duration : Infinity
+  return duration > 0 ? duration : Infinity;
 }
 
 const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
@@ -208,6 +208,7 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
       event: NativeSyntheticEvent<{ duration: number | null }>
     ) => {
       const { duration } = event.nativeEvent;
+
       onDurationChange?.(parseDuration(duration));
     };
 
@@ -259,7 +260,7 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
       const { videoData } = event.nativeEvent;
       const statistics: VideoData = {
         ...videoData,
-        duration: parseDuration(videoData.duration)
+        duration: parseDuration(videoData.duration),
       };
       onVideoStatistics?.(statistics);
     };
