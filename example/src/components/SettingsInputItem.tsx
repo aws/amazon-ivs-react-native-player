@@ -33,6 +33,7 @@ const SettingsInputItem = ({
       <TextInput
         testID={`${label}Input`}
         mode="outlined"
+        textAlign="center"
         value={internalValue}
         onChangeText={setInternalValue}
         style={styles.input}

@@ -37,6 +37,7 @@ const SettingsSliderItem = ({
         value={value.toFixed(1)}
         onChangeText={(val) => val && onValueChange(parseFloat(val))}
         dense
+        textAlign="left"
         mode="outlined"
         testID={testID}
       />
