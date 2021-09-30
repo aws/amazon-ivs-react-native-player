@@ -105,6 +105,13 @@ type Props = {
   children?: React.ReactNode;
 };
 
+function parseDuration(duration: number | null) {
+  if (duration == null) {
+    return duration;
+  }
+  return duration > 0 ? duration : Infinity;
+}
+
 const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
   (
     {
@@ -201,7 +208,8 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
       event: NativeSyntheticEvent<{ duration: number | null }>
     ) => {
       const { duration } = event.nativeEvent;
-      onDurationChange?.(duration && duration > 0 ? duration : Infinity);
+
+      onDurationChange?.(parseDuration(duration));
     };
 
     const onQualityChangeHandler = (
@@ -221,7 +229,8 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
       }
 
       const { duration } = event.nativeEvent;
-      onLoad?.(duration);
+
+      onLoad?.(parseDuration(duration));
     };
 
     const onLiveLatencyChangeHandler = (
@@ -249,7 +258,11 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
       event: NativeSyntheticEvent<{ videoData: VideoData }>
     ) => {
       const { videoData } = event.nativeEvent;
-      onVideoStatistics?.(videoData);
+      const statistics: VideoData = {
+        ...videoData,
+        duration: parseDuration(videoData.duration),
+      };
+      onVideoStatistics?.(statistics);
     };
 
     const onTextMetadataCueHandler = (
