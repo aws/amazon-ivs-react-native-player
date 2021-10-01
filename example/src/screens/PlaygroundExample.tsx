@@ -263,7 +263,10 @@ export default function PlaygroundExample() {
                     <QualitiesPicker
                       quality={quality}
                       qualities={qualities}
-                      setQuality={setQuality}
+                      setQuality={(quality) => {
+                        setQuality(quality);
+                        setAutoQualityMode(!quality);
+                      }}
                     />
                   </SettingsItem>
                   <SettingsSliderItem
@@ -329,7 +332,12 @@ export default function PlaygroundExample() {
                   </SettingsItem>
                   <SettingsSwitchItem
                     label="Auto Quality"
-                    onValueChange={setAutoQualityMode}
+                    onValueChange={(value) => {
+                      if (value) {
+                        setQuality(null);
+                      }
+                      setAutoQualityMode(value);
+                    }}
                     value={autoQualityMode}
                     testID="autoQuality"
                   />

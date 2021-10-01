@@ -5,7 +5,7 @@ import {
   togglePlayPauseVideo,
 } from './utils';
 
-const TIMEOUT = 300000;
+const TIMEOUT = 1800;
 
 jest.setTimeout(1200000);
 
@@ -38,22 +38,20 @@ describe('Playground player', () => {
 
   it('Player plays live video', async () => {
     await expectNativePlayerToBeVisible();
-    await togglePlayPauseVideo();
 
     await atLeastOneLogIsVisible('state changed: Playing', TIMEOUT);
+    await togglePlayPauseVideo();
   });
 
   it('Player pauses video on pause press', async () => {
     await expectNativePlayerToBeVisible();
-    await togglePlayPauseVideo();
-    await atLeastOneLogIsVisible('state changed: Playing', TIMEOUT);
+
     await togglePlayPauseVideo();
     await atLeastOneLogIsVisible('state changed: Idle', TIMEOUT);
   });
 
   it('Player pauses video using paused prop', async () => {
     await expectNativePlayerToBeVisible();
-    await togglePlayPauseVideo();
 
     await element(by.id('settingsIcon')).tap();
     await element(by.id('paused')).tap();
@@ -64,6 +62,8 @@ describe('Playground player', () => {
 
   it('Informs about infinite duration for livestreams', async () => {
     await expectNativePlayerToBeVisible();
+    await togglePlayPauseVideo();
+
     await waitFor(element(by.id('durationLabel')))
       .toHaveText('live')
       .withTimeout(TIMEOUT);
@@ -71,6 +71,8 @@ describe('Playground player', () => {
 
   it('Shows real duration for recorded videos', async () => {
     await expectNativePlayerToBeVisible();
+    await togglePlayPauseVideo();
+
     await waitFor(element(by.id('settingsIcon')))
       .toExist()
       .withTimeout(TIMEOUT);
