@@ -132,12 +132,14 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
         return quality
     }
 
-    private func getDuration(_ duration: CMTime) -> Double {
+    private func getDuration(_ duration: CMTime) -> NSNumber? {
+        let value: NSNumber?
         if duration.isNumeric {
-            return duration.seconds;
+            value = NSNumber(value: duration.seconds);
         } else {
-            return Double.infinity; // live video
+            value = 0
         }
+        return value
     }
     
     @objc var streamUrl: String? {
@@ -315,7 +317,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
 
         if state == IVSPlayer.State.playing, finishedLoading == false {
             let duration = getDuration(player.duration)
-            onLoad?(["duration": duration ])
+            onLoad?(["duration": duration ?? NSNull()])
             finishedLoading = true
         }
         
@@ -348,7 +350,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
 
     func player(_ player: IVSPlayer, didChangeDuration duration: CMTime) {
         let parsedDuration = getDuration(duration)
-        onDurationChange?(["duration": parsedDuration])
+        onDurationChange?(["duration": parsedDuration ?? NSNull()])
     }
 
     func player(_ player: IVSPlayer, didChangeQuality quality: IVSQuality?) {

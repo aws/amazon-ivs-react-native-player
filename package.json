@@ -1,10 +1,10 @@
 {
   "name": "amazon-ivs-react-native",
-  "version": "1.0.0-beta",
+  "version": "1.0.1-beta",
   "description": "amazon-ivs-react-native",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
-  "types": "lib/typescript/src/index.d.ts",
+  "types": "lib/typescript/index.d.ts",
   "react-native": "src/index",
   "source": "src/index",
   "files": [
