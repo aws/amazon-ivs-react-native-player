@@ -304,12 +304,12 @@ const URL = 'https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1
 function App() {
   const mediaPlayerRef = React.useRef<IVSPlayerRef>(null);
 
-  const handleSeekTo = () => { mediaPlayerRef.current?.seekTo({ position: 15 }) };
+  const handleSeekTo = () => { mediaPlayerRef.current?.seekTo(15) };
 
   return (
     <>
       <IVSPlayer ref={mediaPlayerRef} streamUrl={URL} />
-      <Button onPress={handleSeekTo} title="Pause">
+      <Button onPress={handleSeekTo} title="SeekTo">
     </>
   );
 }
