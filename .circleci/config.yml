@@ -279,6 +279,6 @@ workflows:
       - e2e-android:
           requires:
             - install-dependencies
-      - e2e-ios:
-          requires:
-            - install-dependencies
+      # - e2e-ios:
+      #     requires:
+      #       - install-dependencies
