@@ -54,7 +54,7 @@ commands:
     parameters:
       node_version:
         type: string
-        default: '12.10.0'
+        default: '12.13.0'
     steps:
       - attach_workspace:
           at: .
