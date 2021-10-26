@@ -49,7 +49,7 @@ export default function PlaygroundExample() {
   const [quality, setQuality] = useState<Quality | null>(null);
   const [autoMaxQuality, setAutoMaxQuality] = useState<Quality | null>(null);
   const [qualities, setQualities] = useState<Quality[]>([]);
-  const [autoQualityMode, setAutoQualityMode] = useState(true);
+  const [autoQualityMode, setAutoQualityMode] = useState(false);
   const [buffering, setBuffering] = useState(false);
   const [duration, setDuration] = useState<number | null>(null);
   const [liveLowLatency, setLiveLowLatency] = useState(true);
@@ -263,7 +263,10 @@ export default function PlaygroundExample() {
                     <QualitiesPicker
                       quality={quality}
                       qualities={qualities}
-                      setQuality={setQuality}
+                      setQuality={(quality) => {
+                        setAutoQualityMode(!quality);
+                        setQuality(quality);
+                      }}
                     />
                   </SettingsItem>
                   <SettingsSliderItem
@@ -329,7 +332,12 @@ export default function PlaygroundExample() {
                   </SettingsItem>
                   <SettingsSwitchItem
                     label="Auto Quality"
-                    onValueChange={setAutoQualityMode}
+                    onValueChange={(value) => {
+                      if (value) {
+                        setQuality(null);
+                      }
+                      setAutoQualityMode(value);
+                    }}
                     value={autoQualityMode}
                     testID="autoQuality"
                   />
