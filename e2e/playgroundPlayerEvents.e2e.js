@@ -31,8 +31,6 @@ describe('Playground player events', () => {
   it('Player notifies about state change', async () => {
     await expectNativePlayerToBeVisible();
 
-    await togglePlayPauseVideo();
-
     await atLeastOneLogIsVisible('state changed: Playing', TIMEOUT);
 
     await togglePlayPauseVideo();
@@ -42,6 +40,8 @@ describe('Playground player events', () => {
 
   it('Player notifies about duration change', async () => {
     await expectNativePlayerToBeVisible();
+
+    await togglePlayPauseVideo();
 
     await waitFor(element(by.id('settingsIcon')))
       .toBeVisible()
@@ -61,6 +61,9 @@ describe('Playground player events', () => {
 
   it('Player notifies about quality change', async () => {
     await expectNativePlayerToBeVisible();
+
+    await togglePlayPauseVideo();
+
     await waitFor(element(by.id('settingsIcon')))
       .toBeVisible()
       .withTimeout(TIMEOUT);
@@ -77,12 +80,13 @@ describe('Playground player events', () => {
     await element(by.text('720P').withAncestor(by.id('qualitiesPicker'))).tap();
     await element(by.id('closeIcon')).tap();
 
-    await togglePlayPauseVideo();
     await atLeastOneLogIsVisible('quality changed: 720p', TIMEOUT);
   });
 
   it('Player notifies about load after loading recorded video', async () => {
     await expectNativePlayerToBeVisible();
+    await togglePlayPauseVideo();
+
     await waitFor(element(by.id('settingsIcon')))
       .toBeVisible()
       .withTimeout(TIMEOUT);
@@ -108,11 +112,15 @@ describe('Playground player events', () => {
   it('Player notifies about load started', async () => {
     await expectNativePlayerToBeVisible();
 
+    await togglePlayPauseVideo();
+
     await atLeastOneLogIsVisible('load started', TIMEOUT);
   });
 
   it("Player doesn't crash after setting auto quality", async () => {
     await expectNativePlayerToBeVisible();
+    await togglePlayPauseVideo();
+
     await waitFor(element(by.id('settingsIcon')))
       .toBeVisible()
       .withTimeout(TIMEOUT);
@@ -130,6 +138,8 @@ describe('Playground player events', () => {
 
   it("Player doesn't crash after changing muted property", async () => {
     await expectNativePlayerToBeVisible();
+    await togglePlayPauseVideo();
+
     await waitFor(element(by.id('settingsIcon')))
       .toBeVisible()
       .withTimeout(TIMEOUT);
@@ -146,6 +156,8 @@ describe('Playground player events', () => {
 
   it("Player doesn't crash after changing autoplay property", async () => {
     await expectNativePlayerToBeVisible();
+    await togglePlayPauseVideo();
+
     await waitFor(element(by.id('settingsIcon')))
       .toBeVisible()
       .withTimeout(TIMEOUT);
@@ -162,6 +174,8 @@ describe('Playground player events', () => {
 
   it("Player doesn't crash after changing paused property", async () => {
     await expectNativePlayerToBeVisible();
+    await togglePlayPauseVideo();
+
     await waitFor(element(by.id('settingsIcon')))
       .toBeVisible()
       .withTimeout(TIMEOUT);
@@ -178,6 +192,8 @@ describe('Playground player events', () => {
 
   it("Player doesn't crash after changing liveLowLatency property", async () => {
     await expectNativePlayerToBeVisible();
+    await togglePlayPauseVideo();
+
     await waitFor(element(by.id('settingsIcon')))
       .toBeVisible()
       .withTimeout(TIMEOUT);
@@ -194,6 +210,8 @@ describe('Playground player events', () => {
 
   it("Player doesn't crash after changing autoQuality property", async () => {
     await expectNativePlayerToBeVisible();
+    await togglePlayPauseVideo();
+
     await waitFor(element(by.id('settingsIcon')))
       .toBeVisible()
       .withTimeout(TIMEOUT);
@@ -210,6 +228,8 @@ describe('Playground player events', () => {
 
   it("Player doesn't crash after changing log level", async () => {
     await expectNativePlayerToBeVisible();
+    await togglePlayPauseVideo();
+
     await waitFor(element(by.id('settingsIcon')))
       .toBeVisible()
       .withTimeout(TIMEOUT);
@@ -226,6 +246,8 @@ describe('Playground player events', () => {
 
   it("Player doesn't crash after changing log level", async () => {
     await expectNativePlayerToBeVisible();
+    await togglePlayPauseVideo();
+
     await waitFor(element(by.id('settingsIcon')))
       .toBeVisible()
       .withTimeout(TIMEOUT);
@@ -247,6 +269,8 @@ describe('Playground player events', () => {
 
   it("Player doesn't crash after changing playback rate", async () => {
     await expectNativePlayerToBeVisible();
+    await togglePlayPauseVideo();
+
     await waitFor(element(by.id('settingsIcon')))
       .toBeVisible()
       .withTimeout(TIMEOUT);
@@ -263,6 +287,8 @@ describe('Playground player events', () => {
 
   it("Player doesn't crash after changing progress interval", async () => {
     await expectNativePlayerToBeVisible();
+    await togglePlayPauseVideo();
+
     await waitFor(element(by.id('settingsIcon')))
       .toBeVisible()
       .withTimeout(TIMEOUT);
@@ -279,6 +305,8 @@ describe('Playground player events', () => {
 
   it("Player doesn't crash after changing volume", async () => {
     await expectNativePlayerToBeVisible();
+    await togglePlayPauseVideo();
+
     await waitFor(element(by.id('settingsIcon')))
       .toBeVisible()
       .withTimeout(TIMEOUT);
