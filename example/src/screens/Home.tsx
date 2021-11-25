@@ -16,6 +16,7 @@ function Home() {
       <View style={styles.description}>
         <Paragraph>React Native Amazon IVS Player - examples</Paragraph>
       </View>
+
       <ScrollView style={styles.list}>
         <Card
           testID="Simple"
