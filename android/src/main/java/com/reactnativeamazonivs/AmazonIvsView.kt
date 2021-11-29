@@ -274,7 +274,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
           parsedQuality.putString("name", quality.name)
           parsedQuality.putString("codecs", quality.codecs)
           parsedQuality.putInt("bitrate", quality.bitrate)
-          parsedQuality.putInt("framerate", quality.framerate.toInt())
+          parsedQuality.putDouble("framerate", quality.framerate.toDouble())
           parsedQuality.putInt("width", quality.width)
           parsedQuality.putInt("height", quality.height)
           qualities.pushMap(parsedQuality)
@@ -298,7 +298,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     newQuality.putString("name", quality.name)
     newQuality.putString("codecs", quality.codecs)
     newQuality.putInt("bitrate", quality.bitrate)
-    newQuality.putInt("framerate", quality.framerate.toInt())
+    newQuality.putDouble("framerate", quality.framerate.toDouble())
     newQuality.putInt("width", quality.width)
     newQuality.putInt("height", quality.height)
 
