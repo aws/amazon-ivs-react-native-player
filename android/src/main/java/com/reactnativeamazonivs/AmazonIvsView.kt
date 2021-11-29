@@ -24,6 +24,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
   private var lastLiveLatency: Long? = null
   private var lastBitrate: Long? = null
   private var lastDuration: Long? = null
+  private var firstLoad: Boolean = true
 
   enum class Events(private val mName: String) {
     STATE_CHANGED("onPlayerStateChange"),
@@ -259,6 +260,9 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
         val onLoadData = Arguments.createMap()
         val parsedDuration = getDuration(player!!.duration);
         onLoadData.putDouble("duration", parsedDuration)
+        onLoadData.putBoolean("firstLoad", firstLoad)
+
+        firstLoad = false
 
         reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.LOAD.toString(), onLoadData)
       }
@@ -391,6 +395,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     player?.removeListener(playerListener!!)
     player?.release()
     player = null
+    firstLoad = true
 
     playerObserver?.cancel()
     playerObserver = null

@@ -12,6 +12,7 @@ import {
   findNodeHandle,
   View,
   NativeSyntheticEvent,
+  Platform,
 } from 'react-native';
 import type { LogLevel, PlayerState } from './enums';
 import type {
@@ -150,6 +151,7 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
     ref
   ) => {
     const mediaPlayerRef = useRef(null);
+    const initialized = useRef(false);
 
     const play = useCallback(() => {
       UIManager.dispatchViewManagerCommand(
@@ -177,8 +179,15 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
     }, []);
 
     useEffect(() => {
-      paused ? pause() : play();
-    }, [pause, paused, play]);
+      if (initialized.current || autoplay) {
+        if (paused) {
+          pause();
+        } else {
+          play();
+        }
+      }
+      initialized.current = true;
+    }, [pause, paused, play, autoplay]);
 
     useImperativeHandle(
       ref,
@@ -220,15 +229,17 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
     };
 
     const onLoadHandler = (
-      event: NativeSyntheticEvent<{ duration: number | null }>
+      event: NativeSyntheticEvent<{
+        duration: number | null;
+        firstLoad: boolean;
+      }>
     ) => {
-      if (autoplay && !paused) {
-        play();
-      } else {
+      const { duration, firstLoad } = event.nativeEvent;
+
+      // Android player plays video automatically and needs to be paused once it's loaded
+      if (Platform.OS === 'android' && firstLoad && !autoplay) {
         pause();
       }
-
-      const { duration } = event.nativeEvent;
 
       onLoad?.(parseDuration(duration));
     };
