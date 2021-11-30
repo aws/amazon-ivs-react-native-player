@@ -232,13 +232,13 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
         duration: number | null;
       }>
     ) => {
-      const { duration } = event.nativeEvent;
-
       if (!paused) {
         play();
       } else {
         pause();
       }
+
+      const { duration } = event.nativeEvent;
 
       onLoad?.(parseDuration(duration));
     };
