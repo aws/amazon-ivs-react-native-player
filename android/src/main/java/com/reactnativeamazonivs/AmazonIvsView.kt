@@ -24,7 +24,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
   private var lastLiveLatency: Long? = null
   private var lastBitrate: Long? = null
   private var lastDuration: Long? = null
-  private var firstLoad: Boolean = true
+  private var finishedLoading: Boolean = false
 
   enum class Events(private val mName: String) {
     STATE_CHANGED("onPlayerStateChange"),
@@ -105,6 +105,8 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
       val reactContext = context as ReactContext
       val uri = Uri.parse(streamUrl);
       this.streamUri = uri;
+
+      finishedLoading = false
       player.load(uri)
 
       reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.LOAD_START.toString(), Arguments.createMap())
@@ -257,14 +259,15 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
 
     when (state) {
       Player.State.PLAYING -> {
-        val onLoadData = Arguments.createMap()
-        val parsedDuration = getDuration(player!!.duration);
-        onLoadData.putDouble("duration", parsedDuration)
-        onLoadData.putBoolean("firstLoad", firstLoad)
+        if (!finishedLoading) {
+          val onLoadData = Arguments.createMap()
+          val parsedDuration = getDuration(player!!.duration);
+          onLoadData.putDouble("duration", parsedDuration)
 
-        firstLoad = false
+          finishedLoading = true
 
-        reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.LOAD.toString(), onLoadData)
+          reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.LOAD.toString(), onLoadData)
+        }
       }
       Player.State.READY -> {
         val data = Arguments.createMap()
@@ -395,7 +398,6 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     player?.removeListener(playerListener!!)
     player?.release()
     player = null
-    firstLoad = true
 
     playerObserver?.cancel()
     playerObserver = null

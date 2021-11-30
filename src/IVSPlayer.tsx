@@ -12,7 +12,6 @@ import {
   findNodeHandle,
   View,
   NativeSyntheticEvent,
-  Platform,
 } from 'react-native';
 import type { LogLevel, PlayerState } from './enums';
 import type {
@@ -231,13 +230,13 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
     const onLoadHandler = (
       event: NativeSyntheticEvent<{
         duration: number | null;
-        firstLoad: boolean;
       }>
     ) => {
-      const { duration, firstLoad } = event.nativeEvent;
+      const { duration } = event.nativeEvent;
 
-      // Android player plays video automatically and needs to be paused once it's loaded
-      if (Platform.OS === 'android' && firstLoad && !autoplay) {
+      if (!paused) {
+        play();
+      } else {
         pause();
       }
 
