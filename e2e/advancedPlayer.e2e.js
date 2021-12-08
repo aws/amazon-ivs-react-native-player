@@ -47,13 +47,13 @@ describe('Advanced player', () => {
   it('Player plays video on play press', async () => {
     await expectNativePlayerToBeVisible();
 
-    await waitFor(element(by.id('playPauseButton').and(by.text('play'))))
+    await waitFor(element(by.id('playPauseButton').and(by.label('play'))))
       .toBeVisible()
       .withTimeout(20000);
 
     await togglePlayPauseVideo();
 
-    await waitFor(element(by.id('playPauseButton').and(by.text('pause'))))
+    await waitFor(element(by.id('playPauseButton').and(by.label('pause'))))
       .toBeVisible()
       .withTimeout(20000);
   });

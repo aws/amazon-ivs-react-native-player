@@ -116,6 +116,7 @@ export default function AdvancedExample() {
               </View>
               <IconButton
                 testID="playPauseButton"
+                accessibilityLabel={paused ? 'play' : 'pause'}
                 icon={paused ? 'play' : 'pause'}
                 size={40}
                 color="white"
