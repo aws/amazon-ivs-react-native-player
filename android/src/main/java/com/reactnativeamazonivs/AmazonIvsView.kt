@@ -9,7 +9,6 @@ import com.facebook.react.bridge.ReactContext
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.events.RCTEventEmitter
-import java.lang.Double.POSITIVE_INFINITY
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.timerTask
@@ -51,6 +50,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     playerView = PlayerView(context)
     player = playerView?.player
     playerView?.controlsEnabled = false
+
     (context as ThemedReactContext).addLifecycleEventListener(this)
 
     playerListener = object : Player.Listener() {

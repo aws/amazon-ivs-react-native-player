@@ -1,4 +1,10 @@
-import { expectNativePlayerToBeVisible } from './utils';
+import {
+  atLeastOneLogIsVisible,
+  expectNativePlayerToBeVisible,
+  togglePlayPauseVideo,
+} from './utils';
+
+const TIMEOUT = 300000;
 
 describe('Advanced player', () => {
   beforeAll(async () => {
@@ -36,5 +42,12 @@ describe('Advanced player', () => {
     await waitFor(element(by.text('live')))
       .toBeVisible()
       .withTimeout(20000);
+  });
+
+  it('Player plays video on play press', async () => {
+    await expectNativePlayerToBeVisible();
+    await togglePlayPauseVideo();
+
+    await atLeastOneLogIsVisible('state changed: Playing', TIMEOUT);
   });
 });
