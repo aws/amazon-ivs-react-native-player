@@ -9,7 +9,6 @@ import com.facebook.react.bridge.ReactContext
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.events.RCTEventEmitter
-import java.lang.Double.POSITIVE_INFINITY
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.timerTask
@@ -24,6 +23,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
   private var lastLiveLatency: Long? = null
   private var lastBitrate: Long? = null
   private var lastDuration: Long? = null
+  private var finishedLoading: Boolean = false
 
   enum class Events(private val mName: String) {
     STATE_CHANGED("onPlayerStateChange"),
@@ -50,6 +50,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     playerView = PlayerView(context)
     player = playerView?.player
     playerView?.controlsEnabled = false
+
     (context as ThemedReactContext).addLifecycleEventListener(this)
 
     playerListener = object : Player.Listener() {
@@ -104,6 +105,8 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
       val reactContext = context as ReactContext
       val uri = Uri.parse(streamUrl);
       this.streamUri = uri;
+
+      finishedLoading = false
       player.load(uri)
 
       reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.LOAD_START.toString(), Arguments.createMap())
@@ -256,11 +259,15 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
 
     when (state) {
       Player.State.PLAYING -> {
-        val onLoadData = Arguments.createMap()
-        val parsedDuration = getDuration(player!!.duration);
-        onLoadData.putDouble("duration", parsedDuration)
+        if (!finishedLoading) {
+          val onLoadData = Arguments.createMap()
+          val parsedDuration = getDuration(player!!.duration);
+          onLoadData.putDouble("duration", parsedDuration)
 
-        reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.LOAD.toString(), onLoadData)
+          finishedLoading = true
+
+          reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.LOAD.toString(), onLoadData)
+        }
       }
       Player.State.READY -> {
         val data = Arguments.createMap()

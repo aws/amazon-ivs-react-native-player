@@ -18,7 +18,7 @@ type AdvancedScreenNavigationProp = StackNavigationProp<
 export default function AdvancedExample() {
   const { setOptions } = useNavigation<AdvancedScreenNavigationProp>();
   const mediaPlayerRef = React.useRef<IVSPlayerRef>(null);
-  const [paused, setPaused] = useState(false);
+  const [paused, setPaused] = useState(true);
   const [buffering, setBuffering] = useState(false);
   const [duration, setDuration] = useState<number | null>(null);
   const [position, setPosition] = useState<number>();
@@ -64,7 +64,7 @@ export default function AdvancedExample() {
         ) : null}
         <IVSPlayer
           ref={mediaPlayerRef}
-          autoplay={true}
+          autoplay={false}
           paused={paused}
           streamUrl={URL}
           onDurationChange={setDuration}
@@ -116,6 +116,7 @@ export default function AdvancedExample() {
               </View>
               <IconButton
                 testID="playPauseButton"
+                accessibilityLabel={paused ? 'play' : 'pause'}
                 icon={paused ? 'play' : 'pause'}
                 size={40}
                 color="white"
