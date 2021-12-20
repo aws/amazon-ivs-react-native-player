@@ -320,4 +320,22 @@ describe('Playground player events', () => {
 
     await expectNativePlayerToBeVisible(); // Not a crash
   });
+
+  it("Player doesn't crash after changing initialBufferDuration", async () => {
+    await expectNativePlayerToBeVisible();
+    await togglePlayPauseVideo();
+
+    await waitFor(element(by.id('settingsIcon')))
+      .toBeVisible()
+      .withTimeout(TIMEOUT);
+    await element(by.id('settingsIcon')).tap();
+    await waitFor(element(by.id('initialBufferDuration')))
+      .toBeVisible()
+      .whileElement(by.id('modalScrollView'))
+      .scroll(50, 'down');
+    await element(by.id('initialBufferDuration')).replaceText('4.0');
+    await element(by.id('closeIcon')).tap();
+
+    await expectNativePlayerToBeVisible(); // Not a crash
+  });
 });

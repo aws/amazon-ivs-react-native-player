@@ -99,6 +99,11 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>() {
     view.setMaxBitrate(bitrate)
   }
 
+  @ReactProp(name = "initialBufferDuration")
+  fun setInitialBufferDuration(view: AmazonIvsView, duration: Double) {
+    view.setInitialBufferDuration(duration)
+  }
+
   override fun createViewInstance(reactContext: ThemedReactContext): AmazonIvsView {
     return AmazonIvsView(reactContext)
   }

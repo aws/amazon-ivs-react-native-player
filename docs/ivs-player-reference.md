@@ -184,6 +184,13 @@ Callback that returns current player position. Its interval can be configured us
 
 type: `(position: number) => void`
 
+### initialBufferDuration _(optional)_
+
+Sets the initial (minimum) buffer duration required to start playback. If a value outside the allowable range is used, the current value is maintained. Supported range: `0.1` to `5` seconds. Lowering this value may increase rebuffering.
+
+default: `Determined by player based on normal or low latency setting`
+type: `number`
+
 ### progressInterval _(optional)_
 
 Value that specifies how often `onProgress` callback should be called in seconds.
