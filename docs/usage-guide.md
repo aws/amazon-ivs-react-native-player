@@ -28,7 +28,7 @@ export default function App() {
 }
 ```
 
-## Setting `streamUrl` and other useful props
+## Loading stream URL
 
 To load and play the video or a live stream use [`streamUrl`](./ivs-player-reference.md#streamurl-optional) prop.
 In order to play the video directly after loading [`autoplay`](./ivs-player-reference.md#autoplay-optional) prop can be used.
@@ -42,7 +42,7 @@ In order to play the video directly after loading [`autoplay`](./ivs-player-refe
 
 You can also set the video volume or its quality using component props. The whole list of available props can be found [here](ivs-player-reference.md#props).
 
-## Setting `quality` prop
+## Changing video quality
 
 In order to set proper quality, you need to get the list of available qualities that comes from `onData` callback.
 
@@ -64,7 +64,9 @@ export default function App() {
 
 ## Listening on `onPlayerStateChange` and other useful callbacks.
 
-SDK allows to listen on certain useful events thats comes from the Player, the full list of events you can find in the [api-reference](./ivs-player-reference.md#props) which starts with `on` prefix.
+SDK allows to listen on certain useful callbacks that helps to get important pieces of the information about the Player.
+e.g. `onProgress` helps to build a video progress bar or `onLoad` that is triggered once a video is loaded with the information about the total duration.
+the full list of events you can find in the [api-reference](./ivs-player-reference.md#props) which starts with `on` prefix.
 
 ```tsx
 <IVSPlayer
@@ -172,6 +174,7 @@ The list of all available methods can be found [here](./ivs-player-reference.md#
 
 `IVSPlayer` component accepts `style` property which means that you can pass any `ViewStyle` prop in addition to style your Player.
 In this example, let's set `width`, `height` and `borderRadius`.
+Those styles are being applied to the Parent View of the Player
 
 ```tsx
 <IVSPlayer
@@ -188,7 +191,8 @@ In this example, let's set `width`, `height` and `borderRadius`.
 
 Let's consider the very popular type of video player which displays control buttons on the top of the Player.
 To accomplish this, you need to add the control buttons as a `children` of the component.
-We want to add `play/pause` button and use `pause` property to control the state.
+Let's assume you want to add play and pause buttons and use them to control the Player state.
+In the following example you can see how it can be done:
 
 ```tsx
 import IVSPlayer, { IVSPlayerRef } from 'amazon-ivs-react-native';
