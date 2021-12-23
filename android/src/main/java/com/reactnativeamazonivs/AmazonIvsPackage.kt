@@ -1,4 +1,4 @@
-package com.amazonivsreactnative
+package com.amazonivsreactnativeplayer
 
 import java.util.Arrays
 

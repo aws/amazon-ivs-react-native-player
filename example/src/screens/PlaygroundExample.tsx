@@ -6,7 +6,7 @@ import IVSPlayer, {
   LogLevel,
   PlayerState,
   Quality,
-} from 'amazon-ivs-react-native';
+} from 'amazon-ivs-react-native-player';
 import {
   IconButton,
   ActivityIndicator,

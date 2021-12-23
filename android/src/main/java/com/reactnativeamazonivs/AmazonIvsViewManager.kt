@@ -1,4 +1,4 @@
-package com.amazonivsreactnative
+package com.amazonivsreactnativeplayer
 
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
