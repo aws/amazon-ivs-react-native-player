@@ -66,7 +66,7 @@ export default function App() {
 
 SDK allows to listen on certain useful callbacks that helps to get important pieces of the information about the Player.
 e.g. `onProgress` helps to build a video progress bar or `onLoad` that is triggered once a video is loaded with the information about the total duration.
-the full list of events you can find in the [api-reference](./ivs-player-reference.md#props) which starts with `on` prefix.
+You can find the full list of events in the [api-reference](./ivs-player-reference.md#props) which starts with `on` prefix.
 
 ```tsx
 <IVSPlayer
@@ -133,7 +133,7 @@ the full list of events you can find in the [api-reference](./ivs-player-referen
 
 In addition to configuring the player declaratively there is also a way to trigger some actions imperatively using component's ref.
 
-On of those actions are `play`, `pause` and `seekTo` which can be used to manually stop and start the video or set the current time position.
+Those actions are `play`, `pause` and `seekTo` which can be used to manually stop and start the video or set the current time position.
 
 ```tsx
 import IVSPlayer, { IVSPlayerRef } from 'amazon-ivs-react-native'
@@ -172,7 +172,7 @@ The list of all available methods can be found [here](./ivs-player-reference.md#
 
 ## Styling the Player
 
-`IVSPlayer` component accepts `style` property which means that you can pass any `ViewStyle` prop in addition to style your Player.
+`IVSPlayer` component accepts `style` property which means that you can additionally pass any `ViewStyle` prop to style your Player.
 In this example, let's set `width`, `height` and `borderRadius`.
 Those styles are being applied to the Parent View of the Player
 
@@ -189,8 +189,8 @@ Those styles are being applied to the Parent View of the Player
 
 ## Add control buttons on the top of the Player
 
-Let's consider the very popular type of video player which displays control buttons on the top of the Player.
-To accomplish this, you need to add the control buttons as a `children` of the component.
+Let's consider the popular type of video player which displays control buttons on the top of the Player.
+To accomplish this, you need to add the control buttons as `children` of the component.
 Let's assume you want to add play and pause buttons and use them to control the Player state.
 In the following example you can see how it can be done:
 
