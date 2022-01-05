@@ -188,6 +188,11 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     player?.setAutoMaxBitrate(bitrate.toInt())
   }
 
+  fun setInitialBufferDuration(duration: Double) {
+    val valueInMilliseconds = duration * 1000
+    player?.setInitialBufferDuration(valueInMilliseconds.toLong())
+  }
+
   fun onTextMetadataCue(cue: TextMetadataCue) {
     val reactContext = context as ReactContext
 

@@ -47,6 +47,7 @@ export default function PlaygroundExample() {
   const [url, setUrl] = useState(URL);
   const [muted, setMuted] = useState(false);
   const [quality, setQuality] = useState<Quality | null>(null);
+  const [initialBufferDuration, setInitialBufferDuration] = useState(0.1);
   const [autoMaxQuality, setAutoMaxQuality] = useState<Quality | null>(null);
   const [qualities, setQualities] = useState<Quality[]>([]);
   const [autoQualityMode, setAutoQualityMode] = useState(false);
@@ -117,6 +118,7 @@ export default function PlaygroundExample() {
           liveLowLatency={liveLowLatency}
           streamUrl={url}
           logLevel={logLevel}
+          initialBufferDuration={initialBufferDuration}
           playbackRate={playbackRate}
           progressInterval={progressInterval}
           volume={volume}
@@ -317,6 +319,17 @@ export default function PlaygroundExample() {
                     value={volume}
                     onValueChange={setVolume}
                     testID="volume"
+                  />
+                  <SettingsSliderItem
+                    label={`Initial buffer duration: ${initialBufferDuration.toFixed(
+                      1
+                    )}`}
+                    minimumValue={0.1}
+                    maximumValue={5}
+                    step={0.1}
+                    value={initialBufferDuration}
+                    onValueChange={setInitialBufferDuration}
+                    testID="initialBufferDuration"
                   />
                   <SettingsSwitchItem
                     label="Live Low Latency"

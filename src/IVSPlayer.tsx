@@ -39,6 +39,7 @@ type IVSPlayerProps = {
   autoQualityMode?: boolean;
   breakpoints?: number[];
   maxBitrate?: number;
+  initialBufferDuration?: number;
   onSeek?(event: NativeSyntheticEvent<{ position: number }>): void;
   onData?(event: NativeSyntheticEvent<{ playerData: PlayerData }>): void;
   onVideoStatistics?(
@@ -87,6 +88,7 @@ type Props = {
   autoQualityMode?: boolean;
   breakpoints?: number[];
   maxBitrate?: number;
+  initialBufferDuration?: number;
   onSeek?(position: number): void;
   onData?(data: PlayerData): void;
   onVideoStatistics?(data: VideoData): void;
@@ -130,6 +132,7 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
       autoQualityMode,
       breakpoints = [],
       maxBitrate,
+      initialBufferDuration,
       onSeek,
       onData,
       onVideoStatistics,
@@ -315,6 +318,7 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
           progressInterval={progressInterval}
           volume={volume}
           quality={quality}
+          initialBufferDuration={initialBufferDuration}
           autoMaxQuality={autoMaxQuality}
           autoQualityMode={autoQualityMode}
           breakpoints={breakpoints}
