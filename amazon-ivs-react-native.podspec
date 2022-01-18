@@ -19,7 +19,7 @@ Pod::Spec.new do |s|
   s.license      = package["license"]
   s.authors      = package["author"]
 
-  s.platforms    = { :ios => "10.0" }
+  s.platforms    = { :ios => "11.0" }
   s.source       = { :git => "https://github.com/aws/amazon-ivs-react-native.git", :tag => "#{s.version}" }
 
 
