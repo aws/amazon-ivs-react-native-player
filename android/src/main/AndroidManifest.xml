@@ -3,9 +3,9 @@
   <application>
     <meta-data
       android:name="com.amazonaws.ivs.player.FRAMEWORK_NAME"
-      android:value="amazon-ivs-react-native" />
+      android:value="reactnativeplayer" />
     <meta-data
       android:name="com.amazonaws.ivs.player.FRAMEWORK_VERSION"
-      android:value="1.0.2-beta" />
+      android:value="${sdkVersion}" />
   </application>
 </manifest>

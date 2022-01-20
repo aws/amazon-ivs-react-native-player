@@ -5,7 +5,7 @@ package = JSON.parse(File.read(File.join(__dir__, "package.json")))
 File.open("ios/AmazonIvsManager+Framework.swift", "w") { |f|
   f.write <<-IVS
 extension AmazonIvsManager {
-  @objc public static let frameworkName = "reactnative"
+  @objc public static let frameworkName = "reactnativeplayer"
   @objc public static let frameworkVersion = "#{package["version"]}"
 }
 IVS
@@ -19,7 +19,7 @@ Pod::Spec.new do |s|
   s.license      = package["license"]
   s.authors      = package["author"]
 
-  s.platforms    = { :ios => "10.0" }
+  s.platforms    = { :ios => "11.0" }
   s.source       = { :git => "https://github.com/aws/amazon-ivs-react-native.git", :tag => "#{s.version}" }
 
 
@@ -27,5 +27,5 @@ Pod::Spec.new do |s|
 
 
   s.dependency "React-Core"
-  s.dependency "AmazonIVSPlayer", "~> 1.6.0"
+  s.dependency "AmazonIVSPlayer", "~> 1.7.0"
 end
