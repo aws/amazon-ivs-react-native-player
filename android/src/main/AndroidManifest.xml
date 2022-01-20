@@ -1,4 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.amazonivsreactnative">
-
+  <application>
+    <meta-data
+      android:name="com.amazonaws.ivs.player.FRAMEWORK_NAME"
+      android:value="amazon-ivs-react-native" />
+    <meta-data
+      android:name="com.amazonaws.ivs.player.FRAMEWORK_VERSION"
+      android:value="1.0.2-beta" />
+  </application>
 </manifest>
