@@ -39,14 +39,11 @@ android {
     targetSdkVersion getExtOrIntegerDefault('targetSdkVersion')
     versionCode 1
     versionName sdk_version
+    manifestPlaceholders = [sdkVersion:sdk_version]
   }
   buildTypes {
     release {
       minifyEnabled false
-      manifestPlaceholders = [sdkVersion:sdk_version]
-    }
-    debug {
-      manifestPlaceholders = [sdkVersion:sdk_version]
     }
   }
   lintOptions {
