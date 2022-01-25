@@ -6,6 +6,7 @@
  */
 
 #import "AppDelegate.h"
+#import <AVFoundation/AVFoundation.h>
 
 #import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>
@@ -44,6 +45,9 @@
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
+  
+  [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
+
   return YES;
 }
 
