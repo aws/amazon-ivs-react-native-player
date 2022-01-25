@@ -15,6 +15,7 @@ import {
   Portal,
   Title,
 } from 'react-native-paper';
+import { Platform } from 'react-native';
 import Slider from '@react-native-community/slider';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/native';
@@ -102,7 +103,12 @@ export default function PlaygroundExample() {
   return (
     <View style={styles.container}>
       <View style={styles.playerContainer}>
-        {buffering ? (
+        {/*
+          Note: A buffering indicator is included by default on Android. It's
+          styling is managed in /example/android/app/src/main/res/values/styles.xml
+          by adjusting the 'android:indeterminateTint'.
+        */}
+        {buffering && Platform.OS === 'ios' ? (
           <ActivityIndicator
             animating={true}
             size="large"
