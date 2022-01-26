@@ -100,6 +100,13 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     }, 0, 1000)
   }
 
+  override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+    super.onLayout(changed, left, top, right, bottom)
+    if (changed) {
+      post(mLayoutRunnable)
+    }
+  }
+
   fun setStreamUrl(streamUrl: String) {
     player?.let { player ->
       val reactContext = context as ReactContext
@@ -136,6 +143,18 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
       2 -> player?.setLogLevel(Player.LogLevel.WARNING)
       3 -> player?.setLogLevel(Player.LogLevel.ERROR)
     }
+  }
+
+
+  fun setResizeMode(resizeMode: String?) {
+    playerView?.resizeMode = findResizeMode(resizeMode)
+  }
+
+  private fun findResizeMode(mode: String?): ResizeMode = when (mode) {
+      "aspectFill" -> ResizeMode.FILL
+      "aspectFit" -> ResizeMode.FIT
+      "aspectZoom" -> ResizeMode.ZOOM
+      else -> ResizeMode.FIT
   }
 
   private fun findQuality(quality: ReadableMap?): Quality? {
@@ -192,6 +211,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     val valueInMilliseconds = duration * 1000
     player?.setInitialBufferDuration(valueInMilliseconds.toLong())
   }
+
 
   fun onTextMetadataCue(cue: TextMetadataCue) {
     val reactContext = context as ReactContext

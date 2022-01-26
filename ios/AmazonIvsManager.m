@@ -2,6 +2,7 @@
 #import "RCTViewManager.h"
 
 @interface RCT_EXTERN_MODULE(AmazonIvsManager, RCTViewManager)
+RCT_EXPORT_VIEW_PROPERTY(resizeMode, NSString)
 RCT_EXPORT_VIEW_PROPERTY(muted, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(liveLowLatency, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(quality, NSDictionary)
