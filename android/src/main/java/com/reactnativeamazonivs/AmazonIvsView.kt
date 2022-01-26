@@ -100,13 +100,6 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     }, 0, 1000)
   }
 
-  override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-    super.onLayout(changed, left, top, right, bottom)
-    if (changed) {
-      post(mLayoutRunnable)
-    }
-  }
-
   fun setStreamUrl(streamUrl: String) {
     player?.let { player ->
       val reactContext = context as ReactContext
