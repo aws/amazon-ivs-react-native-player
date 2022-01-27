@@ -1,4 +1,4 @@
-package com.example.amazonivsreactnative;
+package com.example.amazonivsreactnativeplayer;
 
 import android.app.Application;
 import android.content.Context;

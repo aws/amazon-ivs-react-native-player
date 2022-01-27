@@ -1,5 +1,5 @@
 PODS:
-  - amazon-ivs-react-native (1.0.2-beta):
+  - amazon-ivs-react-native-player (1.0.2-beta):
     - AmazonIVSPlayer (~> 1.7.0)
     - React-Core
   - AmazonIVSPlayer (1.7.0)
@@ -339,7 +339,7 @@ PODS:
   - Yoga (1.14.0)
 
 DEPENDENCIES:
-  - amazon-ivs-react-native (from `../..`)
+  - amazon-ivs-react-native-player (from `../..`)
   - appcenter-analytics (from `../node_modules/appcenter-analytics/ios`)
   - appcenter-core (from `../node_modules/appcenter/ios`)
   - appcenter-crashes (from `../node_modules/appcenter-crashes/ios`)
@@ -391,7 +391,7 @@ SPEC REPOS:
     - boost-for-react-native
 
 EXTERNAL SOURCES:
-  amazon-ivs-react-native:
+  amazon-ivs-react-native-player:
     :path: "../.."
   appcenter-analytics:
     :path: "../node_modules/appcenter-analytics/ios"
@@ -475,8 +475,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  amazon-ivs-react-native: 8400bf779a57a2387df60a032c20320c657f3d57
-  AmazonIVSPlayer: 8e1afb7f9d9a43a65f3b25ed02bd150e2fb1d41b
+  amazon-ivs-react-native-player: 628db448bf0b36e6621e5fe0b5ab7133bbb68d30
+  AmazonIVSPlayer: ffb432b2359faad4d6e91c5c4b9bbe726d42c5af
   AppCenter: 883369ab78427b0561c688158d689dfe1f993ea9
   appcenter-analytics: 2a8a55d2feba193c3c8a51b9902ef4757386414e
   appcenter-core: 0293b8aeee457a25b44323a311de49c29d9defa7
@@ -521,6 +521,6 @@ SPEC CHECKSUMS:
   RNVectorIcons: bc69e6a278b14842063605de32bec61f0b251a59
   Yoga: 575c581c63e0d35c9a83f4b46d01d63abc1100ac
 
-PODFILE CHECKSUM: ac2be71f61160567f7deeaf753de1c0321ae6240
+PODFILE CHECKSUM: c6836e6800bb56e82ef77b5d96ded03a7ffb1a9f
 
 COCOAPODS: 1.11.2
