@@ -1,6 +1,6 @@
 {
   "name": "amazon-ivs-react-native",
-  "version": "1.0.2-beta",
+  "version": "1.0.0",
   "description": "amazon-ivs-react-native",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
