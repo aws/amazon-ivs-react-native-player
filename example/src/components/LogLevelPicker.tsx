@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Button } from 'react-native-paper';
-import { LogLevel } from 'amazon-ivs-react-native';
+import { LogLevel } from 'amazon-ivs-react-native-player';
 import { StyleSheet, View } from 'react-native';
 
 type Props = {

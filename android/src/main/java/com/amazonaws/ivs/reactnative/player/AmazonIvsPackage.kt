@@ -1,6 +1,4 @@
-package com.amazonivsreactnative
-
-import java.util.Arrays
+package com.amazonaws.ivs.reactnative.player
 
 import com.facebook.react.ReactPackage
 import com.facebook.react.bridge.NativeModule
