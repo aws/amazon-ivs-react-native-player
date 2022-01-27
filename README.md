@@ -2,8 +2,6 @@
 
 This package implements native binding for Amazon IVS Player for iOS and Android.
 
-**This package is currently in developer preview and is not recommended for production use.**
-
 ## Installation
 
 - install `amazon-ivs-react-native` dependency using yarn or npm
