@@ -14,13 +14,13 @@ PODS:
     - AppCenter/Crashes (~> 4.0)
     - AppCenterReactNativeShared (~> 4.0)
     - React-Core
-  - AppCenter/Analytics (4.4.1):
+  - AppCenter/Analytics (4.3.0):
     - AppCenter/Core
-  - AppCenter/Core (4.4.1)
-  - AppCenter/Crashes (4.4.1):
+  - AppCenter/Core (4.3.0)
+  - AppCenter/Crashes (4.3.0):
     - AppCenter/Core
-  - AppCenterReactNativeShared (4.4.3):
-    - AppCenter/Core (= 4.4.1)
+  - AppCenterReactNativeShared (4.3.0):
+    - AppCenter/Core (= 4.3.0)
   - boost-for-react-native (1.63.0)
   - DoubleConversion (1.1.6)
   - FBLazyVector (0.64.2)
@@ -477,11 +477,11 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   amazon-ivs-react-native: 7cacc874068bac17ffa45d59e08575a639fd9428
   AmazonIVSPlayer: 8e1afb7f9d9a43a65f3b25ed02bd150e2fb1d41b
-  AppCenter: b0b6f1190215b5f983c42934db718f3b46fff3c0
+  AppCenter: 883369ab78427b0561c688158d689dfe1f993ea9
   appcenter-analytics: 2a8a55d2feba193c3c8a51b9902ef4757386414e
   appcenter-core: 0293b8aeee457a25b44323a311de49c29d9defa7
   appcenter-crashes: ad135405e148a9ed1c8bd169a9d2ea7bbaecd34c
-  AppCenterReactNativeShared: ac6961204492735ce2507df0a14ce59b13e9c1c5
+  AppCenterReactNativeShared: a821c7287a296486889ef6339317b701febb0695
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
   DoubleConversion: cf9b38bf0b2d048436d9a82ad2abe1404f11e7de
   FBLazyVector: e686045572151edef46010a6f819ade377dfeb4b
