@@ -44,6 +44,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
         self.progressInterval = 1
         self.volume = Double(player.volume)
         self.breakpoints = []
+        self.initialBufferDuration = 1
 
         super.init(frame: frame)
 
@@ -116,6 +117,13 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
         didSet {
             let quality = findQuality(quality: autoMaxQuality)
             player.setAutoMaxQuality(quality)
+        }
+    }
+    
+    @objc var initialBufferDuration: Double {
+        didSet {
+            let parsedTime = CMTimeMakeWithSeconds(initialBufferDuration, preferredTimescale: 10)
+            player.setInitialBufferDuration(parsedTime)
         }
     }
 
