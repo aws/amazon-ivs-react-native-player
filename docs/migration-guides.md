@@ -10,13 +10,13 @@ If you previously integrated this SDK, there are a couple of changes that have b
 
 As part of the `1.0.0` release, the NPM package was renamed from [`amazon-ivs-react-native`](https://www.npmjs.com/package/amazon-ivs-react-native) to [`amazon-ivs-react-native-player`](https://www.npmjs.com/package/amazon-ivs-react-native-player).
 
-Deprecation notices were added to the previous package, which should shop up when installation is attempted.
+Deprecation notices were added to the previous package, which should show up when an installation is attempted.
 
 ### Code Changes
 
 Overall there are not many code changes required.
 
-> Note that this diff is based off of a stand Create React Native App distribution, the location of your source files may vary.
+> Note that this diff is based off of a standard Create React Native App build, the location of your source files may vary.
 
 ```diff
 --- a/App.js
@@ -56,7 +56,7 @@ Overall there are not many code changes required.
 
 ### Installation
 
-Once the above code changes are in place:
+Once the above code changes are in place, run the following:
 
 ```sh
 yarn remove amazon-ivs-react-native
@@ -66,4 +66,4 @@ cd ios
 pod install
 ```
 
-Afterwards, ensure that you clean any build folders or directories before attempting to run the app.
+Afterwards, ensure that you clean any build folders before attempting to run the app.
