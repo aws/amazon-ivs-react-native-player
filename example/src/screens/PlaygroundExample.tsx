@@ -302,6 +302,7 @@ export default function PlaygroundExample() {
                     <OptionPicker
                       option={manualQuality}
                       options={qualities}
+                      autoOption
                       setOption={(quality) => {
                         setAutoQualityMode(!quality);
                         setManualQuality(quality);
@@ -408,6 +409,7 @@ export default function PlaygroundExample() {
                     <OptionPicker
                       option={autoMaxQuality}
                       options={qualities}
+                      autoOption
                       setOption={setAutoMaxQuality}
                     />
                   </SettingsItem>

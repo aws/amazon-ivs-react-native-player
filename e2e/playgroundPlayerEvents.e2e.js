@@ -272,7 +272,7 @@ describe('Playground player events', () => {
     await expectNativePlayerToBeVisible(); // Not a crash
   });
 
-  it("Player doesn't crash after changing log level", async () => {
+  it("Player doesn't crash after changing autoMaxQuality", async () => {
     await expectNativePlayerToBeVisible();
     await togglePlayPauseVideo();
 
