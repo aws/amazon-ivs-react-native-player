@@ -13,10 +13,10 @@ We welcome you to use the GitHub issue tracker to report bugs or suggest feature
 When filing an issue, please check existing open, or recently closed, issues to make sure somebody else hasn't already
 reported the issue. Please try to include as much information as you can. Details like these are incredibly useful:
 
-* A reproducible test case or series of steps
-* The version of our code being used
-* Any modifications you've made relevant to the bug
-* Anything unusual about your environment or deployment
+- A reproducible test case or series of steps
+- The version of our code being used
+- Any modifications you've made relevant to the bug
+- Anything unusual about your environment or deployment
 
 ## Development workflow
 
@@ -67,9 +67,9 @@ yarn test
 
 When updating/changing Typescript types, please remember to also update their Flow equivalents.
 
-To edit the Swift files, open `example/ios/AmazonIvsExample.xcworkspace` in XCode and find the source files at `Pods > Development Pods > amazon-ivs-react-native`.
+To edit the Swift files, open `example/ios/AmazonIvsExample.xcworkspace` in XCode and find the source files at `Pods > Development Pods > amazon-ivs-react-native-player`.
 
-To edit the Kotlin files, open `example/android` in Android studio and find the source files at `amazonivsreactnative` under `Android`.
+To edit the Kotlin files, open `example/android` in Android studio and find the source files at `amazonivsreactnativeplayer` under `Android`.
 
 ### Commit message convention
 
@@ -153,7 +153,6 @@ opensource-codeofconduct@amazon.com with any additional questions or comments.
 ## Security issue notifications
 
 If you discover a potential security issue in this project we ask that you notify AWS/Amazon Security via our [vulnerability reporting page](http://aws.amazon.com/security/vulnerability-reporting/). Please do **not** create a public GitHub issue.
-
 
 ## Licensing
 

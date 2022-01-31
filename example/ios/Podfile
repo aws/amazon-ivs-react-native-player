@@ -12,7 +12,7 @@ target 'AmazonIvsExample' do
     :hermes_enabled => false
   )
 
-  pod 'amazon-ivs-react-native', :path => '../..'
+  pod 'amazon-ivs-react-native-player', :path => '../..'
   
   # Enables Flipper.
   #

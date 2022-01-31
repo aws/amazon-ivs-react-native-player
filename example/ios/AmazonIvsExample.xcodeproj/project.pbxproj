@@ -578,7 +578,7 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.amazonivsreactnative;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.amazonivsreactnativeplayer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AmazonIvsExample.app/AmazonIvsExample";
 			};
@@ -598,7 +598,7 @@
 					"-lc++",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.amazonivsreactnative;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.amazonivsreactnativeplayer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AmazonIvsExample.app/AmazonIvsExample";
 			};
@@ -621,7 +621,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.amazonivsreactnative;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.amazonivsreactnativeplayer;
 				PRODUCT_NAME = AmazonIvsExample;
 				SWIFT_OBJC_BRIDGING_HEADER = "AmazonIvsExample-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -647,7 +647,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.amazonivsreactnative;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.amazonivsreactnativeplayer;
 				PRODUCT_NAME = AmazonIvsExample;
 				SWIFT_OBJC_BRIDGING_HEADER = "AmazonIvsExample-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;

@@ -133,7 +133,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.example.amazonivsreactnative"
+        applicationId "com.example.amazonivsreactnativeplayer"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -221,7 +221,7 @@ dependencies {
         implementation jscFlavor
     }
 
-    implementation project(':amazonivsreactnative')
+    implementation project(':amazonivsreactnativeplayer')
 }
 
 // Run this once to be able to run the application with BUCK

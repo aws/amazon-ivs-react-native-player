@@ -1,6 +1,6 @@
 {
-  "name": "amazon-ivs-react-native-example",
-  "description": "Example app for amazon-ivs-react-native",
+  "name": "amazon-ivs-react-native-player-example",
+  "description": "Example app for amazon-ivs-react-native-player",
   "version": "0.0.1",
   "private": true,
   "scripts": {

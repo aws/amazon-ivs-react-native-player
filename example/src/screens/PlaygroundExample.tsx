@@ -6,7 +6,7 @@ import IVSPlayer, {
   LogLevel,
   PlayerState,
   Quality,
-} from 'amazon-ivs-react-native';
+} from 'amazon-ivs-react-native-player';
 import {
   IconButton,
   ActivityIndicator,
@@ -15,6 +15,7 @@ import {
   Portal,
   Title,
 } from 'react-native-paper';
+import { Platform } from 'react-native';
 import Slider from '@react-native-community/slider';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/native';
@@ -46,11 +47,12 @@ export default function PlaygroundExample() {
   const [paused, setPaused] = useState(false);
   const [url, setUrl] = useState(URL);
   const [muted, setMuted] = useState(false);
-  const [quality, setQuality] = useState<Quality | null>(null);
+  const [manualQuality, setManualQuality] = useState<Quality | null>(null);
+  const [detectedQuality, setDetectedQuality] = useState<Quality | null>(null);
   const [initialBufferDuration, setInitialBufferDuration] = useState(0.1);
   const [autoMaxQuality, setAutoMaxQuality] = useState<Quality | null>(null);
   const [qualities, setQualities] = useState<Quality[]>([]);
-  const [autoQualityMode, setAutoQualityMode] = useState(false);
+  const [autoQualityMode, setAutoQualityMode] = useState(true);
   const [buffering, setBuffering] = useState(false);
   const [duration, setDuration] = useState<number | null>(null);
   const [liveLowLatency, setLiveLowLatency] = useState(true);
@@ -102,7 +104,12 @@ export default function PlaygroundExample() {
   return (
     <View style={styles.container}>
       <View style={styles.playerContainer}>
-        {buffering ? (
+        {/*
+          Note: A buffering indicator is included by default on Android. It's
+          styling is managed in /example/android/app/src/main/res/values/styles.xml
+          by adjusting the 'android:indeterminateTint'.
+        */}
+        {buffering && Platform.OS === 'ios' ? (
           <ActivityIndicator
             animating={true}
             size="large"
@@ -123,11 +130,14 @@ export default function PlaygroundExample() {
           progressInterval={progressInterval}
           volume={volume}
           autoQualityMode={autoQualityMode}
-          quality={quality}
+          quality={manualQuality}
           autoMaxQuality={autoMaxQuality}
           breakpoints={breakpoints}
           onSeek={(newPosition) => console.log('new position', newPosition)}
           onPlayerStateChange={(state) => {
+            if (state === PlayerState.Buffering) {
+              log(`buffering at ${detectedQuality?.name}`);
+            }
             if (state === PlayerState.Playing || state === PlayerState.Idle) {
               setBuffering(false);
             }
@@ -137,9 +147,10 @@ export default function PlaygroundExample() {
             setDuration(duration);
             log(`duration changed: ${parseSecondsToString(duration || 0)}`);
           }}
-          onQualityChange={(newQuality) =>
-            log(`quality changed: ${newQuality?.name}`)
-          }
+          onQualityChange={(newQuality) => {
+            setDetectedQuality(newQuality);
+            log(`quality changed: ${newQuality?.name}`);
+          }}
           onRebuffering={() => setBuffering(true)}
           onLoadStart={() => log(`load started`)}
           onLoad={(loadedDuration) =>
@@ -263,11 +274,11 @@ export default function PlaygroundExample() {
                   />
                   <SettingsItem label="Quality" testID="qualitiesPicker">
                     <QualitiesPicker
-                      quality={quality}
+                      quality={manualQuality}
                       qualities={qualities}
                       setQuality={(quality) => {
                         setAutoQualityMode(!quality);
-                        setQuality(quality);
+                        setManualQuality(quality);
                       }}
                     />
                   </SettingsItem>
@@ -347,7 +358,7 @@ export default function PlaygroundExample() {
                     label="Auto Quality"
                     onValueChange={(value) => {
                       if (value) {
-                        setQuality(null);
+                        setManualQuality(null);
                       }
                       setAutoQualityMode(value);
                     }}

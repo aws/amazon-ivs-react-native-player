@@ -1,3 +1,5 @@
+import groovy.json.JsonSlurper
+
 buildscript {
   // Buildscript is evaluated before everything else so we can't use getExtOrDefault
   def kotlin_version = rootProject.ext.has('kotlinVersion') ? rootProject.ext.get('kotlinVersion') : project.properties['AmazonIvs_kotlinVersion']
@@ -25,6 +27,10 @@ def getExtOrIntegerDefault(name) {
   return rootProject.ext.has(name) ? rootProject.ext.get(name) : (project.properties['AmazonIvs_' + name]).toInteger()
 }
 
+def rootPkg = file('../package.json')
+def pkgData = new JsonSlurper().parseText(rootPkg.text)
+def sdk_version = pkgData.version
+
 android {
   compileSdkVersion getExtOrIntegerDefault('compileSdkVersion')
   buildToolsVersion getExtOrDefault('buildToolsVersion')
@@ -32,7 +38,8 @@ android {
     minSdkVersion 21
     targetSdkVersion getExtOrIntegerDefault('targetSdkVersion')
     versionCode 1
-    versionName "1.0"
+    versionName sdk_version
+    manifestPlaceholders = [sdkVersion:sdk_version]
   }
   buildTypes {
     release {
