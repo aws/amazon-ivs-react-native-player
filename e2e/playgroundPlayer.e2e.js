@@ -5,6 +5,7 @@ import {
   atLeastOneLogIsVisible,
   navigateToPlayground,
   togglePlayPauseVideo,
+  sleep,
 } from './utils';
 
 const TIMEOUT = 300000;
@@ -54,11 +55,11 @@ describe('Playground player', () => {
   it('Player pauses video using paused prop', async () => {
     await expectNativePlayerToBeVisible();
 
-    await atLeastOneLogIsVisible('state changed: Playing', TIMEOUT);
-
     await element(by.id('settingsIcon')).tap();
     await element(by.id('paused')).tap();
+    sleep(5000);
     await element(by.id('closeIcon')).tap();
+    sleep(5000);
 
     await atLeastOneLogIsVisible('state changed: Idle', TIMEOUT);
   });
