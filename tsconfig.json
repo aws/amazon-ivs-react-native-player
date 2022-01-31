@@ -2,7 +2,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "amazon-ivs-react-native": ["./src/index"]
+      "amazon-ivs-react-native-player": ["./src/index"]
     },
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
