@@ -10,7 +10,9 @@ interface Props<T> {
   setOption: (quality: T | null) => void;
 }
 
-function OptionPicker<T extends Record<string, any>>({
+type ObjectWithOneRequiredProperty = Record<string, any> & { name: string };
+
+function OptionPicker<T extends ObjectWithOneRequiredProperty>({
   option,
   options,
   autoOption,

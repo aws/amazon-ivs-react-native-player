@@ -99,12 +99,12 @@ describe('Playground player events', () => {
       .toBeVisible()
       .withTimeout(TIMEOUT);
     await waitFor(
-      element(by.text('Aspect Fit').withAncestor(by.id('resizeModePicker')))
+      element(by.text('ASPECT FIT').withAncestor(by.id('resizeModePicker')))
     )
       .toBeVisible()
       .withTimeout(TIMEOUT);
     await element(
-      by.text('Aspect Fit').withAncestor(by.id('resizeModePicker'))
+      by.text('ASPECT FIT').withAncestor(by.id('resizeModePicker'))
     ).tap();
     await element(by.id('closeIcon')).tap();
 
