@@ -1,3 +1,5 @@
+/* eslint-env detox/detox, jest */
+
 export const expectNativePlayerToBeVisible = async () => {
   await waitFor(
     element(
