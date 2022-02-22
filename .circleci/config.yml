@@ -103,10 +103,10 @@ commands:
         default: 'TestingAVD'
       platform_version:
         type: string
-        default: 'android-28'
+        default: 'android-29'
       build_tools_version:
         type: string
-        default: '28.0.3'
+        default: '30.0.2'
       logcat_grep:
         type: string
         default: 'com.amazon.ivsplayer'
