@@ -9,6 +9,9 @@ const TIMEOUT = 300000;
 
 jest.setTimeout(1200000);
 
+jest.retryTimes(3);
+
+
 describe('Playground player events', () => {
   beforeAll(async () => {
     await device.launchApp();

@@ -6,6 +6,8 @@ import {
 
 const TIMEOUT = 300000;
 
+jest.retryTimes(3);
+
 describe('Advanced player', () => {
   beforeAll(async () => {
     await device.launchApp();
