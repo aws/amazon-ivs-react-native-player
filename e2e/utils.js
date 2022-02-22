@@ -28,7 +28,7 @@ export const navigateToPlayground = async () => {
   await waitFor(element(by.id('Playground')))
     .toBeVisible()
     .withTimeout(32000);
-  await  element(by.id('Playground')).tap();
+  await element(by.id('Playground')).tap();
 
   await waitFor(element(by.text('PlaygroundExample')))
     .toBeVisible()

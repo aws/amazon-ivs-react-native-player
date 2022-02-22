@@ -191,18 +191,17 @@ android {
 }
 
 gradle.projectsEvaluated {
-  if (tasks.findByName('assembleAndroidTest')) {
-    // In case of building assembleAndroidTest debug.
-    tasks.named('assembleAndroidTest').configure {
-      mustRunAfter tasks.named('mergeExtDexRelease')
-    }
-  } else {
-    // In case of building assembleAndroidTest release.
+  if (tasks.findByName('mergeExtDexRelease') && tasks.findByName('mergeExtDexReleaseAndroidTest')) {
     tasks.named('mergeExtDexRelease').configure {
-      mustRunAfter tasks.named('assembleAndroidTest')
+      mustRunAfter tasks.named('mergeExtDexReleaseAndroidTest')
     }
   }
-  
+
+  if (tasks.findByName('mergeExtDexDebugAndroidTest') && tasks.findByName('mergeExtDexDebug')) {
+    tasks.named('mergeExtDexDebugAndroidTest').configure {
+      mustRunAfter tasks.named('mergeExtDexDebug')
+    }
+  }
 }
 
 dependencies {
