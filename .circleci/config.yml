@@ -103,7 +103,7 @@ commands:
         default: 'TestingAVD'
       platform_version:
         type: string
-        default: 'android-29'
+        default: 'android-30'
       build_tools_version:
         type: string
         default: '30.0.2'
