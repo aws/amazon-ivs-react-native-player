@@ -252,7 +252,7 @@ Defines different modes for displaying video in a Player.
 ```
 ResizeMode 	`aspectFill` 	Preserves the aspect ratio by increasing the width or height.
 ResizeMode 	`aspectFit` 	Preserves the aspect ratio by reducing the width or height.
-ResizeMode 	aspe`ctZoom 	Fits the parent view ignoring the aspect ratio of the video.
+ResizeMode 	`aspectZoom` 	Fits the parent view ignoring the aspect ratio of the video.
 ```
 
 type: `ResizeMode`
