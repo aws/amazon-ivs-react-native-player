@@ -254,6 +254,9 @@ jobs:
           name: yarn install
       - android_emulator_start
       - run:
+          command: rm -rf ~/.gradle/caches/6.9
+          name: clear gradle cache
+      - run:
           command: yarn e2e:build:android:release
           name: build for detox
       - run:
