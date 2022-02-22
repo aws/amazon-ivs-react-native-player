@@ -17,11 +17,10 @@ describe('Advanced player', () => {
 
   beforeEach(async () => {
     await device.reloadReactNative();
-    waitFor(element(by.id('Advanced')))
+    await waitFor(element(by.id('Advanced')))
       .toBeVisible()
       .withTimeout(20000);
-    const button = element(by.id('Advanced'));
-    await button.tap();
+    await element(by.id('Advanced')).tap();
   });
 
   afterAll(async () => {
