@@ -32,7 +32,7 @@ type IVSPlayerProps = {
   liveLowLatency?: boolean;
   playbackRate?: number;
   streamUrl?: string;
-  resizeMode?: 'aspectFill' | 'aspectFit' | 'aspectZoom';
+  resizeMode?: ResizeMode;
   logLevel?: LogLevel;
   progressInterval?: number;
   volume?: number;
@@ -83,7 +83,7 @@ type Props = {
   liveLowLatency?: boolean;
   playbackRate?: number;
   logLevel?: LogLevel;
-  resizeMode?: 'aspectFill' | 'aspectFit' | 'aspectZoom';
+  resizeMode?: ResizeMode;
   progressInterval?: number;
   volume?: number;
   quality?: Quality | null;

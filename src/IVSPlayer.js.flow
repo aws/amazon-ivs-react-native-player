@@ -24,7 +24,7 @@ declare type Props = {|
   muted?: boolean,
   autoplay?: boolean,
   streamUrl?: string,
-  resizeMode?: 'aspectFill' | 'aspectFit' | 'aspectZoom',
+  resizeMode?: ResizeMode,
   liveLowLatency?: boolean,
   playbackRate?: number,
   logLevel?: LogLevel,
