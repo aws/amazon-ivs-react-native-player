@@ -6,6 +6,7 @@ import IVSPlayer, {
   LogLevel,
   PlayerState,
   Quality,
+  ResizeMode,
 } from 'amazon-ivs-react-native-player';
 import {
   IconButton,
@@ -21,13 +22,13 @@ import type { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/native';
 import { parseSecondsToString } from '../helpers';
 import SettingsItem from '../components/SettingsItem';
-import QualitiesPicker from '../components/QualitiesPicker';
 import SettingsSliderItem from '../components/SettingsSliderItem';
 import LogLevelPicker from '../components/LogLevelPicker';
 import { Position, URL } from '../constants';
 import SettingsInputItem from '../components/SettingsInputItem';
 import SettingsSwitchItem from '../components/SettingsSwitchItem';
 import type { RootStackParamList } from '../App';
+import OptionPicker from '../components/OptionPicker';
 
 const INITIAL_PLAYBACK_RATE = 1;
 const INITIAL_PROGRESS_INTERVAL = 1;
@@ -38,6 +39,26 @@ type PlaygroundScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
   'PlaygroundExample'
 >;
+
+type ResizeModeOption = {
+  name: string;
+  value: ResizeMode;
+};
+
+const RESIZE_MODES: ResizeModeOption[] = [
+  {
+    name: 'Aspect Fill',
+    value: 'aspectFill',
+  },
+  {
+    name: 'Aspect Fit',
+    value: 'aspectFit',
+  },
+  {
+    name: 'Aspect Zoom',
+    value: 'aspectZoom',
+  },
+];
 
 export default function PlaygroundExample() {
   const { setOptions } = useNavigation<PlaygroundScreenNavigationProp>();
@@ -66,6 +87,9 @@ export default function PlaygroundExample() {
   const [breakpoints, setBreakpoints] = useState<number[]>(INITIAL_BREAKPOINTS);
   const [orientation, setOrientation] = useState(Position.PORTRAIT);
   const [logs, setLogs] = useState<string[]>([]);
+  const [resizeMode, setResizeMode] = useState<ResizeModeOption | null>(
+    RESIZE_MODES[1]
+  );
 
   const log = useCallback(
     (text: string) => {
@@ -118,8 +142,10 @@ export default function PlaygroundExample() {
         ) : null}
 
         <IVSPlayer
+          key={resizeMode?.value}
           ref={mediaPlayerRef}
           paused={paused}
+          resizeMode={resizeMode?.value}
           muted={muted}
           autoplay={autoplay}
           liveLowLatency={liveLowLatency}
@@ -128,7 +154,7 @@ export default function PlaygroundExample() {
           initialBufferDuration={initialBufferDuration}
           playbackRate={playbackRate}
           progressInterval={progressInterval}
-          volume={volume}
+          volume={0}
           autoQualityMode={autoQualityMode}
           quality={manualQuality}
           autoMaxQuality={autoMaxQuality}
@@ -273,12 +299,23 @@ export default function PlaygroundExample() {
                     multiline
                   />
                   <SettingsItem label="Quality" testID="qualitiesPicker">
-                    <QualitiesPicker
-                      quality={manualQuality}
-                      qualities={qualities}
-                      setQuality={(quality) => {
+                    <OptionPicker
+                      option={manualQuality}
+                      options={qualities}
+                      autoOption
+                      setOption={(quality) => {
                         setAutoQualityMode(!quality);
                         setManualQuality(quality);
+                      }}
+                    />
+                  </SettingsItem>
+                  <SettingsItem label="Resize mode" testID="resizeModePicker">
+                    <OptionPicker
+                      option={resizeMode}
+                      options={RESIZE_MODES}
+                      setOption={(mode) => {
+                        setResizeMode(mode);
+                        log(`Resize mode changed: ${resizeMode?.value}`);
                       }}
                     />
                   </SettingsItem>
@@ -369,10 +406,11 @@ export default function PlaygroundExample() {
                     label="Auto Max Quality"
                     testID="autoMaxQualityPicker"
                   >
-                    <QualitiesPicker
-                      quality={autoMaxQuality}
-                      qualities={qualities}
-                      setQuality={setAutoMaxQuality}
+                    <OptionPicker
+                      option={autoMaxQuality}
+                      options={qualities}
+                      autoOption
+                      setOption={setAutoMaxQuality}
                     />
                   </SettingsItem>
                   <SettingsItem label="Breakpoints">

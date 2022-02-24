@@ -1,3 +1,5 @@
+/* eslint-env detox/detox, jest */
+
 import {
   expectNativePlayerToBeVisible,
   atLeastOneLogIsVisible,
@@ -81,6 +83,32 @@ describe('Playground player events', () => {
     await element(by.id('closeIcon')).tap();
 
     await atLeastOneLogIsVisible('quality changed: 160p', TIMEOUT);
+  });
+
+  it('Player notifies about resize mode change', async () => {
+    await expectNativePlayerToBeVisible();
+
+    await atLeastOneLogIsVisible('state changed: Playing', TIMEOUT);
+
+    await waitFor(element(by.id('settingsIcon')))
+      .toBeVisible()
+      .withTimeout(TIMEOUT);
+
+    await element(by.id('settingsIcon')).tap();
+    await waitFor(element(by.id('resizeModePicker')))
+      .toBeVisible()
+      .withTimeout(TIMEOUT);
+    await waitFor(
+      element(by.text('ASPECT FIT').withAncestor(by.id('resizeModePicker')))
+    )
+      .toBeVisible()
+      .withTimeout(TIMEOUT);
+    await element(
+      by.text('ASPECT FIT').withAncestor(by.id('resizeModePicker'))
+    ).tap();
+    await element(by.id('closeIcon')).tap();
+
+    await atLeastOneLogIsVisible('Resize mode changed: aspectFit', TIMEOUT);
   });
 
   it('Player notifies about load after loading recorded video', async () => {
@@ -244,7 +272,7 @@ describe('Playground player events', () => {
     await expectNativePlayerToBeVisible(); // Not a crash
   });
 
-  it("Player doesn't crash after changing log level", async () => {
+  it("Player doesn't crash after changing autoMaxQuality", async () => {
     await expectNativePlayerToBeVisible();
     await togglePlayPauseVideo();
 

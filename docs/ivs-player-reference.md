@@ -245,6 +245,18 @@ Callback that returns new quality that is used in video/stream playback.
 
 type: [`(quality: Quality) => void`](./types.md#Quality)
 
+### resizeMode _(optional)_
+
+Defines different modes for displaying video in a Player.
+
+```
+ResizeMode 	`aspectFill` 	Preserves the aspect ratio by increasing the width or height.
+ResizeMode 	`aspectFit` 	Preserves the aspect ratio by reducing the width or height.
+ResizeMode 	`aspectZoom` 	Fits the parent view ignoring the aspect ratio of the video.
+```
+
+type: `ResizeMode`
+
 ## Ref methods
 
 ### play
