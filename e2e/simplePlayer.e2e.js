@@ -2,6 +2,8 @@
 
 import { expectNativePlayerToBeVisible } from './utils';
 
+jest.retryTimes(3);
+
 describe('Simple player', () => {
   beforeAll(async () => {
     await device.launchApp();
@@ -20,8 +22,7 @@ describe('Simple player', () => {
   });
 
   it('Display video', async () => {
-    const button = element(by.id('Simple'));
-    await button.tap();
+    await element(by.id('Simple')).tap();
     await waitFor(element(by.text('SimpleExample')))
       .toBeVisible()
       .withTimeout(12000);
