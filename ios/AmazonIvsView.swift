@@ -50,6 +50,8 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
 
         self.addSubview(self.playerView)
         self.playerView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
+        self.playerView.videoGravity = findResizeMode(mode: resizeMode)
+
         self.addProgressObserver()
         self.addPlayerObserver()
         self.addTimePointObserver()
@@ -178,6 +180,25 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
             default:
                 break
             }
+        }
+    }
+
+    @objc var resizeMode: String? {
+        didSet{
+            playerView.videoGravity = findResizeMode(mode: resizeMode)
+        }
+    }
+    
+    private func findResizeMode(mode: String?) -> AVLayerVideoGravity {
+        switch mode {
+        case "aspectFill":
+            return  AVLayerVideoGravity.resizeAspectFill
+        case "aspectFit":
+            return AVLayerVideoGravity.resizeAspect
+        case "aspectZoom":
+            return AVLayerVideoGravity.resize
+        default:
+            return AVLayerVideoGravity.resizeAspect
         }
     }
     
