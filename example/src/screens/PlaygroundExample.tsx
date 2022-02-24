@@ -154,7 +154,7 @@ export default function PlaygroundExample() {
           initialBufferDuration={initialBufferDuration}
           playbackRate={playbackRate}
           progressInterval={progressInterval}
-          volume={0}
+          volume={volume}
           autoQualityMode={autoQualityMode}
           quality={manualQuality}
           autoMaxQuality={autoMaxQuality}
