@@ -103,10 +103,10 @@ commands:
         default: 'TestingAVD'
       platform_version:
         type: string
-        default: 'android-28'
+        default: 'android-30'
       build_tools_version:
         type: string
-        default: '28.0.3'
+        default: '30.0.2'
       logcat_grep:
         type: string
         default: 'com.amazon.ivsplayer'
@@ -253,6 +253,13 @@ jobs:
           command: yarn install --frozen-lockfile
           name: yarn install
       - android_emulator_start
+      - run:
+          command: |
+            rm -rf ~/.gradle/caches/6.9.2
+            rm -rf ~/.gradle/caches/transforms-1
+            rm -rf ~/.gradle/caches/journal-1
+            rm -rf ~/.gradle/caches/jars-8/*/buildSrc.jar
+          name: clear gradle cache
       - run:
           command: yarn e2e:build:android:release
           name: build for detox

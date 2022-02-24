@@ -33,13 +33,13 @@ export type RootStackParamList = {
 
 const Stack = createStackNavigator<RootStackParamList>();
 
-function Header({ navigation, scene }: StackHeaderProps) {
+function Header({ navigation, route }: StackHeaderProps) {
   const canGoBack = navigation.canGoBack();
 
   return (
     <Appbar.Header>
       {canGoBack ? <Appbar.BackAction onPress={navigation.goBack} /> : null}
-      <Appbar.Content title={scene.route.name} />
+      <Appbar.Content title={route.name} />
     </Appbar.Header>
   );
 }
