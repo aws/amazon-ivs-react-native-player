@@ -158,7 +158,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
   }
 
   private fun findQuality(quality: ReadableMap?): Quality? {
-    val newQuality = player?.qualities?.first { x ->
+    val newQuality = player?.qualities?.firstOrNull() { x ->
         x.name == quality?.getString("name") &&
         x.codecs == quality.getString("codecs") &&
         x.bitrate == quality.getInt("bitrate") &&
@@ -172,13 +172,17 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
 
   fun setQuality(quality: ReadableMap?) {
     if (quality != null) {
-      player?.quality = findQuality(quality)!!
+      findQuality(quality)?.let {
+        player?.quality = it
+      }
     }
   }
 
   fun setAutoMaxQuality(quality: ReadableMap?) {
     if (quality != null) {
-      player?.setAutoMaxQuality(findQuality(quality)!!)
+      findQuality(quality)?.let {
+        player?.setAutoMaxQuality(it)
+      }
     }
   }
 
