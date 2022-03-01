@@ -1,3 +1,5 @@
+/* eslint-env detox/detox, jest */
+
 import { expectNativePlayerToBeVisible } from './utils';
 
 jest.retryTimes(3);

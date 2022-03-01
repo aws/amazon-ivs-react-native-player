@@ -1,4 +1,4 @@
-# amazon-ivs-react-native-player
+# Amazon IVS React Native Player
 
 This package implements native binding for Amazon IVS Player for iOS and Android.
 

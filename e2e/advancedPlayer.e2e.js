@@ -1,10 +1,6 @@
-import {
-  atLeastOneLogIsVisible,
-  expectNativePlayerToBeVisible,
-  togglePlayPauseVideo,
-} from './utils';
+/* eslint-env detox/detox, jest */
 
-const TIMEOUT = 300000;
+import { expectNativePlayerToBeVisible, togglePlayPauseVideo } from './utils';
 
 jest.retryTimes(3);
 

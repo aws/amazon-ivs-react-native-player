@@ -100,6 +100,13 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     }, 0, 1000)
   }
 
+  override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+    super.onLayout(changed, left, top, right, bottom)
+    if (changed) {
+      post(mLayoutRunnable)
+    }
+  }
+
   fun setStreamUrl(streamUrl: String) {
     player?.let { player ->
       val reactContext = context as ReactContext
@@ -138,8 +145,20 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     }
   }
 
+
+  fun setResizeMode(resizeMode: String?) {
+    playerView?.resizeMode = findResizeMode(resizeMode)
+  }
+
+  private fun findResizeMode(mode: String?): ResizeMode = when (mode) {
+      "aspectFill" -> ResizeMode.FILL
+      "aspectFit" -> ResizeMode.FIT
+      "aspectZoom" -> ResizeMode.ZOOM
+      else -> ResizeMode.FIT
+  }
+
   private fun findQuality(quality: ReadableMap?): Quality? {
-    val newQuality = player?.qualities?.first { x ->
+    val newQuality = player?.qualities?.firstOrNull() { x ->
         x.name == quality?.getString("name") &&
         x.codecs == quality.getString("codecs") &&
         x.bitrate == quality.getInt("bitrate") &&
@@ -153,13 +172,17 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
 
   fun setQuality(quality: ReadableMap?) {
     if (quality != null) {
-      player?.quality = findQuality(quality)!!
+      findQuality(quality)?.let {
+        player?.quality = it
+      }
     }
   }
 
   fun setAutoMaxQuality(quality: ReadableMap?) {
     if (quality != null) {
-      player?.setAutoMaxQuality(findQuality(quality)!!)
+      findQuality(quality)?.let {
+        player?.setAutoMaxQuality(it)
+      }
     }
   }
 
@@ -192,6 +215,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     val valueInMilliseconds = duration * 1000
     player?.setInitialBufferDuration(valueInMilliseconds.toLong())
   }
+
 
   fun onTextMetadataCue(cue: TextMetadataCue) {
     val reactContext = context as ReactContext

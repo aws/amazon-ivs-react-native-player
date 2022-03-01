@@ -54,6 +54,11 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>() {
     view.setStreamUrl(streamUrl);
   }
 
+  @ReactProp(name = "resizeMode")
+  fun setResizeMode(view: AmazonIvsView, mode: String) {
+    view.setResizeMode(mode);
+  }
+
   @ReactProp(name = "muted")
   fun setMuted(view: AmazonIvsView, muted: Boolean) {
     view.setMuted(muted)
