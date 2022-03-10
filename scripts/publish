@@ -52,8 +52,8 @@ EOF
 
 create_github_release_fallback() {
   cat << EOF
-Remember to create a release on GitHub with a changelog notes:
-    https://github.com/stripe/stripe-js/releases/new
+Remember to create a release on GitHub with a changelog:
+    https://github.com/aws/amazon-ivs-react-native-player/releases/new
 EOF
 }
 
