@@ -1,19 +1,19 @@
-# IVSPlayer component usage guide
+# IVSPlayer COMPONENT GUIDE USAGE
 
-Let's create a full working example that implements advanced `IVSPlayer` component with the control buttons and time slider.
+Let's create a full working example that implements an advanced `IVSPlayer` component with the control buttons and time slider.
 Our example will contain:
 
-- `IVSPlayer` component with bunch of properties like `autoplay, streamUrl, volume` or `quality`
+- `IVSPlayer` component with a number of properties like `autoplay, streamUrl, volume` or `quality`
 - Few event listeners that will help us react on specific Player events like `onProgress` or `onDurationChange`
 - Control buttons for pausing, playing and muting the player.
 - Time slider to control the current position of the video.
 
-## Rendering `IVSPlayer` component in your app
+## RENDERING `IVSPlayer` COMPONENT IN YOUR APP
 
 At the very beginning, let's create a screen where the Player will be placed.
-To render the Player on your screen just use [`IVSPlayer`](./ivs-player-reference.md) component wherever you need it.
+To render the Player on your screen just use the [`IVSPlayer`](./ivs-player-reference.md) component wherever you need it.
 
-> Please note that player dimensions adjust to its parent component.
+> Please note that the player dimensions adjust to the parent component.
 
 ```jsx
 import IVSPlayer from 'amazon-ivs-react-native';
@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
 });
 ```
 
-To make the Player work we need to at least add `streamUrl` prop which is gonna load the video or a live stream.
+To make the Player work we need to at least add the `streamUrl` prop which loads the video or live stream.
 
 ```jsx
 <IVSPlayer streamUrl="https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8" />
@@ -51,8 +51,8 @@ In order to do that, let's simply add properties accordingly.
 ```
 
 As a next step, let's set a `quality` prop which forces `720p` quality.
-In order to do this, you need to get the list of available qualities that comes from `onData` callback.
-Now, you can filter the list to find the proper quality based on its dimensions, frame-rate or bit-rate.
+In order to do this, you need to get the list of available qualities that comes from the `onData` callback.
+Now, you can filter the list to find the proper quality based on its dimensions, frame rate or bitrate.
 
 ```tsx
 //...
@@ -107,11 +107,11 @@ const styles = StyleSheet.create({
 });
 ```
 
-## Add control buttons
+## ADD CONTROL BUTTONS
 
 Let's consider the popular type of video player which displays control buttons on the top of the Player.
 To accomplish this, you need to add the control buttons as `children` of the `IVSPlayer` component.
-We want to add `play/pause` and `mute` buttons, keep it in this state and pass into the Player.
+We need to add `play/pause` and `mute` buttons by passing them into the player. These buttons can respond to and update the necessary state.
 
 ```jsx
 export default function App() {
@@ -172,15 +172,14 @@ const styles = StyleSheet.create({
 });
 ```
 
-let's take a look what we already did.
-We created the button using `TouchableOpacity` that toggles `paused` state and passes it into the Player as a `paused` prop.
+Note that above we created the button using `TouchableOpacity` that toggles `paused` state and passes it into the Player as a `paused` prop.
 This allows us to pause/play the Player when users tap the button.
 Added styles should put the buttons at the very bottom of the player.
 
-## Add time slider
+## ADD TIME SLIDER
 
 To add the time slider we're going to use `@react-native-community/slider` for the example purposes. You can use any other component/library depending on your needs.
-Before we add it, we need to know what is the `duration` of the video, if applicable (it doesn't concern streams), and current `position`.
+Before we add it, we need to know the `duration` of the video, if applicable (it doesn't concern streams), and current `position`.
 For such purpose we can use `onDurationChange` and `onProgress` callbacks to get the proper pieces of information.
 
 ```tsx
@@ -205,7 +204,7 @@ Now we can render a `Slider` component which displays the current progress of th
 ```
 
 Now, let's handle a video stream when total duration is not available.
-For such cases `onDurationChange` callback returns `Infinity` value instead of the `number`.
+For such cases `onDurationChange` callback returns `Infinity` instead of a `number`.
 Based on this value you can distinguish it and customise the logic of the Player.
 
 ```jsx
