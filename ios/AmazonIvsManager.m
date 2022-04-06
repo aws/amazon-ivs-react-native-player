@@ -2,9 +2,11 @@
 #import "RCTViewManager.h"
 
 @interface RCT_EXTERN_MODULE(AmazonIvsManager, RCTViewManager)
+RCT_EXPORT_VIEW_PROPERTY(resizeMode, NSString)
 RCT_EXPORT_VIEW_PROPERTY(muted, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(liveLowLatency, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(quality, NSDictionary)
+RCT_EXPORT_VIEW_PROPERTY(initialBufferDuration, double)
 RCT_EXPORT_VIEW_PROPERTY(autoMaxQuality, NSDictionary)
 RCT_EXPORT_VIEW_PROPERTY(autoQualityMode, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(playbackRate, double)

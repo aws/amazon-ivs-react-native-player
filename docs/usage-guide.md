@@ -7,7 +7,7 @@ IVS Player component allows setup and interaction with the native implementation
 To install the SDK run the following command in your terminal:
 
 ```sh
-yarn add amazon-ivs-react-native
+yarn add amazon-ivs-react-native-player
 ```
 
 For iOS you will have to run `pod install` inside `ios` directory in order to install needed native dependencies. Android won't require any additional steps.
@@ -17,7 +17,7 @@ For iOS you will have to run `pod install` inside `ios` directory in order to in
 To render the player in your app just use [`IVSPlayer`](./ivs-player-reference.md) component wherever you need it.
 
 ```jsx
-import IVSPlayer from 'amazon-ivs-react-native';
+import IVSPlayer from 'amazon-ivs-react-native-player';
 
 export default function App() {
   return (
@@ -136,7 +136,7 @@ In addition to configuring the player declaratively there is also a way to trigg
 Those actions are `play`, `pause` and `seekTo` which can be used to manually stop and start the video or set the current time position.
 
 ```tsx
-import IVSPlayer, { IVSPlayerRef } from 'amazon-ivs-react-native'
+import IVSPlayer, { IVSPlayerRef } from 'amazon-ivs-react-native-player'
 
 export default function App() {
   const mediaPlayerRef = React.useRef<IVSPlayerRef>(null);

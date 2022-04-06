@@ -68,3 +68,9 @@ export type TextMetadataCue = {
   textDescription: string;
 };
 ```
+
+## ResizeMode
+
+```ts
+export type ResizeMode = 'aspectFill' | 'aspectFit' | 'aspectZoom';
+```

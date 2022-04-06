@@ -15,6 +15,7 @@ import type {
   TextMetadataCue,
   VideoData,
   IVSPlayerRef,
+  ResizeMode,
 } from './types';
 
 declare type Props = {|
@@ -23,6 +24,7 @@ declare type Props = {|
   muted?: boolean,
   autoplay?: boolean,
   streamUrl?: string,
+  resizeMode?: ResizeMode,
   liveLowLatency?: boolean,
   playbackRate?: number,
   logLevel?: LogLevel,

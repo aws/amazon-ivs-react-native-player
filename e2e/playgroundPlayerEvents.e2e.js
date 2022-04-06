@@ -1,3 +1,5 @@
+/* eslint-env detox/detox, jest */
+
 import {
   expectNativePlayerToBeVisible,
   atLeastOneLogIsVisible,
@@ -8,6 +10,9 @@ import {
 const TIMEOUT = 300000;
 
 jest.setTimeout(1200000);
+
+jest.retryTimes(3);
+
 
 describe('Playground player events', () => {
   beforeAll(async () => {
@@ -62,7 +67,7 @@ describe('Playground player events', () => {
   it('Player notifies about quality change', async () => {
     await expectNativePlayerToBeVisible();
 
-    await togglePlayPauseVideo();
+    await atLeastOneLogIsVisible('state changed: Playing', TIMEOUT);
 
     await waitFor(element(by.id('settingsIcon')))
       .toBeVisible()
@@ -73,14 +78,40 @@ describe('Playground player events', () => {
       .toBeVisible()
       .withTimeout(TIMEOUT);
     await waitFor(
-      element(by.text('720P').withAncestor(by.id('qualitiesPicker')))
+      element(by.text('160P').withAncestor(by.id('qualitiesPicker')))
     )
       .toBeVisible()
       .withTimeout(TIMEOUT);
-    await element(by.text('720P').withAncestor(by.id('qualitiesPicker'))).tap();
+    await element(by.text('160P').withAncestor(by.id('qualitiesPicker'))).tap();
     await element(by.id('closeIcon')).tap();
 
-    await atLeastOneLogIsVisible('quality changed: 720p', TIMEOUT);
+    await atLeastOneLogIsVisible('quality changed: 160p', TIMEOUT);
+  });
+
+  it('Player notifies about resize mode change', async () => {
+    await expectNativePlayerToBeVisible();
+
+    await atLeastOneLogIsVisible('state changed: Playing', TIMEOUT);
+
+    await waitFor(element(by.id('settingsIcon')))
+      .toBeVisible()
+      .withTimeout(TIMEOUT);
+
+    await element(by.id('settingsIcon')).tap();
+    await waitFor(element(by.id('resizeModePicker')))
+      .toBeVisible()
+      .withTimeout(TIMEOUT);
+    await waitFor(
+      element(by.text('ASPECT FIT').withAncestor(by.id('resizeModePicker')))
+    )
+      .toBeVisible()
+      .withTimeout(TIMEOUT);
+    await element(
+      by.text('ASPECT FIT').withAncestor(by.id('resizeModePicker'))
+    ).tap();
+    await element(by.id('closeIcon')).tap();
+
+    await atLeastOneLogIsVisible('Resize mode changed: aspectFit', TIMEOUT);
   });
 
   it('Player notifies about load after loading recorded video', async () => {
@@ -244,7 +275,7 @@ describe('Playground player events', () => {
     await expectNativePlayerToBeVisible(); // Not a crash
   });
 
-  it("Player doesn't crash after changing log level", async () => {
+  it("Player doesn't crash after changing autoMaxQuality", async () => {
     await expectNativePlayerToBeVisible();
     await togglePlayPauseVideo();
 
@@ -316,6 +347,24 @@ describe('Playground player events', () => {
       .whileElement(by.id('modalScrollView'))
       .scroll(50, 'down');
     await element(by.id('volume')).replaceText('0.5');
+    await element(by.id('closeIcon')).tap();
+
+    await expectNativePlayerToBeVisible(); // Not a crash
+  });
+
+  it("Player doesn't crash after changing initialBufferDuration", async () => {
+    await expectNativePlayerToBeVisible();
+    await togglePlayPauseVideo();
+
+    await waitFor(element(by.id('settingsIcon')))
+      .toBeVisible()
+      .withTimeout(TIMEOUT);
+    await element(by.id('settingsIcon')).tap();
+    await waitFor(element(by.id('initialBufferDuration')))
+      .toBeVisible()
+      .whileElement(by.id('modalScrollView'))
+      .scroll(50, 'down');
+    await element(by.id('initialBufferDuration')).replaceText('4.0');
     await element(by.id('closeIcon')).tap();
 
     await expectNativePlayerToBeVisible(); // Not a crash

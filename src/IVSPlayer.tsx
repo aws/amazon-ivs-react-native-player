@@ -21,6 +21,7 @@ import type {
   TextMetadataCue,
   VideoData,
   IVSPlayerRef,
+  ResizeMode,
 } from './types';
 
 type IVSPlayerProps = {
@@ -31,6 +32,7 @@ type IVSPlayerProps = {
   liveLowLatency?: boolean;
   playbackRate?: number;
   streamUrl?: string;
+  resizeMode?: ResizeMode;
   logLevel?: LogLevel;
   progressInterval?: number;
   volume?: number;
@@ -39,6 +41,7 @@ type IVSPlayerProps = {
   autoQualityMode?: boolean;
   breakpoints?: number[];
   maxBitrate?: number;
+  initialBufferDuration?: number;
   onSeek?(event: NativeSyntheticEvent<{ position: number }>): void;
   onData?(event: NativeSyntheticEvent<{ playerData: PlayerData }>): void;
   onVideoStatistics?(
@@ -80,6 +83,7 @@ type Props = {
   liveLowLatency?: boolean;
   playbackRate?: number;
   logLevel?: LogLevel;
+  resizeMode?: ResizeMode;
   progressInterval?: number;
   volume?: number;
   quality?: Quality | null;
@@ -87,6 +91,7 @@ type Props = {
   autoQualityMode?: boolean;
   breakpoints?: number[];
   maxBitrate?: number;
+  initialBufferDuration?: number;
   onSeek?(position: number): void;
   onData?(data: PlayerData): void;
   onVideoStatistics?(data: VideoData): void;
@@ -119,6 +124,7 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
       streamUrl,
       paused,
       muted,
+      resizeMode,
       autoplay = true,
       liveLowLatency,
       playbackRate,
@@ -130,6 +136,7 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
       autoQualityMode,
       breakpoints = [],
       maxBitrate,
+      initialBufferDuration,
       onSeek,
       onData,
       onVideoStatistics,
@@ -312,9 +319,11 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
           playbackRate={playbackRate}
           streamUrl={streamUrl}
           logLevel={logLevel}
+          resizeMode={resizeMode}
           progressInterval={progressInterval}
           volume={volume}
           quality={quality}
+          initialBufferDuration={initialBufferDuration}
           autoMaxQuality={autoMaxQuality}
           autoQualityMode={autoQualityMode}
           breakpoints={breakpoints}

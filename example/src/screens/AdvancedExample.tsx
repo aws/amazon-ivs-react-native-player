@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Dimensions, StyleSheet, View } from 'react-native';
-import IVSPlayer, { IVSPlayerRef, PlayerState } from 'amazon-ivs-react-native';
+import { Dimensions, StyleSheet, View, Platform } from 'react-native';
+import IVSPlayer, {
+  IVSPlayerRef,
+  PlayerState,
+} from 'amazon-ivs-react-native-player';
 import { IconButton, ActivityIndicator, Text } from 'react-native-paper';
 import Slider from '@react-native-community/slider';
 import type { StackNavigationProp } from '@react-navigation/stack';
@@ -55,7 +58,12 @@ export default function AdvancedExample() {
   return (
     <View style={styles.container}>
       <View style={styles.playerContainer}>
-        {buffering ? (
+        {/*
+          Note: A buffering indicator is included by default on Android. It's
+          styling is managed in /example/android/app/src/main/res/values/styles.xml
+          by adjusting the 'android:indeterminateTint'.
+        */}
+        {buffering && Platform.OS === 'ios' ? (
           <ActivityIndicator
             animating={true}
             size="large"

@@ -16,7 +16,7 @@ Web reference:
 https://aws.github.io/amazon-ivs-player-docs/1.2.0/web/
 
 ```tsx
-import IVSPlayer from 'amazon-ivs-react-native';
+import IVSPlayer from 'amazon-ivs-react-native-player';
 
 function App() {
   return (
@@ -184,6 +184,13 @@ Callback that returns current player position. Its interval can be configured us
 
 type: `(position: number) => void`
 
+### initialBufferDuration _(optional)_
+
+Sets the initial (minimum) buffer duration required to start playback. If a value outside the allowable range is used, the current value is maintained. Supported range: `0.1` to `5` seconds. Lowering this value may increase rebuffering.
+
+default: `Determined by player based on normal or low latency setting`
+type: `number`
+
 ### progressInterval _(optional)_
 
 Value that specifies how often `onProgress` callback should be called in seconds.
@@ -238,6 +245,18 @@ Callback that returns new quality that is used in video/stream playback.
 
 type: [`(quality: Quality) => void`](./types.md#Quality)
 
+### resizeMode _(optional)_
+
+Defines different modes for displaying video in a Player.
+
+```
+ResizeMode 	`aspectFill` 	Preserves the aspect ratio by increasing the width or height.
+ResizeMode 	`aspectFit` 	Preserves the aspect ratio by reducing the width or height.
+ResizeMode 	`aspectZoom` 	Fits the parent view ignoring the aspect ratio of the video.
+```
+
+type: `ResizeMode`
+
 ## Ref methods
 
 ### play
@@ -247,7 +266,7 @@ A reference method that will play the stream/video if it is stopped. For a strea
 type: `() => void`
 
 ```tsx
-import IVSPlayer, { IVSPlayerRef } from 'amazon-ivs-react-native';
+import IVSPlayer, { IVSPlayerRef } from 'amazon-ivs-react-native-player';
 
 const URL = 'https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8';
 
@@ -272,7 +291,7 @@ A reference method that will pause the stream/video if it is playing. For a stre
 type: `() => void`
 
 ```tsx
-import IVSPlayer, { IVSPlayerRef } from 'amazon-ivs-react-native';
+import IVSPlayer, { IVSPlayerRef } from 'amazon-ivs-react-native-player';
 
 const URL = 'https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8';
 
@@ -297,7 +316,7 @@ Seeks to the given time in the stream and begins playing at that position if `pl
 type: `(position: number, completionHandler: function?) => void`
 
 ```tsx
-import IVSPlayer, { IVSPlayerRef } from 'amazon-ivs-react-native';
+import IVSPlayer, { IVSPlayerRef } from 'amazon-ivs-react-native-player';
 
 const URL = 'https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8';
 

@@ -1,4 +1,4 @@
-package com.amazonivsreactnative
+package com.amazonaws.ivs.reactnative.player
 
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
@@ -54,6 +54,11 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>() {
     view.setStreamUrl(streamUrl);
   }
 
+  @ReactProp(name = "resizeMode")
+  fun setResizeMode(view: AmazonIvsView, mode: String) {
+    view.setResizeMode(mode);
+  }
+
   @ReactProp(name = "muted")
   fun setMuted(view: AmazonIvsView, muted: Boolean) {
     view.setMuted(muted)
@@ -97,6 +102,11 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>() {
   @ReactProp(name = "maxBitrate")
   fun setMaxBitrate(view: AmazonIvsView, bitrate: Double) {
     view.setMaxBitrate(bitrate)
+  }
+
+  @ReactProp(name = "initialBufferDuration")
+  fun setInitialBufferDuration(view: AmazonIvsView, duration: Double) {
+    view.setInitialBufferDuration(duration)
   }
 
   override fun createViewInstance(reactContext: ThemedReactContext): AmazonIvsView {

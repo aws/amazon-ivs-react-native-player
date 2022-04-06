@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.example.amazonivsreactnative">
+  package="com.example.amazonivsreactnativeplayer">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -9,7 +9,6 @@
       android:icon="@mipmap/ic_launcher"
       android:roundIcon="@mipmap/ic_launcher_round"
       android:allowBackup="false"
-      android:usesCleartextTraffic="true"
       android:theme="@style/AppTheme"
       android:networkSecurityConfig="@xml/network_security_config">
       <activity

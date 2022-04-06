@@ -1,15 +1,13 @@
-# amazon-ivs-react-native
+# Amazon IVS React Native Player
 
 This package implements native binding for Amazon IVS Player for iOS and Android.
 
-**This package is currently in developer preview and is not recommended for production use.**
-
 ## Installation
 
-- install `amazon-ivs-react-native` dependency using yarn or npm
+- install `amazon-ivs-react-native-player` dependency using yarn or npm
 
 ```sh
-npm install amazon-ivs-react-native
+npm install amazon-ivs-react-native-player
 ```
 
 - install pods for your ios project. Go to `ios` directory and run
@@ -21,7 +19,7 @@ pod install
 ## Usage
 
 ```tsx
-import IVSPlayer from 'amazon-ivs-react-native';
+import IVSPlayer from 'amazon-ivs-react-native-player';
 
 const URL =
   'https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8';

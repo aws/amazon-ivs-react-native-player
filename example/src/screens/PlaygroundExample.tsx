@@ -6,7 +6,8 @@ import IVSPlayer, {
   LogLevel,
   PlayerState,
   Quality,
-} from 'amazon-ivs-react-native';
+  ResizeMode,
+} from 'amazon-ivs-react-native-player';
 import {
   IconButton,
   ActivityIndicator,
@@ -15,18 +16,19 @@ import {
   Portal,
   Title,
 } from 'react-native-paper';
+import { Platform } from 'react-native';
 import Slider from '@react-native-community/slider';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/native';
 import { parseSecondsToString } from '../helpers';
 import SettingsItem from '../components/SettingsItem';
-import QualitiesPicker from '../components/QualitiesPicker';
 import SettingsSliderItem from '../components/SettingsSliderItem';
 import LogLevelPicker from '../components/LogLevelPicker';
 import { Position, URL } from '../constants';
 import SettingsInputItem from '../components/SettingsInputItem';
 import SettingsSwitchItem from '../components/SettingsSwitchItem';
 import type { RootStackParamList } from '../App';
+import OptionPicker from '../components/OptionPicker';
 
 const INITIAL_PLAYBACK_RATE = 1;
 const INITIAL_PROGRESS_INTERVAL = 1;
@@ -38,6 +40,26 @@ type PlaygroundScreenNavigationProp = StackNavigationProp<
   'PlaygroundExample'
 >;
 
+type ResizeModeOption = {
+  name: string;
+  value: ResizeMode;
+};
+
+const RESIZE_MODES: ResizeModeOption[] = [
+  {
+    name: 'Aspect Fill',
+    value: 'aspectFill',
+  },
+  {
+    name: 'Aspect Fit',
+    value: 'aspectFit',
+  },
+  {
+    name: 'Aspect Zoom',
+    value: 'aspectZoom',
+  },
+];
+
 export default function PlaygroundExample() {
   const { setOptions } = useNavigation<PlaygroundScreenNavigationProp>();
   const mediaPlayerRef = React.useRef<IVSPlayerRef>(null);
@@ -46,10 +68,12 @@ export default function PlaygroundExample() {
   const [paused, setPaused] = useState(false);
   const [url, setUrl] = useState(URL);
   const [muted, setMuted] = useState(false);
-  const [quality, setQuality] = useState<Quality | null>(null);
+  const [manualQuality, setManualQuality] = useState<Quality | null>(null);
+  const [detectedQuality, setDetectedQuality] = useState<Quality | null>(null);
+  const [initialBufferDuration, setInitialBufferDuration] = useState(0.1);
   const [autoMaxQuality, setAutoMaxQuality] = useState<Quality | null>(null);
   const [qualities, setQualities] = useState<Quality[]>([]);
-  const [autoQualityMode, setAutoQualityMode] = useState(false);
+  const [autoQualityMode, setAutoQualityMode] = useState(true);
   const [buffering, setBuffering] = useState(false);
   const [duration, setDuration] = useState<number | null>(null);
   const [liveLowLatency, setLiveLowLatency] = useState(true);
@@ -63,6 +87,9 @@ export default function PlaygroundExample() {
   const [breakpoints, setBreakpoints] = useState<number[]>(INITIAL_BREAKPOINTS);
   const [orientation, setOrientation] = useState(Position.PORTRAIT);
   const [logs, setLogs] = useState<string[]>([]);
+  const [resizeMode, setResizeMode] = useState<ResizeModeOption | null>(
+    RESIZE_MODES[1]
+  );
 
   const log = useCallback(
     (text: string) => {
@@ -101,7 +128,12 @@ export default function PlaygroundExample() {
   return (
     <View style={styles.container}>
       <View style={styles.playerContainer}>
-        {buffering ? (
+        {/*
+          Note: A buffering indicator is included by default on Android. It's
+          styling is managed in /example/android/app/src/main/res/values/styles.xml
+          by adjusting the 'android:indeterminateTint'.
+        */}
+        {buffering && Platform.OS === 'ios' ? (
           <ActivityIndicator
             animating={true}
             size="large"
@@ -110,22 +142,28 @@ export default function PlaygroundExample() {
         ) : null}
 
         <IVSPlayer
+          key={resizeMode?.value}
           ref={mediaPlayerRef}
           paused={paused}
+          resizeMode={resizeMode?.value}
           muted={muted}
           autoplay={autoplay}
           liveLowLatency={liveLowLatency}
           streamUrl={url}
           logLevel={logLevel}
+          initialBufferDuration={initialBufferDuration}
           playbackRate={playbackRate}
           progressInterval={progressInterval}
           volume={volume}
           autoQualityMode={autoQualityMode}
-          quality={quality}
+          quality={manualQuality}
           autoMaxQuality={autoMaxQuality}
           breakpoints={breakpoints}
           onSeek={(newPosition) => console.log('new position', newPosition)}
           onPlayerStateChange={(state) => {
+            if (state === PlayerState.Buffering) {
+              log(`buffering at ${detectedQuality?.name}`);
+            }
             if (state === PlayerState.Playing || state === PlayerState.Idle) {
               setBuffering(false);
             }
@@ -135,9 +173,10 @@ export default function PlaygroundExample() {
             setDuration(duration);
             log(`duration changed: ${parseSecondsToString(duration || 0)}`);
           }}
-          onQualityChange={(newQuality) =>
-            log(`quality changed: ${newQuality?.name}`)
-          }
+          onQualityChange={(newQuality) => {
+            setDetectedQuality(newQuality);
+            log(`quality changed: ${newQuality?.name}`);
+          }}
           onRebuffering={() => setBuffering(true)}
           onLoadStart={() => log(`load started`)}
           onLoad={(loadedDuration) =>
@@ -260,12 +299,23 @@ export default function PlaygroundExample() {
                     multiline
                   />
                   <SettingsItem label="Quality" testID="qualitiesPicker">
-                    <QualitiesPicker
-                      quality={quality}
-                      qualities={qualities}
-                      setQuality={(quality) => {
+                    <OptionPicker
+                      option={manualQuality}
+                      options={qualities}
+                      autoOption
+                      setOption={(quality) => {
                         setAutoQualityMode(!quality);
-                        setQuality(quality);
+                        setManualQuality(quality);
+                      }}
+                    />
+                  </SettingsItem>
+                  <SettingsItem label="Resize mode" testID="resizeModePicker">
+                    <OptionPicker
+                      option={resizeMode}
+                      options={RESIZE_MODES}
+                      setOption={(mode) => {
+                        setResizeMode(mode);
+                        log(`Resize mode changed: ${resizeMode?.value}`);
                       }}
                     />
                   </SettingsItem>
@@ -318,6 +368,17 @@ export default function PlaygroundExample() {
                     onValueChange={setVolume}
                     testID="volume"
                   />
+                  <SettingsSliderItem
+                    label={`Initial buffer duration: ${initialBufferDuration.toFixed(
+                      1
+                    )}`}
+                    minimumValue={0.1}
+                    maximumValue={5}
+                    step={0.1}
+                    value={initialBufferDuration}
+                    onValueChange={setInitialBufferDuration}
+                    testID="initialBufferDuration"
+                  />
                   <SettingsSwitchItem
                     label="Live Low Latency"
                     onValueChange={setLiveLowLatency}
@@ -334,7 +395,7 @@ export default function PlaygroundExample() {
                     label="Auto Quality"
                     onValueChange={(value) => {
                       if (value) {
-                        setQuality(null);
+                        setManualQuality(null);
                       }
                       setAutoQualityMode(value);
                     }}
@@ -345,10 +406,11 @@ export default function PlaygroundExample() {
                     label="Auto Max Quality"
                     testID="autoMaxQualityPicker"
                   >
-                    <QualitiesPicker
-                      quality={autoMaxQuality}
-                      qualities={qualities}
-                      setQuality={setAutoMaxQuality}
+                    <OptionPicker
+                      option={autoMaxQuality}
+                      options={qualities}
+                      autoOption
+                      setOption={setAutoMaxQuality}
                     />
                   </SettingsItem>
                   <SettingsItem label="Breakpoints">

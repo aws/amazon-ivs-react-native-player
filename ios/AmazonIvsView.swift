@@ -44,11 +44,14 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
         self.progressInterval = 1
         self.volume = Double(player.volume)
         self.breakpoints = []
+        self.initialBufferDuration = 1
 
         super.init(frame: frame)
 
         self.addSubview(self.playerView)
         self.playerView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
+        self.playerView.videoGravity = findResizeMode(mode: resizeMode)
+
         self.addProgressObserver()
         self.addPlayerObserver()
         self.addTimePointObserver()
@@ -118,6 +121,13 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
             player.setAutoMaxQuality(quality)
         }
     }
+    
+    @objc var initialBufferDuration: Double {
+        didSet {
+            let parsedTime = CMTimeMakeWithSeconds(initialBufferDuration, preferredTimescale: 10)
+            player.setInitialBufferDuration(parsedTime)
+        }
+    }
 
     private func findQuality(quality: NSDictionary?) -> IVSQuality? {
         let quality = player.qualities.first(where: {
@@ -170,6 +180,25 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
             default:
                 break
             }
+        }
+    }
+
+    @objc var resizeMode: String? {
+        didSet{
+            playerView.videoGravity = findResizeMode(mode: resizeMode)
+        }
+    }
+    
+    private func findResizeMode(mode: String?) -> AVLayerVideoGravity {
+        switch mode {
+        case "aspectFill":
+            return  AVLayerVideoGravity.resizeAspectFill
+        case "aspectFit":
+            return AVLayerVideoGravity.resizeAspect
+        case "aspectZoom":
+            return AVLayerVideoGravity.resize
+        default:
+            return AVLayerVideoGravity.resizeAspect
         }
     }
     

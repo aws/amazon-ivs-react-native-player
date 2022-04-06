@@ -1,3 +1,5 @@
+/* eslint-env detox/detox, jest */
+
 export const expectNativePlayerToBeVisible = async () => {
   await waitFor(
     element(
@@ -28,8 +30,7 @@ export const navigateToPlayground = async () => {
   await waitFor(element(by.id('Playground')))
     .toBeVisible()
     .withTimeout(32000);
-  const button = element(by.id('Playground'));
-  await button.tap();
+  await element(by.id('Playground')).tap();
 
   await waitFor(element(by.text('PlaygroundExample')))
     .toBeVisible()
