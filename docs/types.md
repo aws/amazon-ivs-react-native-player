@@ -1,4 +1,4 @@
-# Types and enums
+# TYPES AND ENUMS
 
 ## LogLevel
 

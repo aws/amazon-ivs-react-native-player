@@ -1,8 +1,8 @@
-# IVSPlayer component usage guide
+# IVSPlayer COMPONENT USAGE GUIDE
 
 IVS Player component allows setup and interaction with the native implementation of Amazon IVS player on iOS and Android.
 
-## Installing dependencies
+## INSTALLING DEPENDENCIES
 
 To install the SDK run the following command in your terminal:
 
@@ -12,7 +12,7 @@ yarn add amazon-ivs-react-native
 
 For iOS you will have to run `pod install` inside `ios` directory in order to install needed native dependencies. Android won't require any additional steps.
 
-## Rendering `IVSPlayer` component in your app
+## RENDERING `IVSPlayer` COMPONENT IN YOUR APP
 
 To render the player in your app just use [`IVSPlayer`](./ivs-player-reference.md) component wherever you need it.
 
@@ -28,7 +28,7 @@ export default function App() {
 }
 ```
 
-## Loading stream URL
+## LOADING STREAM URL
 
 To load and play the video or a live stream use [`streamUrl`](./ivs-player-reference.md#streamurl-optional) prop.
 In order to play the video directly after loading [`autoplay`](./ivs-player-reference.md#autoplay-optional) prop can be used.
@@ -42,9 +42,9 @@ In order to play the video directly after loading [`autoplay`](./ivs-player-refe
 
 You can also set the video volume or its quality using component props. The whole list of available props can be found [here](ivs-player-reference.md#props).
 
-## Changing video quality
+## CHANGING VIDEO QUALITY
 
-In order to set proper quality, you need to get the list of available qualities that comes from `onData` callback.
+In order to set video quality, you need to get the list of available qualities that come from the `onData` callback.
 
 ```tsx
 import IVSPlayer, { Quality } from 'amazon-ivs-react-native';
@@ -62,11 +62,11 @@ export default function App() {
 }
 ```
 
-## Listening on `onPlayerStateChange` and other useful callbacks.
+## LISTENING ON `onPlayerStateChange` AND OTHER USEFUL CALLBACKS
 
-SDK allows to listen on certain useful callbacks that helps to get important pieces of the information about the Player.
+The SDK exposes a number of useful callbacks that help to expose important information about the Player, and the video playing.
 e.g. `onProgress` helps to build a video progress bar or `onLoad` that is triggered once a video is loaded with the information about the total duration.
-You can find the full list of events in the [api-reference](./ivs-player-reference.md#props) which starts with `on` prefix.
+You can find the full list of events in the [api-reference](./ivs-player-reference.md#props) which starts with the `on` prefix.
 
 ```tsx
 <IVSPlayer
@@ -129,7 +129,7 @@ You can find the full list of events in the [api-reference](./ivs-player-referen
 />
 ```
 
-## Triggering play/pause manually
+## TRIGGERING PLAY/PAUSE MANUALLY
 
 In addition to configuring the player declaratively there is also a way to trigger some actions imperatively using component's ref.
 
@@ -170,11 +170,11 @@ export default function App() {
 
 The list of all available methods can be found [here](./ivs-player-reference.md#ref-methods).
 
-## Styling the Player
+## STYLING THE PLAYER
 
-`IVSPlayer` component accepts `style` property which means that you can additionally pass any `ViewStyle` prop to style your Player.
+The `IVSPlayer` component accepts the `style` property which means that you can additionally pass any `ViewStyle` prop to style your Player.
 In this example, let's set `width`, `height` and `borderRadius`.
-Those styles are being applied to the Parent View of the Player
+These styles will be applied to the Parent View of the Player
 
 ```tsx
 <IVSPlayer
@@ -187,7 +187,7 @@ Those styles are being applied to the Parent View of the Player
 />
 ```
 
-## Add control buttons on the top of the Player
+## ADD CONTROL BUTTONS ON THE TOP OF THE PLAYER
 
 Let's consider the popular type of video player which displays control buttons on the top of the Player.
 To accomplish this, you need to add the control buttons as `children` of the component.
