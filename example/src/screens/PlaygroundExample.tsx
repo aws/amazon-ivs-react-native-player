@@ -29,6 +29,7 @@ import SettingsInputItem from '../components/SettingsInputItem';
 import SettingsSwitchItem from '../components/SettingsSwitchItem';
 import type { RootStackParamList } from '../App';
 import OptionPicker from '../components/OptionPicker';
+import useAppState from '../useAppState';
 
 const INITIAL_PLAYBACK_RATE = 1;
 const INITIAL_PROGRESS_INTERVAL = 1;
@@ -68,6 +69,7 @@ export default function PlaygroundExample() {
   const [paused, setPaused] = useState(false);
   const [url, setUrl] = useState(URL);
   const [muted, setMuted] = useState(false);
+  const [pauseInBackground, setPauseInBackground] = useState(false);
   const [manualQuality, setManualQuality] = useState<Quality | null>(null);
   const [detectedQuality, setDetectedQuality] = useState<Quality | null>(null);
   const [initialBufferDuration, setInitialBufferDuration] = useState(0.1);
@@ -90,6 +92,15 @@ export default function PlaygroundExample() {
   const [resizeMode, setResizeMode] = useState<ResizeModeOption | null>(
     RESIZE_MODES[1]
   );
+
+  useAppState({
+    onBackground: () => {
+      pauseInBackground && setPaused(true);
+    },
+    onForeground: () => {
+      pauseInBackground && setPaused(false);
+    },
+  });
 
   const log = useCallback(
     (text: string) => {
@@ -384,6 +395,12 @@ export default function PlaygroundExample() {
                     onValueChange={setLiveLowLatency}
                     value={liveLowLatency}
                     testID="liveLowLatency"
+                  />
+                  <SettingsSwitchItem
+                    label="Pause in background"
+                    value={pauseInBackground}
+                    onValueChange={setPauseInBackground}
+                    testID="pauseInBackground"
                   />
                   <SettingsItem label="Log Level" testID="logLevelPicker">
                     <LogLevelPicker

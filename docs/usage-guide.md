@@ -72,3 +72,44 @@ export default function App() {
 ```
 
 The list of all available methods can be found [here](./ivs-player-reference.md#ref-methods).
+
+## 3. Play/Pause in background
+
+Playing a video in background feature is enabled by default in SDK.
+Additionally, in order to use it on iOS, you must [Enable Background Audio](https://developer.apple.com/documentation/avfoundation/media_playback_and_selection/creating_a_basic_video_player_ios_and_tvos/enabling_background_audio) capability in your Xcode project.
+
+In order to pause a video in a background you will need to handle it in your Application.
+We recommend to use React Native `AppState` module to manage that.
+
+Below, you can find the code snippet:
+
+
+```tsx
+
+import { useState, useEffect } from 'react';
+import { AppState, AppStateStatus } from 'react-native';
+
+function App() {
+  // ...
+  const [appState, setAppState] = useState(AppState.currentState);
+
+  useEffect(() => {
+    function handleAppStateChange(nextAppState) {
+      if (nextAppState === 'active' && appState !== 'active') {
+        play(); 
+      } else if (
+        appState === 'active' &&
+        nextAppState.match(/inactive|background/)
+      ) {
+        pause();
+      }
+      setAppState(nextAppState);
+    }
+    const state = AppState.addEventListener('change', handleAppStateChange);
+
+    return () => state.remove();
+  }, [onChange, appState]);
+
+  // ...
+}
+```

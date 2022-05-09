@@ -412,11 +412,9 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
   }
 
   override fun onHostResume() {
-    play()
   }
 
   override fun onHostPause() {
-    pause()
   }
 
   override fun onHostDestroy() {
