@@ -55,7 +55,6 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
         self.addProgressObserver()
         self.addPlayerObserver()
         self.addTimePointObserver()
-        self.addApplicationLifecycleObservers()
 
         player.delegate = self
         self.playerView.player = player
@@ -65,7 +64,6 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
         self.removeProgressObserver()
         self.removePlayerObserver()
         self.removeTimePointObserver()
-        self.removeApplicationLifecycleObservers()
     }
 
     func load(urlString: String) {
@@ -263,34 +261,6 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
         }
     }
 
-    private var didPauseOnBackground = false
-
-    @objc private func applicationDidEnterBackground(notification: Notification) {
-        if player.state == .playing || player.state == .buffering {
-            didPauseOnBackground = true
-            pause()
-        } else {
-            didPauseOnBackground = false
-        }
-    }
-
-    @objc private func applicationDidBecomeActive(notification: Notification) {
-        if didPauseOnBackground && player.error == nil {
-            play()
-            didPauseOnBackground = false
-        }
-    }
-
-    private func addApplicationLifecycleObservers() {
-        NotificationCenter.default.addObserver(self, selector: #selector(applicationDidEnterBackground(notification:)), name: UIApplication.didEnterBackgroundNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(applicationDidBecomeActive(notification:)), name: UIApplication.didBecomeActiveNotification, object: nil)
-    }
-
-    private func removeApplicationLifecycleObservers() {
-        NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: nil)
-        NotificationCenter.default.removeObserver(self, name: UIApplication.willEnterForegroundNotification, object: nil)
-    }
-    
     private func mapPlayerState(state: IVSPlayer.State) -> String {
         switch state {
         case IVSPlayer.State.playing: return "Playing"
