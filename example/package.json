@@ -17,7 +17,7 @@
     "appcenter-analytics": "^4.4.3",
     "appcenter-crashes": "^4.4.3",
     "react": "17.0.2",
-    "react-native": "0.68.0",
+    "react-native": "0.68.1",
     "react-native-config": "^1.4.3",
     "react-native-gesture-handler": "^2.2.0",
     "react-native-orientation-locker": "^1.4.0",
