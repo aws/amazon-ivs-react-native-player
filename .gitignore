@@ -37,9 +37,9 @@ project.xcworkspace
 local.properties
 android.iml
 
-# Cocoapods
-#
+# Ruby / CocoaPods
 example/ios/Pods
+/vendor/bundle/
 
 # node.js
 #
