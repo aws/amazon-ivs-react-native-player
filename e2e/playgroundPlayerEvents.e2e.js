@@ -268,7 +268,7 @@ describe('Playground player events', () => {
     await waitFor(element(by.id('logLevelPicker')))
       .toBeVisible()
       .whileElement(by.id('modalScrollView'))
-      .scroll(50, 'down');
+      .scroll(150, 'down');
     await element(by.text('DEBUG').withAncestor(by.id('logLevelPicker'))).tap();
     await element(by.id('closeIcon')).tap();
 
@@ -286,7 +286,7 @@ describe('Playground player events', () => {
     await waitFor(element(by.id('autoMaxQualityPicker')))
       .toBeVisible()
       .whileElement(by.id('modalScrollView'))
-      .scroll(50, 'down');
+      .scroll(150, 'down');
     await element(
       by.text('720P').withAncestor(by.id('autoMaxQualityPicker'))
     ).tap();
