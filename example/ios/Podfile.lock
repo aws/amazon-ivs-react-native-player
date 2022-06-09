@@ -1,5 +1,5 @@
 PODS:
-  - amazon-ivs-react-native-player (1.1.0):
+  - amazon-ivs-react-native-player (1.2.0):
     - AmazonIVSPlayer (~> 1.8.2)
     - React-Core
   - AmazonIVSPlayer (1.8.2)
@@ -462,7 +462,7 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  amazon-ivs-react-native-player: 4f33d017b2e72d27584493dbbdd77643b60566f3
+  amazon-ivs-react-native-player: 8f2c250d4f957d1b2e5183dc92e410ee2b2d17fe
   AmazonIVSPlayer: 5fa9ee5782d3f8e85ddcebf189fa9d9de6ae27e2
   AppCenter: b0b6f1190215b5f983c42934db718f3b46fff3c0
   appcenter-analytics: 1b32062da2e250c5e1396c678df8c6011ccbcf5a
@@ -470,11 +470,11 @@ SPEC CHECKSUMS:
   appcenter-crashes: b079913ac0f0059e6cf39b7a805135223e508666
   AppCenterReactNativeShared: ac6961204492735ce2507df0a14ce59b13e9c1c5
   boost: a7c83b31436843459a1961bfd74b96033dc77234
-  DoubleConversion: cf9b38bf0b2d048436d9a82ad2abe1404f11e7de
+  DoubleConversion: 831926d9b8bf8166fd87886c4abab286c2422662
   FBLazyVector: e5569e42a1c79ca00521846c223173a57aca1fe1
   FBReactNativeSpec: fe08c1cd7e2e205718d77ad14b34957cce949b58
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
-  glog: 73c2498ac6884b13ede40eda8228cb1eee9d9d62
+  glog: 5337263514dd6f09803962437687240c5dc39aa4
   RCT-Folly: a21c126816d8025b547704b777a2ba552f3d9fa9
   RCTRequired: 4bf86c70714490bca4bf2696148638284622644b
   RCTTypeSafety: c475a7059eb77935fa53d2c17db299893f057d5d
@@ -512,4 +512,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 9fb0f5c63db9eaf6c76003bfbbca2c1ba785fdfa
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.11.2
