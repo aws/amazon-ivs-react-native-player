@@ -34,15 +34,13 @@
       "type": "android.emulator",
       "device": {
         "avdName": "Pixel_3a_API_30_x86"
-      },
-      "utilBinaryPaths": ["./test-butler-app.apk"]
+      }
     },
     "ci-emulator": {
       "type": "android.emulator",
       "device": {
         "avdName": "TestingAVD"
-      },
-      "utilBinaryPaths": ["./test-butler-app.apk"]
+      }
     }
   },
   "configurations": {
