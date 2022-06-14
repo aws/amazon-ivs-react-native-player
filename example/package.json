@@ -9,20 +9,20 @@
     "start": "react-native start"
   },
   "dependencies": {
-    "@react-native-community/masked-view": "^0.1.11",
-    "@react-native-community/slider": "^4.1.12",
+    "@react-native-community/masked-view": "^0.1.10",
+    "@react-native-community/slider": "^4.1.4",
     "@react-navigation/native": "^6.0.6",
     "@react-navigation/stack": "^6.0.11",
     "appcenter": "^4.4.3",
     "appcenter-analytics": "^4.4.3",
     "appcenter-crashes": "^4.4.3",
     "react": "17.0.2",
-    "react-native": "0.66.4",
+    "react-native": "0.68.2",
     "react-native-config": "^1.4.3",
     "react-native-gesture-handler": "^2.2.0",
     "react-native-orientation-locker": "^1.4.0",
     "react-native-paper": "^4.5.0",
-    "react-native-reanimated": "^1.13.4",
+    "react-native-reanimated": "^2.2.2",
     "react-native-safe-area-context": "^3.3.2",
     "react-native-screens": "^3.10.2",
     "react-native-vector-icons": "^7.1.0"
@@ -33,7 +33,7 @@
     "@types/react-native": "0.66.15",
     "@types/react-native-vector-icons": "^6.4.6",
     "babel-plugin-module-resolver": "^4.0.0",
-    "detox": "^19.4.5 ",
+    "detox": "^18.7.1",
     "metro-react-native-babel-preset": "^0.64.0"
   }
 }

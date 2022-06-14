@@ -8,6 +8,7 @@
 # VSCode
 .vscode/
 jsconfig.json
+*.hprof
 
 # Xcode
 #
@@ -37,9 +38,9 @@ project.xcworkspace
 local.properties
 android.iml
 
-# Cocoapods
-#
+# Ruby / CocoaPods
 example/ios/Pods
+/vendor/bundle/
 
 # node.js
 #
