@@ -2,6 +2,10 @@
 
 This document includes migration guides for each notable upgrade in the Amazon IVS React Native Player SDK.
 
+## 1.1.0 to 1.2.0
+
+In 1.2.0, the default behavior of the SDK when playing content in the background was changed. It is now up to the application to determine whether content should be paused or play through. Details of how to configure this within a React Native application can be found in the [Usage Guide for configuring background playback](https://github.com/aws/amazon-ivs-react-native-player/blob/main/docs/usage-guide.md#3-playpause-video-in-a-background).
+
 ## Early Adopter to 1.0.0
 
 If you previously integrated this SDK, there are a couple of changes that have been made to the distribution and integration requirements.
