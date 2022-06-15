@@ -33,7 +33,7 @@
     "@types/react-native": "0.66.15",
     "@types/react-native-vector-icons": "^6.4.6",
     "babel-plugin-module-resolver": "^4.0.0",
-    "detox": "^19.4.5 ",
-    "metro-react-native-babel-preset": "^0.64.0"
+    "detox": "^19.4.3 ",
+    "metro-react-native-babel-preset": "^0.67.0"
   }
 }

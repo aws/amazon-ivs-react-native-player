@@ -59,7 +59,7 @@
     "@types/react": "^17.0.38",
     "@types/react-native": "0.66.15",
     "commitlint": "^13.1.0",
-    "detox": "^19.4.5 ",
+    "detox": "^19.4.3",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^7.0.0",
     "eslint-plugin-detox": "^1.0.0",
