@@ -28,7 +28,7 @@ public class MainApplication extends Application implements ReactApplication {
         protected List<ReactPackage> getPackages() {
           @SuppressWarnings("UnnecessaryLocalVariable")
           List<ReactPackage> packages = new PackageList(this).getPackages();
-          // Packages that cannot be autolinked yet can be added manually here, for StripeTerminalReactNativeExample:
+          // Packages that cannot be autolinked yet can be added manually here, for AmazonIvsExample:
           // packages.add(new MyReactNativePackage());
           packages.add(new AmazonIvsPackage());
           return packages;
