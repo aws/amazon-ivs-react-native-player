@@ -31,7 +31,7 @@
   _bridgeAdapter = [[RCTSurfacePresenterBridgeAdapter alloc] initWithBridge:bridge contextContainer:_contextContainer];
   bridge.surfacePresenter = _bridgeAdapter.surfacePresenter;
 #endif
-  UIView *rootView = RCTAppSetupDefaultRootView(bridge, @"RnDiffApp", nil);
+  UIView *rootView = RCTAppSetupDefaultRootView(bridge, @"AmazonIvsExample", nil);
   if (@available(iOS 13.0, *)) {
     rootView.backgroundColor = [UIColor systemBackgroundColor];
   } else {
