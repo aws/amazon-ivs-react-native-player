@@ -132,6 +132,11 @@ android {
     ndkVersion rootProject.ext.ndkVersion
     compileSdkVersion rootProject.ext.compileSdkVersion
 
+    compileOptions {
+      sourceCompatibility JavaVersion.VERSION_1_8
+      targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     defaultConfig {
         applicationId "com.example.amazonivsreactnativeplayer"
         minSdkVersion rootProject.ext.minSdkVersion
@@ -170,6 +175,7 @@ android {
         }
         testBuildType System.getProperty('testBuildType', 'debug')  // This will later be used to control the test apk build type
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+        missingDimensionStrategy 'detox', 'full'
     }
     if (isNewArchitectureEnabled()) {
         // We configure the NDK build only if you decide to opt-in for the New Architecture.
@@ -259,10 +265,7 @@ dependencies {
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
 
-    androidTestImplementation('com.wix:detox:+'){
-        exclude group: 'com.google.android.material'
-        exclude group: 'androidx.appcompat'
-    }
+    androidTestImplementation(project(path: ":detox"))
 
     androidTestUtil 'com.linkedin.testbutler:test-butler-app:2.2.1'
 

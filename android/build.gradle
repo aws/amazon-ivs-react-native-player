@@ -7,6 +7,7 @@ buildscript {
   repositories {
     google()
     mavenCentral()
+    google()
   }
 
   dependencies {
@@ -128,7 +129,7 @@ def ivs_version = getExtOrDefault('ivsVersion')
 
 dependencies {
   // noinspection GradleDynamicVersion
-  api 'com.facebook.react:react-native:+'
+  implementation 'com.facebook.react:react-native:+'
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
   implementation "com.amazonaws:ivs-player:$ivs_version"
   implementation "com.squareup.okhttp3:okhttp:4.2.2"
