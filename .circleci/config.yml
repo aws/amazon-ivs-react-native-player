@@ -84,6 +84,7 @@ commands:
             command -v nvm
             nvm install <<parameters.node_version>>
             nvm alias default <<parameters.node_version>>
+            npm install -g yarn
 
       - run:
           name: Configure Detox Environment
@@ -251,6 +252,10 @@ jobs:
 
       - run:
           command: |
+            node -v
+            nvm unalias default
+            which node
+            which yarn
             yarn install --frozen-lockfile
           name: yarn install
       - android_emulator_start
