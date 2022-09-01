@@ -3,7 +3,7 @@ version: 2.1
 executors:
   linux_js:
     docker:
-      - image: circleci/node:16.8.0
+      - image: circleci/node:16.17.0
     resource_class: medium
     environment:
       PATH: '/opt/yarn/yarn-v1.22.11/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
@@ -54,7 +54,7 @@ commands:
     parameters:
       node_version:
         type: string
-        default: '16.8.0'
+        default: '16.17.0'
     steps:
       - attach_workspace:
           at: .
@@ -142,7 +142,7 @@ commands:
           name: Start Android Emulator (background)
           command: |
             $ANDROID_HOME/emulator/emulator @<<parameters.device_name>> -version
-            $ANDROID_HOME/emulator/emulator @<<parameters.device_name>> -cores 2 -gpu auto -memory 2048 -no-audio -no-snapshot -no-boot-anim -no-window -logcat *:W | grep -i 'ReactNative\|<<parameters.logcat_grep>>'
+            $ANDROID_HOME/emulator/emulator @<<parameters.device_name>> -cores 2 -gpu auto -accel on -memory 2048 -no-audio -no-snapshot -no-boot-anim -no-window -logcat *:W | grep -i 'ReactNative\|<<parameters.logcat_grep>>'
           background: true
 
       - run:
@@ -251,12 +251,7 @@ jobs:
       - setup_macos_executor
 
       - run:
-          command: |
-            node -v
-            nvm unalias default
-            which node
-            which yarn
-            yarn install --frozen-lockfile
+          command: yarn install --frozen-lockfile
           name: yarn install
       - android_emulator_start
       - run:
