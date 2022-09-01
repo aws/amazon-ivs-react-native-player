@@ -77,7 +77,7 @@ commands:
           name: Install node@<<parameters.node_version>>
           command: |
             set +e
-            curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.35.3/install.sh | bash
+            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
             echo 'export NVM_DIR=$HOME/.nvm' >> $BASH_ENV
             echo 'source $NVM_DIR/nvm.sh' >> $BASH_ENV
             source ~/.bashrc
@@ -251,8 +251,6 @@ jobs:
 
       - run:
           command: |
-            ls -ll
-            nvm ls
             yarn install --frozen-lockfile
           name: yarn install
       - android_emulator_start
