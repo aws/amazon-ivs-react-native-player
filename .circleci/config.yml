@@ -250,7 +250,10 @@ jobs:
       - setup_macos_executor
 
       - run:
-          command: yarn install --frozen-lockfile
+          command: |
+            ls -ll
+            nvm ls
+            yarn install --frozen-lockfile
           name: yarn install
       - android_emulator_start
       - run:
