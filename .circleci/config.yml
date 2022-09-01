@@ -12,7 +12,7 @@ executors:
     parameters:
       xcode_version:
         type: string
-        default: '12.4.0'
+        default: '13.4.1'
     macos:
       xcode: <<parameters.xcode_version>>
 
