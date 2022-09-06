@@ -296,7 +296,7 @@ jobs:
 
   e2e-android:
     executor:
-      name: macos_custom
+      name: android_custom
     steps:
       - attach_workspace:
           at: .
