@@ -295,7 +295,7 @@ jobs:
   e2e-android:
     executor:
       name: android/android-machine
-      tag: 2022.08.1-node
+      tag: 2022.03.1
       resource-class: large
     steps:
       - attach_workspace:
