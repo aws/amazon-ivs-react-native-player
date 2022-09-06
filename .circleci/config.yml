@@ -16,6 +16,11 @@ executors:
     macos:
       xcode: <<parameters.xcode_version>>
 
+  android_custom:
+    machine:
+      image: android:2022.08.1-node
+    resource_class: large
+
 commands:
   attach_project:
     steps:
@@ -51,6 +56,53 @@ commands:
           key: cache-pods-{{ checksum "<<parameters.pod_install_directory>>/Podfile.lock" }}-v1
 
   setup_macos_executor:
+    parameters:
+      node_version:
+        type: string
+        default: '16.8.0'
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Configure Environment Variables
+          command: |
+            echo 'export PATH="$PATH:/usr/local/opt/node@<<parameters.node_version>>/bin:~/.yarn/bin:~/project/node_modules/.bin:~/project/example/node_modules/.bin"' >> $BASH_ENV
+            echo 'export ANDROID_HOME="/usr/local/share/android-commandlinetools"' >> $BASH_ENV
+            echo 'export ANDROID_SDK_ROOT="/usr/local/share/android-commandlinetools"' >> $BASH_ENV
+            echo 'export PATH="$ANDROID_SDK_ROOT/emulator:$ANDROID_SDK_ROOT/tools:$ANDROID_SDK_ROOT/platform-tools:$PATH"' >> $BASH_ENV
+            echo 'export QEMU_AUDIO_DRV=none' >> $BASH_ENV
+            echo 'export JAVA_HOME=$(/usr/libexec/java_home)' >> $BASH_ENV
+            source $BASH_ENV
+
+      - restore_cache:
+          key: |
+            brew-cache-{{ arch }}-v1
+
+      - run:
+          name: Install node@<<parameters.node_version>>
+          command: |
+            set +e
+            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+            echo 'export NVM_DIR=$HOME/.nvm' >> $BASH_ENV
+            echo 'source $NVM_DIR/nvm.sh' >> $BASH_ENV
+            source ~/.bashrc
+            command -v nvm
+            nvm install <<parameters.node_version>>
+            nvm alias default <<parameters.node_version>>
+            npm install -g yarn
+
+      - run:
+          name: Configure Detox Environment
+          command: |
+            brew update >/dev/null
+            HOMEBREW_NO_AUTO_UPDATE=1 brew tap wix/brew >/dev/null
+            HOMEBREW_NO_AUTO_UPDATE=1 brew tap homebrew/cask >/dev/null
+            HOMEBREW_NO_AUTO_UPDATE=1 brew install applesimutils >/dev/null
+            HOMEBREW_NO_AUTO_UPDATE=1 brew install android-commandlinetools >/dev/null
+            touch .watchmanconfig
+            node -v
+
+  setup_android_executor:
     parameters:
       node_version:
         type: string
@@ -248,7 +300,7 @@ jobs:
     steps:
       - attach_workspace:
           at: .
-      - setup_macos_executor
+      - setup_android_executor
 
       - run:
           command: yarn install --frozen-lockfile
