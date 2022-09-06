@@ -19,10 +19,6 @@ executors:
     macos:
       xcode: <<parameters.xcode_version>>
 
-  android_custom:
-    name: android/android-machine
-    resource_class: large
-
 commands:
   attach_project:
     steps:
@@ -298,7 +294,8 @@ jobs:
 
   e2e-android:
     executor:
-      name: android_custom
+      name: android/android-machine
+      resource-class: large
     steps:
       - attach_workspace:
           at: .
