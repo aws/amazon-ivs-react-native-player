@@ -3,7 +3,7 @@ version: 2.1
 executors:
   linux_js:
     docker:
-      - image: circleci/node:16.17.0
+      - image: circleci/node:16.8.0
     resource_class: medium
     environment:
       PATH: '/opt/yarn/yarn-v1.22.11/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
@@ -12,7 +12,7 @@ executors:
     parameters:
       xcode_version:
         type: string
-        default: '13.4.1'
+        default: '12.5.1'
     macos:
       xcode: <<parameters.xcode_version>>
 
@@ -54,7 +54,7 @@ commands:
     parameters:
       node_version:
         type: string
-        default: '16.17.0'
+        default: '16.8.0'
     steps:
       - attach_workspace:
           at: .
