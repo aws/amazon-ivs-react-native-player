@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs:
+  android: circleci/android@2.1.2
+
 executors:
   linux_js:
     docker:
@@ -17,8 +20,7 @@ executors:
       xcode: <<parameters.xcode_version>>
 
   android_custom:
-    machine:
-      image: android:2022.08.1-node
+    name: android/android-machine
     resource_class: large
 
 commands:
