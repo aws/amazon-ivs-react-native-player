@@ -18,6 +18,7 @@ executors:
         default: '12.5.1'
     macos:
       xcode: <<parameters.xcode_version>>
+    resource_class: macos.x86.medium.gen2
 
 commands:
   attach_project:
@@ -142,7 +143,6 @@ commands:
             brew update >/dev/null
             HOMEBREW_NO_AUTO_UPDATE=1 brew tap wix/brew >/dev/null
             HOMEBREW_NO_AUTO_UPDATE=1 brew tap homebrew/cask >/dev/null
-            HOMEBREW_NO_AUTO_UPDATE=1 brew install applesimutils >/dev/null
             HOMEBREW_NO_AUTO_UPDATE=1 brew install android-commandlinetools >/dev/null
             touch .watchmanconfig
             node -v
@@ -293,10 +293,7 @@ jobs:
           path: ./artifacts
 
   e2e-android:
-    executor:
-      name: android/android-machine
-      tag: 2022.03.1
-      resource-class: large
+    executor: macos_custom
     steps:
       - attach_workspace:
           at: .
