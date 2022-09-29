@@ -7,10 +7,13 @@ buildscript {
   repositories {
     google()
     mavenCentral()
+    google()
   }
 
   dependencies {
-    classpath 'com.android.tools.build:gradle:4.2.2'
+    classpath("com.android.tools.build:gradle:7.0.4")
+    classpath("com.facebook.react:react-native-gradle-plugin")
+    classpath("de.undercouch:gradle-download-task:4.1.2")
     // noinspection DifferentKotlinGradleVersion
     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
   }
@@ -48,10 +51,6 @@ android {
   }
   lintOptions {
     disable 'GradleCompatible'
-  }
-  compileOptions {
-    sourceCompatibility JavaVersion.VERSION_1_8
-    targetCompatibility JavaVersion.VERSION_1_8
   }
 }
 
@@ -130,7 +129,7 @@ def ivs_version = getExtOrDefault('ivsVersion')
 
 dependencies {
   // noinspection GradleDynamicVersion
-  api 'com.facebook.react:react-native:+'
+  implementation 'com.facebook.react:react-native:+'
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
   implementation "com.amazonaws:ivs-player:$ivs_version"
   implementation "com.squareup.okhttp3:okhttp:4.2.2"
