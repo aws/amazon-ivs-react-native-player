@@ -55,6 +55,10 @@ export default function AdvancedExample() {
     mediaPlayerRef?.current?.seekTo(value);
   };
 
+  const togglePip = () => {
+    mediaPlayerRef?.current?.togglePip();
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.playerContainer}>
@@ -122,17 +126,38 @@ export default function AdvancedExample() {
                   />
                 ) : null}
               </View>
-              <IconButton
-                testID="playPauseButton"
-                accessibilityLabel={paused ? 'play' : 'pause'}
-                icon={paused ? 'play' : 'pause'}
-                size={40}
-                color="white"
-                onPress={() => {
-                  setPaused((prev) => !prev);
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  flex: 1,
+                  width: '100%',
                 }}
-                style={styles.playIcon}
-              />
+              >
+                <IconButton
+                  testID="playPauseButton"
+                  accessibilityLabel={paused ? 'play' : 'pause'}
+                  icon={paused ? 'play' : 'pause'}
+                  size={40}
+                  color="white"
+                  onPress={() => {
+                    setPaused((prev) => !prev);
+                  }}
+                  style={styles.playIcon}
+                />
+                <IconButton
+                  testID="pipButton"
+                  accessibilityLabel="picture-in-picture"
+                  icon="picture-in-picture-top-right"
+                  size={40}
+                  borderless
+                  color="white"
+                  onPress={() => {
+                    togglePip();
+                  }}
+                  style={styles.pipButton}
+                />
+              </View>
             </SafeAreaView>
           ) : null}
         </IVSPlayer>
@@ -160,6 +185,11 @@ const styles = StyleSheet.create({
   playIcon: {
     borderWidth: 1,
     borderColor: 'white',
+  },
+  pipButton: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
   },
   positionContainer: {
     width: '100%',

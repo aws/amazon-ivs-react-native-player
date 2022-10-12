@@ -333,3 +333,49 @@ function App() {
   );
 }
 ```
+
+### togglePip
+
+Toggles picture in picture mode based on the current state of picture in picture. Available only for Android N+ and iOS 15+
+
+type: `() => void`
+
+### Android specific setup
+
+for picture in picture mode to work on Android you need to add the following to `AndroidManifest.xml`
+
+```xml
+<activity
+...
+    android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode|smallestScreenSize|screenLayout"
+...
+>
+```
+
+also in `MainActivity.java` change `super.onCreate(savedInstanceState);` to `super.onCreate(null)`
+
+```java
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    //super.onCreate(savedInstanceState);
+    super.onCreate(null);
+```
+
+```tsx
+import IVSPlayer, { IVSPlayerRef } from 'amazon-ivs-react-native-player';
+
+const URL = 'https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8';
+
+function App() {
+  const mediaPlayerRef = React.useRef<IVSPlayerRef>(null);
+
+  const togglePip = () => { mediaPlayerRef.current?.togglePip() };
+
+  return (
+    <>
+      <IVSPlayer ref={mediaPlayerRef} streamUrl={URL} />
+      <Button onPress={togglePip} title="togglePip">
+    </>
+  );
+}
+```

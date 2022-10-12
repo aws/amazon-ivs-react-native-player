@@ -1,8 +1,10 @@
 package com.amazonaws.ivs.reactnative.player
 
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.widget.FrameLayout
 import com.amazonaws.ivs.player.*
+import android.os.Build
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.LifecycleEventListener
 import com.facebook.react.bridge.ReactContext
@@ -12,6 +14,10 @@ import com.facebook.react.uimanager.events.RCTEventEmitter
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.timerTask
+import android.app.PictureInPictureParams
+import android.app.Activity
+import androidx.annotation.RequiresApi
+
 
 class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(context), LifecycleEventListener {
   private var playerView: PlayerView? = null
@@ -283,6 +289,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     player?.seekTo(TimeUnit.SECONDS.toMillis(position))
   }
 
+
   fun onPlayerStateChange(state: Player.State) {
     val reactContext = context as ReactContext
 
@@ -411,10 +418,36 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     }
   }
 
+
+
+  fun togglePip(){
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
+      && context.packageManager
+        .hasSystemFeature(
+          PackageManager.FEATURE_PICTURE_IN_PICTURE)) {
+      val activity: Activity? = context.currentActivity
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val params = PictureInPictureParams.Builder()
+        activity?.enterPictureInPictureMode(params.build());
+      } else {
+        activity?.enterPictureInPictureMode();
+      }
+
+    }
+  }
+
+
   override fun onHostResume() {
   }
 
+  @RequiresApi(Build.VERSION_CODES.N)
   override fun onHostPause() {
+    val activity: Activity? = context.currentActivity
+    if (activity?.isInPictureInPictureMode == true) {
+      // Continue playback
+    } else {
+      pause()
+    }
   }
 
   override fun onHostDestroy() {

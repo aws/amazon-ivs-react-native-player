@@ -18,6 +18,7 @@ jest.mock('react-native', () => {
           play: 1,
           pause: 2,
           seekTo: 3,
+          togglePip: undefined,
         },
       };
     }
@@ -209,6 +210,20 @@ test('Using seekTo on ref calls seekTo on native component', async () => {
 
   // Checking if the value we pass down is proper
   expect(mockCommandFn.mock.calls[0][2]).toEqual([10]);
+});
+
+test('Using togglePip on ref calls togglePip on native component', async () => {
+  const mockCommandFn = jest.fn();
+  const ref = React.createRef<IVSPlayerRef>();
+
+  render(<IVSPlayer streamUrl={URL} ref={ref} />);
+
+  UIManager.dispatchViewManagerCommand = mockCommandFn;
+  ref.current?.togglePip();
+
+  expect(mockCommandFn).toHaveBeenCalled();
+  ref.current?.togglePip();
+  expect(mockCommandFn).toHaveBeenCalledTimes(2);
 });
 
 test('Autoplay when onLoad', async () => {
