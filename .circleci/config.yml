@@ -293,7 +293,9 @@ jobs:
           path: ./artifacts
 
   e2e-android:
-    executor: macos_custom
+    executor:
+      name: android/android-machine
+      tag: 2021.10.1
     steps:
       - attach_workspace:
           at: .
