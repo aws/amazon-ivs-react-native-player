@@ -72,6 +72,8 @@ commands:
             command -v nvm
             nvm install <<parameters.node_version>>
             nvm alias default <<parameters.node_version>>
+            npm install --global yarn
+            yarn --version
 
   setup_macos_executor:
     parameters:
