@@ -35,6 +35,20 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
     private var lastFramesDropped: Int?;
     private var lastFramesDecoded: Int?;
 
+
+    private var _pipController: Any? = nil
+
+    @available(iOS 15, *)
+    private var pipController: AVPictureInPictureController? {
+       get {
+           return _pipController as! AVPictureInPictureController?
+       }
+       set {
+           _pipController = newValue
+       }
+   }
+
+
     override init(frame: CGRect) {
         self.muted = player.muted
         self.liveLowLatency = player.isLiveLowLatency
@@ -58,6 +72,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
 
         player.delegate = self
         self.playerView.player = player
+        preparePictureInPicture()
     }
 
     deinit {
@@ -66,6 +81,8 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
         self.removeTimePointObserver()
     }
 
+
+
     func load(urlString: String) {
         finishedLoading = false
         let url = URL(string: urlString)
@@ -73,6 +90,8 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
         onLoadStart?(["": NSNull()])
         player.load(url)
     }
+
+
 
     @objc var progressInterval: NSNumber {
         // TODO: Figure out why updatating observer does not work and results in multiple calls per second
@@ -119,7 +138,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
             player.setAutoMaxQuality(quality)
         }
     }
-    
+
     @objc var initialBufferDuration: Double {
         didSet {
             let parsedTime = CMTimeMakeWithSeconds(initialBufferDuration, preferredTimescale: 10)
@@ -149,7 +168,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
         }
         return value
     }
-    
+
     @objc var streamUrl: String? {
         didSet {
             if let url = streamUrl, !streamUrl!.isEmpty {
@@ -186,7 +205,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
             playerView.videoGravity = findResizeMode(mode: resizeMode)
         }
     }
-    
+
     private func findResizeMode(mode: String?) -> AVLayerVideoGravity {
         switch mode {
         case "aspectFill":
@@ -199,7 +218,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
             return AVLayerVideoGravity.resizeAspect
         }
     }
-    
+
     @objc var breakpoints: NSArray {
         didSet {
             self.removeTimePointObserver()
@@ -218,6 +237,19 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
     @objc func seek(position: Double) {
         let parsedTime = CMTimeMakeWithSeconds(position, preferredTimescale: 1000000)
         player.seek(to: parsedTime)
+    }
+
+
+
+    @objc func togglePip() {
+        guard #available(iOS 15, *), let pipController = pipController else {
+            return
+        }
+        if pipController.isPictureInPictureActive {
+            pipController.stopPictureInPicture()
+        } else {
+            pipController.startPictureInPicture()
+        }
     }
 
     required init?(coder: NSCoder) {
@@ -319,7 +351,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
             onLoad?(["duration": duration ?? NSNull()])
             finishedLoading = true
         }
-        
+
         if state == IVSPlayer.State.ready {
             if player.qualities != oldQualities {
                 let qualities: NSMutableArray = []
@@ -332,10 +364,10 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
                         "width": quality.width,
                         "height": quality.height
                     ]
-                    
+
                     qualities.add(qualityData)
                 }
-                
+
                 onData?(["playerData": [
                     "qualities": qualities,
                     "version": player.version,
@@ -401,5 +433,28 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
 
     func player(_ player: IVSPlayer, didFailWithError error: Error) {
         onError?(["error": error.localizedDescription])
+    }
+
+    private func preparePictureInPicture() {
+
+        guard #available(iOS 15, *), AVPictureInPictureController.isPictureInPictureSupported() else {
+            return
+        }
+
+
+        if let existingController = self.pipController {
+            if existingController.ivsPlayerLayer == playerView.playerLayer {
+                return
+            }
+            self.pipController = nil
+        }
+
+        guard let pipController = AVPictureInPictureController(ivsPlayerLayer: playerView.playerLayer) else {
+            return
+        }
+
+        self.pipController = pipController
+        pipController.canStartPictureInPictureAutomaticallyFromInline = true
+
     }
 }

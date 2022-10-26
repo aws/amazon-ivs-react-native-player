@@ -11,7 +11,8 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>() {
   private enum class Commands {
     PLAY,
     PAUSE,
-    SEEK_TO
+    SEEK_TO,
+    TOGGLE_PIP
   }
 
   override fun getName() = "AmazonIvs"
@@ -31,7 +32,9 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>() {
       "pause",
       Commands.PAUSE.ordinal,
       "seekTo",
-      Commands.SEEK_TO.ordinal
+      Commands.SEEK_TO.ordinal,
+      "togglePip",
+      Commands.TOGGLE_PIP.ordinal
     )
   }
 
@@ -39,6 +42,7 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>() {
     when (commandType) {
       Commands.PLAY.ordinal -> view.play()
       Commands.PAUSE.ordinal -> view.pause()
+      Commands.TOGGLE_PIP.ordinal -> view.togglePip()
       Commands.SEEK_TO.ordinal -> {
         args?.getInt(0)?.let { position ->
           view.seekTo(position.toLong())

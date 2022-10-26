@@ -39,6 +39,7 @@ export type IVSPlayerRef = {
   play: () => void;
   pause: () => void;
   seekTo: (position: number) => void;
+  togglePip: () => void;
 };
 
 export type ResizeMode = 'aspectFill' | 'aspectFit' | 'aspectZoom';

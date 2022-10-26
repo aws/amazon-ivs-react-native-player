@@ -133,7 +133,7 @@ You can find the full list of events in the [api-reference](./ivs-player-referen
 
 In addition to configuring the player declaratively there is also a way to trigger some actions imperatively using component's ref.
 
-Those actions are `play`, `pause` and `seekTo` which can be used to manually stop and start the video or set the current time position.
+Those actions are `play`, `pause`, `seekTo` and `togglePip` which can be used to manually stop, start the video, set the current time position and toggle picture in picture mode if available.
 
 ```tsx
 import IVSPlayer, { IVSPlayerRef } from 'amazon-ivs-react-native-player'
@@ -153,6 +153,10 @@ export default function App() {
     mediaPlayerRef?.current?.seekTo(15);
   };
 
+    const handleTogglePipToPress = () => {
+    mediaPlayerRef?.current?.togglePip();
+  };
+
   return (
     <View>
       <IVSPlayer
@@ -163,6 +167,7 @@ export default function App() {
       <Button onPress={handlePlayPress} title="play">
       <Button onPress={handlePausePress} title="pause">
       <Button onPress={handleSeekToPress} title="seek to">
+      <Button onPress={handleTogglePipToPress} title="togglePip">
     </View>
   );
 }
@@ -237,9 +242,7 @@ We recommend to use React Native `AppState` module to manage that.
 
 Below, you can find the code snippet:
 
-
 ```tsx
-
 import { useState, useEffect } from 'react';
 import { AppState, AppStateStatus } from 'react-native';
 
@@ -250,7 +253,7 @@ function App() {
   useEffect(() => {
     function handleAppStateChange(nextAppState) {
       if (nextAppState === 'active' && appState !== 'active') {
-        play(); 
+        play();
       } else if (
         appState === 'active' &&
         nextAppState.match(/inactive|background/)
@@ -266,3 +269,4 @@ function App() {
 
   // ...
 }
+```
