@@ -53,6 +53,7 @@ commands:
           paths:
             - <<parameters.pod_install_directory>>/Pods
           key: cache-pods-{{ checksum "<<parameters.pod_install_directory>>/Podfile.lock" }}-v1
+  
   setup_android_executor:
     parameters:
       node_version:
@@ -172,7 +173,7 @@ commands:
 
       - run:
           name: Wait for AVD to be ready
-          no_output_timeout: '5m'
+          no_output_timeout: '10m'
           command: |
             export BOOT=""
             echo "Waiting for AVD to finish booting"
@@ -233,6 +234,7 @@ jobs:
           name: Typecheck files
           command: |
             yarn typescript
+  
   test:
     executor: linux_js
     steps:
@@ -241,6 +243,7 @@ jobs:
           name: Integration tests
           command: |
             yarn test
+  
   e2e-ios:
     executor: macos_custom
 
