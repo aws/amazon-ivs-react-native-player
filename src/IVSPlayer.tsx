@@ -157,7 +157,6 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
     ref
   ) => {
     const mediaPlayerRef = useRef(null);
-    const initialized = useRef(false);
 
     const play = useCallback(() => {
       UIManager.dispatchViewManagerCommand(
@@ -185,15 +184,8 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
     }, []);
 
     useEffect(() => {
-      if (initialized.current || autoplay) {
-        if (paused) {
-          pause();
-        } else {
-          play();
-        }
-      }
-      initialized.current = true;
-    }, [pause, paused, play, autoplay]);
+      paused ? pause() : play();
+    }, [pause, paused, play]);
 
     useImperativeHandle(
       ref,
@@ -239,7 +231,7 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
         duration: number | null;
       }>
     ) => {
-      if (!paused) {
+      if (autoplay) {
         play();
       } else {
         pause();
