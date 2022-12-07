@@ -156,8 +156,6 @@ commands:
             adb start-server
             adb devices
             adb kill-server
-            echo 'Vulkan = off' >> ~/.android/advancedFeatures.ini
-            echo 'GLDirectMem = on' >> ~/.android/advancedFeatures.ini
             ls -la ~/.android
 
       - run:
@@ -171,7 +169,8 @@ commands:
           name: Start Android Emulator (background)
           command: |
             $ANDROID_HOME/emulator/emulator @<<parameters.device_name>> -version
-            $ANDROID_HOME/emulator/emulator @<<parameters.device_name>> -cores 2 -gpu auto -accel on -memory 2048 -no-audio -no-snapshot -no-boot-anim -no-window -logcat *:W | grep -i 'ReactNative\|<<parameters.logcat_grep>>'
+            $ANDROID_HOME/emulator/emulator @<<parameters.device_name>> -cores 2 -gpu auto -accel on -memory 2048 -no-audio -no-snapshot -no-boot-anim -no-window -logcat *:W
+            # $ANDROID_HOME/emulator/emulator @<<parameters.device_name>> -cores 2 -gpu auto -accel on -memory 2048 -no-audio -no-snapshot -no-boot-anim -no-window -logcat *:W | grep -i 'ReactNative\|<<parameters.logcat_grep>>'
           background: true
 
       - run:
