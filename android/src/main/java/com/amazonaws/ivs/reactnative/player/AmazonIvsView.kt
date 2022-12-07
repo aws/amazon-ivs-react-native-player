@@ -440,15 +440,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
   override fun onHostResume() {
   }
 
-  @RequiresApi(Build.VERSION_CODES.N)
-  override fun onHostPause() {
-    val activity: Activity? = context.currentActivity
-    if (activity?.isInPictureInPictureMode == true) {
-      // Continue playback
-    } else {
-      pause()
-    }
-  }
+  override fun onHostPause() {}
 
   override fun onHostDestroy() {
     cleanup()
