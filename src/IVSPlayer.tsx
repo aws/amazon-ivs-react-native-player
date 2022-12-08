@@ -184,6 +184,15 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
       );
     }, []);
 
+    const togglePip = useCallback(() => {
+      UIManager.dispatchViewManagerCommand(
+        findNodeHandle(mediaPlayerRef.current),
+
+        UIManager.getViewManagerConfig(VIEW_NAME).Commands.togglePip,
+        []
+      );
+    }, []);
+
     useEffect(() => {
       if (initialized.current || autoplay) {
         if (paused) {
@@ -201,8 +210,9 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
         play,
         pause,
         seekTo,
+        togglePip,
       }),
-      [play, pause, seekTo]
+      [play, pause, seekTo, togglePip]
     );
 
     const onSeekHandler = (

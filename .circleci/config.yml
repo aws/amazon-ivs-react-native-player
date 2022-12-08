@@ -1,20 +1,24 @@
 version: 2.1
 
+orbs:
+  android: circleci/android@2.1.2
+
 executors:
   linux_js:
     docker:
-      - image: circleci/node:12.13.0
+      - image: circleci/node:16.8.0
     resource_class: medium
     environment:
-      PATH: '/opt/yarn/yarn-v1.5.1/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+      PATH: '/opt/yarn/yarn-v1.22.11/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
 
   macos_custom:
     parameters:
       xcode_version:
         type: string
-        default: '12.4.0'
+        default: '12.5.1'
     macos:
       xcode: <<parameters.xcode_version>>
+    resource_class: macos.x86.medium.gen2
 
 commands:
   attach_project:
@@ -49,12 +53,34 @@ commands:
           paths:
             - <<parameters.pod_install_directory>>/Pods
           key: cache-pods-{{ checksum "<<parameters.pod_install_directory>>/Podfile.lock" }}-v1
+  
+  setup_android_executor:
+    parameters:
+      node_version:
+        type: string
+        default: '12.13.0'
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Install node@<<parameters.node_version>>
+          command: |
+            set +e
+            curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.35.3/install.sh | bash
+            echo 'export NVM_DIR=/opt/circleci/.nvm' >> $BASH_ENV
+            echo 'source $NVM_DIR/nvm.sh' >> $BASH_ENV
+            source ~/.bashrc
+            command -v nvm
+            nvm install <<parameters.node_version>>
+            nvm alias default <<parameters.node_version>>
+            curl -o- -L https://yarnpkg.com/install.sh | bash
+            echo 'export PATH="${PATH}:${HOME}/.yarn/bin"' >> $BASH_ENV
 
   setup_macos_executor:
     parameters:
       node_version:
         type: string
-        default: '12.13.0'
+        default: '16.8.0'
     steps:
       - attach_workspace:
           at: .
@@ -77,13 +103,14 @@ commands:
           name: Install node@<<parameters.node_version>>
           command: |
             set +e
-            curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.35.3/install.sh | bash
+            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
             echo 'export NVM_DIR=$HOME/.nvm' >> $BASH_ENV
             echo 'source $NVM_DIR/nvm.sh' >> $BASH_ENV
             source ~/.bashrc
             command -v nvm
             nvm install <<parameters.node_version>>
             nvm alias default <<parameters.node_version>>
+            npm install -g yarn
 
       - run:
           name: Configure Detox Environment
@@ -130,6 +157,7 @@ commands:
             adb devices
             adb kill-server
             ls -la ~/.android
+
       - run:
           name: Create Android Emulator
           command:
@@ -146,7 +174,7 @@ commands:
 
       - run:
           name: Wait for AVD to be ready
-          no_output_timeout: '5m'
+          no_output_timeout: '10m'
           command: |
             export BOOT=""
             echo "Waiting for AVD to finish booting"
@@ -207,6 +235,7 @@ jobs:
           name: Typecheck files
           command: |
             yarn typescript
+  
   test:
     executor: linux_js
     steps:
@@ -215,6 +244,7 @@ jobs:
           name: Integration tests
           command: |
             yarn test
+  
   e2e-ios:
     executor: macos_custom
 
@@ -243,11 +273,14 @@ jobs:
 
   e2e-android:
     executor:
-      name: macos_custom
+      name: android/android-machine
+      resource-class: large
+      tag: 2021.10.1
     steps:
       - attach_workspace:
           at: .
-      - setup_macos_executor
+
+      - setup_android_executor
 
       - run:
           command: yarn install --frozen-lockfile
@@ -283,9 +316,9 @@ workflows:
       - test:
           requires:
             - install-dependencies
-      - e2e-android:
-          requires:
-            - install-dependencies
+      # - e2e-android:
+      #     requires:
+      #       - install-dependencies
       # - e2e-ios:
       #     requires:
       #       - install-dependencies
