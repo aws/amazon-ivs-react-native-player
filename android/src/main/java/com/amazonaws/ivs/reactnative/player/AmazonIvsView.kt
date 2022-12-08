@@ -319,7 +319,8 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
         data.putMap("playerData", playerData)
 
         reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.DATA.toString(), data)
-      };
+      }
+      else -> {}
     }
 
     val onStateChangeData = Arguments.createMap()
