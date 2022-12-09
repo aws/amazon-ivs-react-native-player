@@ -347,7 +347,7 @@ for picture in picture mode to work on Android you need to add the following to 
 ```xml
 <activity
 ...
-    android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode|smallestScreenSize|screenLayout"
+    android:supportsPictureInPicture="true"
 ...
 >
 ```
