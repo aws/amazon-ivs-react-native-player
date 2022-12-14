@@ -66,3 +66,4 @@ test-butler-app.apk
 
 # react-native-config codegen
 example/ios/tmp.xcconfig
+example/ios/.xcode.env.local
