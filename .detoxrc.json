@@ -1,6 +1,10 @@
 {
-  "testRunner": "jest",
-  "runnerConfig": "e2e/config.json",
+  "testRunner": {
+    "$0": "jest",
+    "args": {
+      "config": "e2e/jest.config.js"
+    }
+  },
   "apps": {
     "ios.debug": {
       "type": "ios.app",
@@ -33,14 +37,14 @@
     "emulator": {
       "type": "android.emulator",
       "device": {
-        "avdName": "Pixel_3a_API_30_x86"
+        "avdName": "Pixel_2_API_23"
       },
       "utilBinaryPaths": ["./test-butler-app.apk"]
     },
     "ci-emulator": {
       "type": "android.emulator",
       "device": {
-        "avdName": "TestingAVD"
+        "avdName": "Pixel_2_API_23"
       },
       "utilBinaryPaths": ["./test-butler-app.apk"]
     }
