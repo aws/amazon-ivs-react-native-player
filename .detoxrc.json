@@ -9,12 +9,12 @@
     "ios.debug": {
       "type": "ios.app",
       "binaryPath": "example/ios/build/Build/Products/Debug-iphonesimulator/AmazonIvsExample.app",
-      "build": "xcodebuild -workspace example/ios/AmazonIvsExample.xcworkspace -configuration Debug -scheme AmazonIvsExample -destination 'platform=iOS Simulator,name=iPhone 11' -derivedDataPath example/ios/build"
+      "build": "xcodebuild -workspace example/ios/AmazonIvsExample.xcworkspace -configuration Debug -scheme AmazonIvsExample -sdk iphonesimulator -derivedDataPath example/ios/build"
     },
     "ios.release": {
       "type": "ios.app",
       "binaryPath": "example/ios/build/Build/Products/Release-iphonesimulator/AmazonIvsExample.app",
-      "build": "export RCT_NO_LAUNCH_PACKAGER=true && xcodebuild -workspace example/ios/AmazonIvsExample.xcworkspace -configuration Release -scheme AmazonIvsExample -destination 'platform=iOS Simulator,name=iPhone 11' -derivedDataPath example/ios/build"
+      "build": "export RCT_NO_LAUNCH_PACKAGER=true && xcodebuild -workspace example/ios/AmazonIvsExample.xcworkspace -configuration Release -scheme AmazonIvsExample -sdk iphonesimulator -derivedDataPath example/ios/build"
     },
     "android.debug": {
       "type": "android.apk",
@@ -37,14 +37,14 @@
     "emulator": {
       "type": "android.emulator",
       "device": {
-        "avdName": "Pixel_2_API_23"
+        "avdName": "Pixel_3a_API_30_x86"
       },
       "utilBinaryPaths": ["./test-butler-app.apk"]
     },
     "ci-emulator": {
       "type": "android.emulator",
       "device": {
-        "avdName": "Pixel_2_API_23"
+        "avdName": "TestingAVD"
       },
       "utilBinaryPaths": ["./test-butler-app.apk"]
     }
