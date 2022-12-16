@@ -6,7 +6,7 @@ orbs:
 executors:
   linux_js:
     docker:
-      - image: circleci/node:16.8.0
+      - image: circleci/node:16.10.0
     resource_class: medium
     environment:
       PATH: '/opt/yarn/yarn-v1.22.11/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
