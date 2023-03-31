@@ -257,17 +257,19 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
   fun onSeek(position: Long) {
     val reactContext = context as ReactContext
     val data = Arguments.createMap()
-    data.putInt("position", TimeUnit.MILLISECONDS.toSeconds(position).toInt())
-
+    data.putDouble("position", convertMilliSecondsToSeconds(position))
     reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.SEEK.toString(), data)
   }
 
   fun onProgress(position: Long) {
     val reactContext = context as ReactContext
     val data = Arguments.createMap()
-    data.putInt("position", TimeUnit.MILLISECONDS.toSeconds(position).toInt())
-
+    data.putDouble("position", convertMilliSecondsToSeconds(position))
     reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.PROGRESS.toString(), data)
+  }
+
+  private fun convertMilliSecondsToSeconds (milliSeconds: Long): Double {
+    return milliSeconds / 1000.0;
   }
 
   private val mLayoutRunnable = Runnable {
@@ -405,8 +407,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
   }
 
   private fun getDuration(duration: Long): Double {
-    val durationInSeconds = TimeUnit.MILLISECONDS.toSeconds(duration).toInt()
-    return durationInSeconds.toDouble()
+    return convertMilliSecondsToSeconds(duration)
   }
 
   private fun mapPlayerState(state: Player.State): String {
