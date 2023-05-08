@@ -12,6 +12,7 @@ import {
   findNodeHandle,
   View,
   NativeSyntheticEvent,
+  Platform,
 } from 'react-native';
 import type { LogLevel, PlayerState } from './enums';
 import type {
@@ -249,10 +250,9 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
         duration: number | null;
       }>
     ) => {
-      if (!paused) {
-        play();
-      } else {
-        pause();
+      if (Platform.OS === 'android') {
+        const shouldAutoPlay = autoplay && !paused;
+        shouldAutoPlay ? play() : pause();
       }
 
       const { duration } = event.nativeEvent;
