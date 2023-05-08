@@ -57,7 +57,7 @@
     "@testing-library/react-native": "^10.1.0",
     "@types/jest": "^26.0.0",
     "@types/react": "^17.0.38",
-    "@types/react-native": "0.69.7",
+    "@types/react-native": "0.69.9",
     "commitlint": "^13.1.0",
     "detox": "^20.1.0",
     "eslint": "^7.32.0",
