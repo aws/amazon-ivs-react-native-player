@@ -1,16 +1,20 @@
 {
-  "testRunner": "jest",
-  "runnerConfig": "e2e/config.json",
+  "testRunner": {
+    "$0": "jest",
+    "args": {
+      "config": "e2e/jest.config.js"
+    }
+  },
   "apps": {
     "ios.debug": {
       "type": "ios.app",
       "binaryPath": "example/ios/build/Build/Products/Debug-iphonesimulator/AmazonIvsExample.app",
-      "build": "xcodebuild -workspace example/ios/AmazonIvsExample.xcworkspace -configuration Debug -scheme AmazonIvsExample -destination 'platform=iOS Simulator,name=iPhone 11' -derivedDataPath example/ios/build"
+      "build": "xcodebuild -workspace example/ios/AmazonIvsExample.xcworkspace -configuration Debug -scheme AmazonIvsExample -sdk iphonesimulator -derivedDataPath example/ios/build"
     },
     "ios.release": {
       "type": "ios.app",
       "binaryPath": "example/ios/build/Build/Products/Release-iphonesimulator/AmazonIvsExample.app",
-      "build": "export RCT_NO_LAUNCH_PACKAGER=true && xcodebuild -workspace example/ios/AmazonIvsExample.xcworkspace -configuration Release -scheme AmazonIvsExample -destination 'platform=iOS Simulator,name=iPhone 11' -derivedDataPath example/ios/build"
+      "build": "export RCT_NO_LAUNCH_PACKAGER=true && xcodebuild -workspace example/ios/AmazonIvsExample.xcworkspace -configuration Release -scheme AmazonIvsExample -sdk iphonesimulator -derivedDataPath example/ios/build"
     },
     "android.debug": {
       "type": "android.apk",

@@ -19,7 +19,7 @@ Pod::Spec.new do |s|
   s.license      = package["license"]
   s.authors      = package["author"]
 
-  s.platforms    = { :ios => "11.0" }
+  s.platforms    = { :ios => "12.4" }
   s.source       = { :git => "https://github.com/aws/amazon-ivs-react-native-player.git", :tag => "#{s.version}" }
 
 
@@ -27,5 +27,5 @@ Pod::Spec.new do |s|
 
 
   s.dependency "React-Core"
-  s.dependency "AmazonIVSPlayer", "~> 1.13.0"
+  s.dependency "AmazonIVSPlayer", "~> 1.18.0"
 end
