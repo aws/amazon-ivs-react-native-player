@@ -238,6 +238,11 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
         let parsedTime = CMTimeMakeWithSeconds(position, preferredTimescale: 1000000)
         player.seek(to: parsedTime)
     }
+    
+    @objc func setOrigin(origin: NSString){
+        let url = URL(string: origin as String)
+        player.setOrigin(url)
+    }
 
 
 

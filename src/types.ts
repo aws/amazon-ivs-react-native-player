@@ -39,6 +39,7 @@ export type IVSPlayerRef = {
   play: () => void;
   pause: () => void;
   seekTo: (position: number) => void;
+  setOrigin: (origin: string) => void;
   togglePip: () => void;
 };
 

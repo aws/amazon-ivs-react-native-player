@@ -55,6 +55,10 @@ export default function AdvancedExample() {
     mediaPlayerRef?.current?.seekTo(value);
   };
 
+  useEffect(() => {
+    mediaPlayerRef.current?.setOrigin('http://www.example.com');
+  }, []);
+
   const togglePip = () => {
     mediaPlayerRef?.current?.togglePip();
   };
