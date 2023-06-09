@@ -44,8 +44,8 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>() {
       Commands.PAUSE.ordinal -> view.pause()
       Commands.TOGGLE_PIP.ordinal -> view.togglePip()
       Commands.SEEK_TO.ordinal -> {
-        args?.getInt(0)?.let { position ->
-          view.seekTo(position.toLong())
+        args?.getDouble(0)?.let { position ->
+          view.seekTo(position)
         }
       }
       else -> {

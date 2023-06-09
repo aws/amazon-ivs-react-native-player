@@ -269,7 +269,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
   }
 
   private fun convertMilliSecondsToSeconds (milliSeconds: Long): Double {
-    return milliSeconds / 1000.0;
+    return milliSeconds / 1000.0
   }
 
   private val mLayoutRunnable = Runnable {
@@ -287,8 +287,9 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     player?.pause()
   }
 
-  fun seekTo(position: Long) {
-    player?.seekTo(TimeUnit.SECONDS.toMillis(position))
+  fun seekTo(position: Double) {
+    val milliseconds = (position * 1000.0).toLong()
+    player?.seekTo(milliseconds)
   }
 
 
