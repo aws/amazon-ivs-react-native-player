@@ -292,6 +292,10 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     player?.seekTo(milliseconds)
   }
 
+  fun setOrigin(origin: String) {
+    player?.setOrigin(origin)
+  }
+
 
   fun onPlayerStateChange(state: Player.State) {
     val reactContext = context as ReactContext

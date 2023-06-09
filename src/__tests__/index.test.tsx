@@ -1,6 +1,6 @@
 import { render, fireEvent } from '@testing-library/react-native';
 import React from 'react';
-import { UIManager } from 'react-native';
+import { Platform, UIManager } from 'react-native';
 import type { IVSPlayerRef } from '../types';
 
 import IVSPlayer from '../IVSPlayer';
@@ -18,6 +18,7 @@ jest.mock('react-native', () => {
           play: 1,
           pause: 2,
           seekTo: 3,
+          setOrigin: 4,
           togglePip: undefined,
         },
       };
@@ -226,8 +227,19 @@ test('Using togglePip on ref calls togglePip on native component', async () => {
   expect(mockCommandFn).toHaveBeenCalledTimes(2);
 });
 
+test('Using setOrigin on ref calls setOrigin on native component', async () => {
+  const mockCommandFn = jest.fn();
+  const ref = React.createRef<IVSPlayerRef>();
+
+  render(<IVSPlayer streamUrl={URL} ref={ref} />);
+
+  UIManager.dispatchViewManagerCommand = mockCommandFn;
+  ref.current?.setOrigin('Access-Control-Allow-Origin');
+});
+
 test('Autoplay when onLoad', async () => {
   const mockCommandFn = jest.fn();
+  Platform.OS = 'android';
 
   const { findByTestId } = render(<IVSPlayer streamUrl={URL} />);
   UIManager.dispatchViewManagerCommand = mockCommandFn;

@@ -185,6 +185,15 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
       );
     }, []);
 
+    const setOrigin = useCallback((value) => {
+      UIManager.dispatchViewManagerCommand(
+        findNodeHandle(mediaPlayerRef.current),
+
+        UIManager.getViewManagerConfig(VIEW_NAME).Commands.setOrigin,
+        [value]
+      );
+    }, []);
+
     const togglePip = useCallback(() => {
       UIManager.dispatchViewManagerCommand(
         findNodeHandle(mediaPlayerRef.current),
@@ -211,9 +220,10 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
         play,
         pause,
         seekTo,
+        setOrigin,
         togglePip,
       }),
-      [play, pause, seekTo, togglePip]
+      [play, pause, seekTo, setOrigin, togglePip]
     );
 
     const onSeekHandler = (

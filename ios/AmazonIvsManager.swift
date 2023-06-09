@@ -27,6 +27,13 @@ class AmazonIvsManager: RCTViewManager {
         }
     }
     
+    @objc func setOrigin(_ node: NSNumber, origin: NSString) {
+        DispatchQueue.main.async {
+            let component = self.bridge.uiManager.view(forReactTag: node) as! AmazonIvsView
+            component.setOrigin(origin: origin)
+        }
+    }
+    
     @objc func togglePip(_ node: NSNumber) {
         DispatchQueue.main.async {
             let component = self.bridge.uiManager.view(forReactTag: node) as! AmazonIvsView

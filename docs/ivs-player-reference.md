@@ -309,6 +309,37 @@ function App() {
 }
 ```
 
+### setOrigin
+
+Sets the HTTP 'Origin' header on all outgoing requests.
+
+type: `(origin: string) => void`
+
+Parameters
+origin	the HTTP 'Origin' header value. For example: 'http://www.example.com'
+
+
+```tsx
+import { useEffect } from 'React';
+import IVSPlayer, { IVSPlayerRef } from 'amazon-ivs-react-native-player';
+
+const URL = 'https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8';
+
+function App() {
+  const mediaPlayerRef = React.useRef<IVSPlayerRef>(null);
+
+  useEffect(() => {
+    mediaPlayerRef.current?.setOrigin('http://www.example.com')
+  }, [])
+
+  return (
+    <>
+      <IVSPlayer ref={mediaPlayerRef} streamUrl={URL} />
+    </>
+  );
+}
+```
+
 ### seekTo
 
 Seeks to the given time in the stream and begins playing at that position if `play()` has been called. If no stream is loaded the seek will be be deferred until load is called. The position will update to the seeked time. Specified value should be in seconds.

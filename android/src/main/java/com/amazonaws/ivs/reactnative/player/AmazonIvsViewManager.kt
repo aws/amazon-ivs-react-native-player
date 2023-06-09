@@ -12,6 +12,7 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>() {
     PLAY,
     PAUSE,
     SEEK_TO,
+    SET_ORIGIN,
     TOGGLE_PIP
   }
 
@@ -32,6 +33,8 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>() {
       "pause",
       Commands.PAUSE.ordinal,
       "seekTo",
+      Commands.SET_ORIGIN.ordinal,
+      "setOrigin",
       Commands.SEEK_TO.ordinal,
       "togglePip",
       Commands.TOGGLE_PIP.ordinal
@@ -43,6 +46,12 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>() {
       Commands.PLAY.ordinal -> view.play()
       Commands.PAUSE.ordinal -> view.pause()
       Commands.TOGGLE_PIP.ordinal -> view.togglePip()
+      Commands.SET_ORIGIN.ordinal -> {
+        args?.getString(0)?.let {
+          origin ->
+            view.setOrigin(origin)
+        }
+      }
       Commands.SEEK_TO.ordinal -> {
         args?.getDouble(0)?.let { position ->
           view.seekTo(position)
