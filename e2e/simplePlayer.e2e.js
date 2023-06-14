@@ -2,8 +2,6 @@
 
 import { expectNativePlayerToBeVisible } from './utils';
 
-jest.retryTimes(3);
-
 describe('Simple player', () => {
   beforeAll(async () => {
     await device.launchApp();

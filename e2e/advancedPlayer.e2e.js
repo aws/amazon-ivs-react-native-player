@@ -2,8 +2,6 @@
 
 import { expectNativePlayerToBeVisible, togglePlayPauseVideo } from './utils';
 
-jest.retryTimes(3);
-
 describe('Advanced player', () => {
   beforeAll(async () => {
     await device.launchApp();
