@@ -12,7 +12,7 @@ jobs:
     - uses: actions/setup-java@v3
       with:
         distribution: 'temurin'
-        java-version: '8'
+        java-version: '11'
         check-latest: true
         cache: gradle
     - uses: actions/setup-node@v3
@@ -27,7 +27,6 @@ jobs:
     - name: get android device image
       run: |
         echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install "system-images;android-31;google_apis;x86_64"
-        $ANDROID_HOME/tools/bin/avdmanager list device
         echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd --force --name "${{ steps.device.outputs.AVD_NAME }}" --device "Nexus 5X" -k 'system-images;android-31;google_apis;x86_64'
         $ANDROID_HOME/emulator/emulator -list-avds
 
