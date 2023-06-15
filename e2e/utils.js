@@ -51,8 +51,8 @@ export const togglePlayPauseVideo = async () => {
   await element(by.id('playPauseButton')).tap();
 };
 
-export const scrollToModalBottom = async (scrollDown = 400) => {
+export const scrollToModalBottom = async (scrollDown = 500) => {
   await element(by.id('modalScrollView')).scroll(scrollDown, 'down');
   // wait for anim to finish ??
-  await sleep(500);
+  await sleep(1000);
 };
