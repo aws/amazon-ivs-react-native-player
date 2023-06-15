@@ -13,9 +13,10 @@ jobs:
     - uses: actions/checkout@v3
     - uses: actions/setup-java@v3
       with:
-        distribution: 'temurin'
-        java-version: '11'
-        cache: gradle
+        distribution: 'zulu'
+        java-version: '17'
+        check-latest: true
+        cache: 'gradle'
     - uses: actions/setup-node@v3
       with:
         node-version-file: '.nvmrc'
@@ -28,8 +29,8 @@ jobs:
     - name: get android device image
       run: |
         echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install "system-images;android-31;x86"
-        echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd --force --name emu --device "${{ steps.device.outputs.AVD_NAME }}" -k 'system-images;android-31;x86'
-        $ANDROID_HOME/emulator/emulator -list-avds
+        # echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd --force --name emu --device "${{ steps.device.outputs.AVD_NAME }}" -k 'system-images;android-31;x86'
+        # $ANDROID_HOME/emulator/emulator -list-avds
   
     # - name: yarn
     #   run: yarn
