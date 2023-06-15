@@ -27,6 +27,7 @@ jobs:
     - name: get android device image
       run: |
         echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install "system-images;android-31;google_apis;x86_64"
+        $ANDROID_HOME/tools/bin/avdmanager list device
         echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd --force --name "${{ steps.device.outputs.AVD_NAME }}" --device "Pixel 5" -k 'system-images;android-31;google_apis;x86_64'
         $ANDROID_HOME/emulator/emulator -list-avds
 
