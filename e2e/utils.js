@@ -1,5 +1,7 @@
 /* eslint-env detox/detox, jest */
 
+export const TIMEOUT = 30000;
+
 export const expectNativePlayerToBeVisible = async () => {
   await waitFor(
     element(
@@ -47,4 +49,10 @@ export const togglePlayPauseVideo = async () => {
     .withTimeout(24000);
 
   await element(by.id('playPauseButton')).tap();
+};
+
+export const scrollToModalBottom = async (scrollDown = 400) => {
+  await element(by.id('modalScrollView')).scroll(scrollDown, 'down');
+  // wait for anim to finish ??
+  await sleep(500);
 };

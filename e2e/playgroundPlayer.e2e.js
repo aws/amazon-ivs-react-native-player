@@ -5,13 +5,9 @@ import {
   atLeastOneLogIsVisible,
   navigateToPlayground,
   togglePlayPauseVideo,
+  scrollToModalBottom,
+  TIMEOUT,
 } from './utils';
-
-const TIMEOUT = 300000;
-
-jest.setTimeout(1200000);
-
-jest.retryTimes(3);
 
 describe('Playground player', () => {
   beforeAll(async () => {
@@ -95,4 +91,204 @@ describe('Playground player', () => {
       .not.toHaveText('live')
       .withTimeout(TIMEOUT);
   });
+
+  it("Player doesn't crash after setting auto quality", async () => {
+    await expectNativePlayerToBeVisible();
+    await togglePlayPauseVideo();
+
+    await waitFor(element(by.id('settingsIcon')))
+      .toBeVisible()
+      .withTimeout(TIMEOUT);
+    await element(by.id('settingsIcon')).tap();
+    await element(by.text('720P').withAncestor(by.id('qualitiesPicker'))).tap();
+    await element(by.text('AUTO').withAncestor(by.id('qualitiesPicker'))).tap();
+    await element(by.id('closeIcon')).tap();
+
+    await expectNativePlayerToBeVisible(); // Not a crash
+  });
+
+  it("Player doesn't crash after changing muted property", async () => {
+    await expectNativePlayerToBeVisible();
+    await togglePlayPauseVideo();
+
+    await waitFor(element(by.id('settingsIcon')))
+      .toBeVisible()
+      .withTimeout(TIMEOUT);
+    await element(by.id('settingsIcon')).tap();
+    await scrollToModalBottom();
+    await element(by.id('muted')).tap();
+    await element(by.id('closeIcon')).tap();
+
+    await expectNativePlayerToBeVisible(); // Not a crash
+  });
+
+  it("Player doesn't crash after changing autoplay property", async () => {
+    await expectNativePlayerToBeVisible();
+    await togglePlayPauseVideo();
+
+    await waitFor(element(by.id('settingsIcon')))
+      .toBeVisible()
+      .withTimeout(TIMEOUT);
+    await element(by.id('settingsIcon')).tap();
+    await scrollToModalBottom();
+    await element(by.id('autoplay')).tap();
+    await element(by.id('closeIcon')).tap();
+
+    await expectNativePlayerToBeVisible(); // Not a crash
+  });
+
+  it("Player doesn't crash after changing paused property", async () => {
+    await expectNativePlayerToBeVisible();
+    await togglePlayPauseVideo();
+
+    await waitFor(element(by.id('settingsIcon')))
+      .toBeVisible()
+      .withTimeout(TIMEOUT);
+    await element(by.id('settingsIcon')).tap();
+    await scrollToModalBottom();
+    await element(by.id('paused')).tap();
+    await element(by.id('closeIcon')).tap();
+
+    await expectNativePlayerToBeVisible(); // Not a crash
+  });
+
+  it("Player doesn't crash after changing liveLowLatency property", async () => {
+    await expectNativePlayerToBeVisible();
+    await togglePlayPauseVideo();
+
+    await waitFor(element(by.id('settingsIcon')))
+      .toBeVisible()
+      .withTimeout(TIMEOUT);
+    await element(by.id('settingsIcon')).tap();
+    await scrollToModalBottom();
+    await element(by.id('liveLowLatency')).tap();
+    await element(by.id('closeIcon')).tap();
+
+    await expectNativePlayerToBeVisible(); // Not a crash
+  });
+
+  it("Player doesn't crash after changing autoQuality property", async () => {
+    await expectNativePlayerToBeVisible();
+    await togglePlayPauseVideo();
+
+    await waitFor(element(by.id('settingsIcon')))
+      .toBeVisible()
+      .withTimeout(TIMEOUT);
+    await element(by.id('settingsIcon')).tap();
+    await scrollToModalBottom();
+    await element(by.id('autoQuality')).tap();
+    await element(by.id('closeIcon')).tap();
+
+    await expectNativePlayerToBeVisible(); // Not a crash
+  });
+
+  it("Player doesn't crash after changing log level", async () => {
+    await expectNativePlayerToBeVisible();
+    await togglePlayPauseVideo();
+
+    await waitFor(element(by.id('settingsIcon')))
+      .toBeVisible()
+      .withTimeout(TIMEOUT);
+    await element(by.id('settingsIcon')).tap();
+    await scrollToModalBottom();
+    await element(by.text('DEBUG').withAncestor(by.id('logLevelPicker'))).tap();
+    await element(by.id('closeIcon')).tap();
+
+    await expectNativePlayerToBeVisible(); // Not a crash
+  });
+
+  it("Player doesn't crash after changing autoMaxQuality", async () => {
+    await expectNativePlayerToBeVisible();
+    await togglePlayPauseVideo();
+
+    await waitFor(element(by.id('settingsIcon')))
+      .toBeVisible()
+      .withTimeout(TIMEOUT);
+    await element(by.id('settingsIcon')).tap();
+    await scrollToModalBottom();
+    await element(
+      by.text('720P').withAncestor(by.id('autoMaxQualityPicker'))
+    ).tap();
+    await element(
+      by.text('AUTO').withAncestor(by.id('autoMaxQualityPicker'))
+    ).tap();
+    await element(by.id('closeIcon')).tap();
+
+    await expectNativePlayerToBeVisible(); // Not a crash
+  });
+
+  it("Player doesn't crash after changing playback rate", async () => {
+    await expectNativePlayerToBeVisible();
+    await togglePlayPauseVideo();
+
+    await waitFor(element(by.id('settingsIcon')))
+      .toBeVisible()
+      .withTimeout(TIMEOUT);
+    await element(by.id('settingsIcon')).tap();
+    // await scrollToModalBottom();
+    await element(by.id('playbackRate')).replaceText('2');
+    await element(by.id('closeIcon')).tap();
+
+    await expectNativePlayerToBeVisible(); // Not a crash
+  });
+
+  it("Player doesn't crash after changing progress interval", async () => {
+    await expectNativePlayerToBeVisible();
+    await togglePlayPauseVideo();
+
+    await waitFor(element(by.id('settingsIcon')))
+      .toBeVisible()
+      .withTimeout(TIMEOUT);
+    await element(by.id('settingsIcon')).tap();
+    await scrollToModalBottom();
+    await element(by.id('progressInterval')).replaceText('1');
+    await element(by.id('closeIcon')).tap();
+
+    await expectNativePlayerToBeVisible(); // Not a crash
+  });
+
+  it("Player doesn't crash after changing volume", async () => {
+    await expectNativePlayerToBeVisible();
+    await togglePlayPauseVideo();
+
+    await waitFor(element(by.id('settingsIcon')))
+      .toBeVisible()
+      .withTimeout(TIMEOUT);
+    await element(by.id('settingsIcon')).tap();
+    await scrollToModalBottom();
+    await element(by.id('volume')).replaceText('0.5');
+    await element(by.id('closeIcon')).tap();
+
+    await expectNativePlayerToBeVisible(); // Not a crash
+  });
+
+  it("Player doesn't crash after changing initialBufferDuration", async () => {
+    await expectNativePlayerToBeVisible();
+    await togglePlayPauseVideo();
+
+    await waitFor(element(by.id('settingsIcon')))
+      .toBeVisible()
+      .withTimeout(TIMEOUT);
+    await element(by.id('settingsIcon')).tap();
+    await scrollToModalBottom()
+    await element(by.id('initialBufferDuration')).replaceText('4.0');
+    await element(by.id('closeIcon')).tap();
+
+    await expectNativePlayerToBeVisible(); // Not a crash
+  });
+
+  it("Player doesn't crash after changing pauseInBackground", async () => {
+    await expectNativePlayerToBeVisible();
+    await togglePlayPauseVideo();
+
+    await waitFor(element(by.id('settingsIcon')))
+      .toBeVisible()
+      .withTimeout(TIMEOUT);
+    await element(by.id('settingsIcon')).tap();
+    await scrollToModalBottom();
+    await element(by.id('pauseInBackground')).tap();
+    await element(by.id('closeIcon')).tap();
+
+    await expectNativePlayerToBeVisible(); // Not a crash
+  });  
 });

@@ -28,20 +28,13 @@
     }
   },
   "devices": {
-    "simulator": {
+    "ios": {
       "type": "ios.simulator",
       "device": {
-        "type": "iPhone 11"
+        "type": "iPhone 14"
       }
     },
-    "emulator": {
-      "type": "android.emulator",
-      "device": {
-        "avdName": "Pixel_3a_API_30_x86"
-      },
-      "utilBinaryPaths": ["./test-butler-app.apk"]
-    },
-    "ci-emulator": {
+    "android": {
       "type": "android.emulator",
       "device": {
         "avdName": "TestingAVD"
@@ -51,19 +44,19 @@
   },
   "configurations": {
     "ios": {
-      "device": "simulator",
+      "device": "ios",
       "app": "ios.debug"
     },
     "ios.sim.release": {
-      "device": "simulator",
+      "device": "ios",
       "app": "ios.release"
     },
     "android": {
-      "device": "emulator",
+      "device": "android",
       "app": "android.debug"
     },
     "android.emu.release": {
-      "device": "ci-emulator",
+      "device": "android",
       "app": "android.release"
     }
   }
