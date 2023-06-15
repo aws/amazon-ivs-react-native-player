@@ -26,9 +26,9 @@ jobs:
       
     - name: get android device image
       run: |
-        echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install "system-images;android-31"
-        echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd --force --name emu --device "${{ steps.device.outputs.AVD_NAME }}" -k 'system-images;android-31'
-        $ANDROID_HOME/emulator/emulator -list-avds
+        echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install "system-images;android-31;google_apis;x86_64"
+        # echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd --force --name emu --device "${{ steps.device.outputs.AVD_NAME }}" -k 'system-images;android-31'
+        # $ANDROID_HOME/emulator/emulator -list-avds
 
     - name: start android device
       timeout-minutes: 10
