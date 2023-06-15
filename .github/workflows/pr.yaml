@@ -3,8 +3,6 @@ name: PR checks
 on:
   workflow_dispatch:
   pull_request:
-    branches:
-      - main
   
 jobs:
   android:
@@ -25,12 +23,15 @@ jobs:
     - name: get device name
       id: device
       run: node -e "console.log('AVD_NAME=' + require('./.detoxrc').devices.android.device.avdName)" >> $GITHUB_OUTPUT
-      
+
     - name: get android device image
-      run: |
-        # echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install "system-images;android-31;google_apis;x86"
-        # echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd --force --name emu --device "${{ steps.device.outputs.AVD_NAME }}" -k 'system-images;android-31;google_apis;x86'
-        $ANDROID_HOME/emulator/emulator -list-avds
+      run: $ANDROID_HOME/tools/bin/sdkmanager
+      
+    # - name: get android device image
+    #   run: |
+    #     echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install "system-images;android-31;google_apis;x86"
+    #     echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd --force --name emu --device "${{ steps.device.outputs.AVD_NAME }}" -k 'system-images;android-31;google_apis;x86'
+    #     $ANDROID_HOME/emulator/emulator -list-avds
   
     # - name: yarn
     #   run: yarn
