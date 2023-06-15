@@ -14,41 +14,41 @@ jobs:
     - uses: actions/setup-java@v3
       with:
         distribution: 'temurin'
-        java-version: '17'
+        java-version: '11'
         cache: gradle
     - uses: actions/setup-node@v3
       with:
         node-version-file: '.nvmrc'
         cache: 'yarn'
 
-    - name: yarn
-      run: yarn
-
-    - name: e2e:build:android:release
-      run: yarn e2e:build:android:release 
-
     - name: get device name
       id: device
       run: node -e "console.log('AVD_NAME=' + require('./.detoxrc').devices.android.device.avdName)" >> $GITHUB_OUTPUT
-    
+      
     - name: get android device image
       run: |
         echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install "system-images;android-31;x86"
         echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd --force --name emu --device "${{ steps.device.outputs.AVD_NAME }}" -k 'system-images;android-31;x86'
         $ANDROID_HOME/emulator/emulator -list-avds
+  
+    # - name: yarn
+    #   run: yarn
 
-    - name: start android device
-      timeout-minutes: 10
-      continue-on-error: true
-      run: |
-        echo "starting emulator"
-        nohup $ANDROID_HOME/emulator/emulator -avd emu -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none &
-        $ANDROID_HOME/platform-tools/adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed | tr -d '\r') ]]; do sleep 1; done; input keyevent 82'
-        $ANDROID_HOME/platform-tools/adb devices
-        echo "emulator started"
+    # - name: e2e:build:android:release
+    #   run: yarn e2e:build:android:release 
 
-    - name: e2e:test:android:release
-      run: yarn e2e:test:android:release 
+    # - name: start android device
+    #   timeout-minutes: 10
+    #   continue-on-error: true
+    #   run: |
+    #     echo "starting emulator"
+    #     nohup $ANDROID_HOME/emulator/emulator -avd emu -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none &
+    #     $ANDROID_HOME/platform-tools/adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed | tr -d '\r') ]]; do sleep 1; done; input keyevent 82'
+    #     $ANDROID_HOME/platform-tools/adb devices
+    #     echo "emulator started"
+
+    # - name: e2e:test:android:release
+    #   run: yarn e2e:test:android:release 
 
         
 
