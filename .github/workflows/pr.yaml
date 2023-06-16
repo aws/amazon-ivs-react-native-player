@@ -17,6 +17,10 @@ jobs:
             example/ios/build
             example/node_modules
           key: ${{ runner.os }}-setup-cache
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
       - run: yarn
 
   lint:
@@ -32,6 +36,10 @@ jobs:
             example/ios/build
             example/node_modules
           key: ${{ runner.os }}-setup-cache
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
       - run: yarn lint
       - run: yarn typescript
 
@@ -48,6 +56,10 @@ jobs:
             example/ios/build
             example/node_modules
           key: ${{ runner.os }}-setup-cache
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
       - run: yarn test
     
   ios:
@@ -80,8 +92,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
-          cache: 'yarn'
-  
+          cache: 'yarn'  
       - run: yarn
       - run: yarn e2e:build:ios:release 
       - run: yarn e2e:test:ios:release 
@@ -91,11 +102,12 @@ jobs:
     needs: [lint, test]
     steps:
     - uses: actions/checkout@v3
-    - uses: actions/cache/restore@v3
+    - uses: actions/cache@v3
       with:
         path: |
           node_modules
           example/ios/Pods
+          example/ios/build
           example/node_modules
         key: ${{ runner.os }}-setup-cache
     - uses: actions/cache@v3
