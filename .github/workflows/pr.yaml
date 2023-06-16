@@ -16,7 +16,7 @@ jobs:
             example/ios/Pods
             example/ios/build
             example/node_modules
-          key: ${{ runner.os }}-setup-cache    
+          key: ${{ runner.os }}-setup-cache
       - run: yarn
 
   lint:
@@ -24,11 +24,12 @@ jobs:
     needs: setup
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/cache/restore@v3
+      - uses: actions/cache@v3
         with:
           path: |
             node_modules
             example/ios/Pods
+            example/ios/build
             example/node_modules
           key: ${{ runner.os }}-setup-cache
       - run: yarn lint
@@ -36,35 +37,37 @@ jobs:
 
   test:
     runs-on: macos-latest
-    needs: lint
+    needs: setup
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/cache/restore@v3
+      - uses: actions/cache@v3
         with:
           path: |
             node_modules
             example/ios/Pods
+            example/ios/build
             example/node_modules
           key: ${{ runner.os }}-setup-cache
       - run: yarn test
     
   ios:
     runs-on: macos-latest
-    needs: test
+    needs: [lint, test]
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/cache/restore@v3
+      - uses: actions/cache@v3
         with:
           path: |
             node_modules
             example/ios/Pods
+            example/ios/build
             example/node_modules
           key: ${{ runner.os }}-setup-cache
       - uses: actions/cache@v3
         with:
           path: |
             example/ios/build
-          key: ${{ runner.os }}-ios-cache    
+          key: ${{ runner.os }}-ios-cache
   
       - name: install detox deps
         run: |
@@ -85,7 +88,7 @@ jobs:
               
   android:
     runs-on: macos-latest
-    needs: test
+    needs: [lint, test]
     steps:
     - uses: actions/checkout@v3
     - uses: actions/cache/restore@v3
@@ -94,13 +97,13 @@ jobs:
           node_modules
           example/ios/Pods
           example/node_modules
-        key: ${{ runner.os }}-setup-cache    
+        key: ${{ runner.os }}-setup-cache
     - uses: actions/cache@v3
       with:
         path: |
           android/build
           example/android/build
-        key: ${{ runner.os }}-android-cache    
+        key: ${{ runner.os }}-android-cache
   
     - name: get device name
       id: device
