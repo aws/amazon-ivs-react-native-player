@@ -5,22 +5,103 @@ on:
   pull_request:
   
 jobs:
-  android:
+  setup:
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        with:
+          path: |
+            node_modules
+            example/ios/Pods
+            example/ios/build
+            example/node_modules
+          key: ${{ runner.os }}-setup-cache    
+      - run: yarn
 
-    - name: restore cached build
-      id: cache-build
-      uses: actions/cache/restore@v3
+  lint:
+    runs-on: macos-latest
+    needs: setup
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache/restore@v3
+        with:
+          path: |
+            node_modules
+            example/ios/Pods
+            example/node_modules
+          key: ${{ runner.os }}-setup-cache
+      - run: yarn lint
+      - run: yarn typescript
+
+  test:
+    runs-on: macos-latest
+    needs: setup
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache/restore@v3
+        with:
+          path: |
+            node_modules
+            example/ios/Pods
+            example/node_modules
+          key: ${{ runner.os }}-setup-cache
+      - run: yarn test
+    
+  ios:
+    runs-on: macos-latest
+    needs: setup
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache/restore@v3
+        with:
+          path: |
+            node_modules
+            example/ios/Pods
+            example/node_modules
+          key: ${{ runner.os }}-setup-cache
+      - uses: actions/cache@v3
+        with:
+          path: |
+            example/ios/build
+          key: ${{ runner.os }}-ios-cache    
+  
+      - name: install detox deps
+        run: |
+          brew tap wix/brew
+          brew install applesimutils
+        env:
+          HOMEBREW_NO_AUTO_UPDATE: 1
+          HOMEBREW_NO_INSTALL_CLEANUP: 1
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+  
+      - run: yarn
+      - run: yarn e2e:build:ios:release 
+      - run: yarn e2e:test:ios:release 
+              
+  android:
+    runs-on: macos-latest
+    needs: setup
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/cache/restore@v3
+      with:
+        path: |
+          node_modules
+          example/ios/Pods
+          example/node_modules
+        key: ${{ runner.os }}-setup-cache    
+    - uses: actions/cache@v3
       with:
         path: |
           android/build
           example/android/build
-          example/ios/build
-          example/ios/Pods
-        key: ${{ runner.os }}-cache-build    
-
+        key: ${{ runner.os }}-android-cache    
+  
     - name: get device name
       id: device
       run: node -e "console.log('AVD_NAME=' + require('./.detoxrc').devices.android.device.avdName)" >> $GITHUB_OUTPUT
@@ -46,29 +127,14 @@ jobs:
         distribution: 'temurin'
         java-version: '11'
         cache: gradle
+
     - uses: actions/setup-node@v3
       with:
         node-version-file: '.nvmrc'
         cache: 'yarn'
-        
-    - name: yarn
-      run: yarn
 
-    - name: e2e:build:android:release
-      run: yarn e2e:build:android:release 
-
-    - name: save cached build
-      id: cache-build-save
-      uses: actions/cache/save@v3
-      with:
-        path: |
-          android/build
-          example/android/build
-          example/ios/build
-          example/ios/Pods
-        key: ${{ steps.cache-build.outputs.cache-primary-key }}      
-
-    - name: e2e:test:android:release
-      run: yarn e2e:test:android:release 
+    - run: yarn
+    - run: yarn e2e:build:android:release 
+    - run: yarn e2e:test:android:release 
         
 
