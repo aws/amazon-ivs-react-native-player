@@ -29,7 +29,18 @@ jobs:
         $ANDROID_HOME/platform-tools/adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed | tr -d '\r') ]]; do sleep 1; done; input keyevent 82'
         $ANDROID_HOME/platform-tools/adb devices
         echo "emulator started"
-    
+
+    - name: restore cached build
+      id: cache-build
+      uses: actions/cache/restore@v3
+      with:
+        path: |
+          android/build
+          example/android/build
+          example/ios/build
+          example/ios/Pods
+        key: ${{ runner.os }}-cache-build    
+
     - uses: actions/setup-java@v3 
       with:
         distribution: 'temurin'
@@ -46,18 +57,16 @@ jobs:
     - name: e2e:build:android:release
       run: yarn e2e:build:android:release 
 
-    - name: Cache build
-      id: cache-build
-      uses: actions/cache@v3
+    - name: Save Primes
+      id: cache-primes-save
+      uses: actions/cache/save@v3
       with:
         path: |
           android/build
           example/android/build
           example/ios/build
           example/ios/Pods
-        key: ${{ runner.os }}-cache-build
-        restore-keys: |
-          ${{ runner.os }}-cache-build
+        key: ${{ steps.cache-build.outputs.cache-primary-key }}      
 
     - name: e2e:test:android:release
       run: yarn e2e:test:android:release 
