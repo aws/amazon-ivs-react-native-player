@@ -20,15 +20,15 @@ jobs:
         echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd --force --name "${{ steps.device.outputs.AVD_NAME }}" --device "Nexus 5X" -k 'system-images;android-31;default;x86_64'
         $ANDROID_HOME/emulator/emulator -list-avds
 
-    # - name: start android device
-    #   timeout-minutes: 10
-    #   continue-on-error: true
-    #   run: |
-    #     echo "starting emulator"
-    #     nohup $ANDROID_HOME/emulator/emulator -avd "${{ steps.device.outputs.AVD_NAME }}" -no-snapshot-save -no-window -no-boot-anim -camera-back none &
-    #     $ANDROID_HOME/platform-tools/adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed | tr -d '\r') ]]; do sleep 1; done; input keyevent 82'
-    #     $ANDROID_HOME/platform-tools/adb devices
-    #     echo "emulator started"
+    - name: start android device
+      timeout-minutes: 10
+      continue-on-error: true
+      run: |
+        echo "starting emulator"
+        nohup $ANDROID_HOME/emulator/emulator -avd "${{ steps.device.outputs.AVD_NAME }}" -no-snapshot-save -no-window -no-boot-anim -camera-back none &
+        $ANDROID_HOME/platform-tools/adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed | tr -d '\r') ]]; do sleep 1; done; input keyevent 82'
+        $ANDROID_HOME/platform-tools/adb devices
+        echo "emulator started"
     
     - uses: actions/setup-java@v3 
       with:
