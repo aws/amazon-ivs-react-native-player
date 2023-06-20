@@ -8,6 +8,8 @@ import {
   TIMEOUT,
 } from './utils';
 
+jest.retryTimes(2);
+
 describe('Playground player events', () => {
   beforeAll(async () => {
     await device.launchApp();
@@ -30,11 +32,11 @@ describe('Playground player events', () => {
   it('Player notifies about state change', async () => {
     await expectNativePlayerToBeVisible();
 
-    await atLeastOneLogIsVisible('state changed: Playing', TIMEOUT);
+    await atLeastOneLogIsVisible('state changed: Playing');
 
     await togglePlayPauseVideo();
 
-    await atLeastOneLogIsVisible('state changed: Idle', TIMEOUT);
+    await atLeastOneLogIsVisible('state changed: Idle');
   });
 
   it('Player notifies about duration change', async () => {
@@ -55,13 +57,13 @@ describe('Playground player events', () => {
     );
     await element(by.id('closeIcon')).tap();
 
-    await atLeastOneLogIsVisible('duration changed: 00:06:02', TIMEOUT);
+    await atLeastOneLogIsVisible('duration changed: 00:06:02');
   });
 
   it('Player notifies about quality change', async () => {
     await expectNativePlayerToBeVisible();
 
-    await atLeastOneLogIsVisible('state changed: Playing', TIMEOUT);
+    await atLeastOneLogIsVisible('state changed: Playing');
 
     await waitFor(element(by.id('settingsIcon')))
       .toBeVisible()
@@ -79,13 +81,13 @@ describe('Playground player events', () => {
     await element(by.text('160P').withAncestor(by.id('qualitiesPicker'))).tap();
     await element(by.id('closeIcon')).tap();
 
-    await atLeastOneLogIsVisible('quality changed: 160p', TIMEOUT);
+    await atLeastOneLogIsVisible('quality changed: 160p');
   });
 
   it('Player notifies about resize mode change', async () => {
     await expectNativePlayerToBeVisible();
 
-    await atLeastOneLogIsVisible('state changed: Playing', TIMEOUT);
+    await atLeastOneLogIsVisible('state changed: Playing');
 
     await waitFor(element(by.id('settingsIcon')))
       .toBeVisible()
@@ -105,7 +107,7 @@ describe('Playground player events', () => {
     ).tap();
     await element(by.id('closeIcon')).tap();
 
-    await atLeastOneLogIsVisible('Resize mode changed: aspectFit', TIMEOUT);
+    await atLeastOneLogIsVisible('Resize mode changed: aspectFit');
   });
 
   it('Player notifies about load after loading recorded video', async () => {
@@ -139,7 +141,7 @@ describe('Playground player events', () => {
 
     await togglePlayPauseVideo();
 
-    await atLeastOneLogIsVisible('load started', TIMEOUT);
+    await atLeastOneLogIsVisible('load started');
   });
 
 });

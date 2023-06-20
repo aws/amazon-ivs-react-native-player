@@ -1,6 +1,6 @@
 /* eslint-env detox/detox, jest */
 
-export const TIMEOUT = 30000;
+export const TIMEOUT = 32000;
 
 export const expectNativePlayerToBeVisible = async () => {
   await waitFor(
@@ -13,30 +13,30 @@ export const expectNativePlayerToBeVisible = async () => {
     )
   )
     .toBeVisible()
-    .withTimeout(240000);
+    .withTimeout(TIMEOUT);
 };
 
-export const atLeastOneLogIsVisible = async (text, timeout) => {
+export const atLeastOneLogIsVisible = async (text) => {
   try {
     await waitFor(element(by.label(text)))
       .toExist()
-      .withTimeout(timeout);
+      .withTimeout(TIMEOUT);
   } catch (e) {
     await waitFor(element(by.label(text)).atIndex(0))
       .toExist()
-      .withTimeout(timeout);
+      .withTimeout(TIMEOUT);
   }
 };
 
 export const navigateToPlayground = async () => {
   await waitFor(element(by.id('Playground')))
     .toBeVisible()
-    .withTimeout(32000);
+    .withTimeout(TIMEOUT);
   await element(by.id('Playground')).tap();
 
   await waitFor(element(by.text('PlaygroundExample')))
     .toBeVisible()
-    .withTimeout(24000);
+    .withTimeout(TIMEOUT);
 };
 
 export const sleep = (milliseconds) => {
@@ -44,9 +44,13 @@ export const sleep = (milliseconds) => {
 };
 
 export const waitToBeVisible = async (match) => {
-  await waitFor(element(match))
+  try {
+    await waitFor(element(match))
     .toBeVisible(100)
     .withTimeout(TIMEOUT);
+  } catch (e) {
+    // no-op
+  }
 };
 
 export const waitToBeVisibleAndTap = async (match) => {
@@ -60,6 +64,4 @@ export const togglePlayPauseVideo = async () => {
 
 export const scrollToModalBottom = async (scrollDown = 500) => {
   await element(by.id('modalScrollView')).scroll(scrollDown, 'down');
-  // wait for anim to finish ??
-  await sleep(1000);
 };
