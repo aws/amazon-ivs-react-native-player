@@ -55,7 +55,7 @@ export const waitToBeVisibleAndTap = async (match) => {
 };
 
 export const togglePlayPauseVideo = async () => {
-  await waitForElementToBeVisibleAndTap(by.id('playPauseButton'));
+  await waitToBeVisibleAndTap(by.id('playPauseButton'));
 };
 
 export const scrollToModalBottom = async (scrollDown = 500) => {
