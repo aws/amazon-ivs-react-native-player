@@ -43,12 +43,19 @@ export const sleep = (milliseconds) => {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
 };
 
-export const togglePlayPauseVideo = async () => {
-  await waitFor(element(by.id('playPauseButton')))
-    .toBeVisible()
-    .withTimeout(24000);
+export const waitToBeVisible = async (match) => {
+  await waitFor(element(match))
+    .toBeVisible(100)
+    .withTimeout(TIMEOUT);
+};
 
-  await element(by.id('playPauseButton')).tap();
+export const waitToBeVisibleAndTap = async (match) => {
+  await waitToBeVisible(match);
+  await element(match).tap();
+};
+
+export const togglePlayPauseVideo = async () => {
+  await waitForElementToBeVisibleAndTap(by.id('playPauseButton'));
 };
 
 export const scrollToModalBottom = async (scrollDown = 500) => {
