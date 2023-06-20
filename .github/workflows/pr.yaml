@@ -128,7 +128,7 @@ jobs:
     - name: create ${{ steps.device.outputs.AVD_NAME }}
       run: |
         echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install "system-images;android-31;default;x86_64"
-        echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd --force --name "${{ steps.device.outputs.AVD_NAME }}" --device "Nexus 5X" -k 'system-images;android-31;default;x86_64'
+        echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd --force --name "${{ steps.device.outputs.AVD_NAME }}" --device "pixel_xl" -k 'system-images;android-31;default;x86_64'
         $ANDROID_HOME/emulator/emulator -list-avds
 
     - name: start android device
