@@ -121,6 +121,9 @@ jobs:
     - name: get device name
       id: device
       run: node -e "console.log('AVD_NAME=' + require('./.detoxrc').devices.android.device.avdName)" >> $GITHUB_OUTPUT
+
+    - name: list possible devices
+      run: $ANDROID_HOME/tools/bin/avdmanager list
       
     - name: create ${{ steps.device.outputs.AVD_NAME }}
       run: |
