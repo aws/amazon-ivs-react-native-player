@@ -3,11 +3,15 @@
 import {
   expectNativePlayerToBeVisible,
   atLeastOneLogIsVisible,
+  waitToBeVisibleAndTap,
   navigateToPlayground,
   togglePlayPauseVideo,
   scrollToModalBottom,
   TIMEOUT,
+  sleep,
 } from './utils';
+
+jest.retryTimes(2);
 
 describe('Playground player', () => {
   beforeAll(async () => {
@@ -131,8 +135,8 @@ describe('Playground player', () => {
       .withTimeout(TIMEOUT);
     await element(by.id('settingsIcon')).tap();
     await scrollToModalBottom();
-    await element(by.id('autoplay')).tap();
-    await element(by.id('closeIcon')).tap();
+    await waitToBeVisibleAndTap(by.id('autoplay'));
+    await waitToBeVisibleAndTap(by.id('closeIcon'));
 
     await expectNativePlayerToBeVisible(); // Not a crash
   });

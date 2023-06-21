@@ -3,38 +3,132 @@ name: PR checks
 on:
   workflow_dispatch:
   pull_request:
-    branches:
-      - main
   
 jobs:
-  android:
+  setup:
     runs-on: macos-latest
     steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        with:
+          path: |
+            node_modules
+            example/ios/Pods
+            example/ios/build
+            example/node_modules
+          key: ${{ runner.os }}-setup-cache
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+      - run: yarn
+
+  lint:
+    runs-on: macos-latest
+    needs: setup
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        with:
+          path: |
+            node_modules
+            example/ios/Pods
+            example/ios/build
+            example/node_modules
+          key: ${{ runner.os }}-setup-cache
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+      - run: yarn lint
+      - run: yarn typescript
+
+  test:
+    runs-on: macos-latest
+    needs: setup
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        with:
+          path: |
+            node_modules
+            example/ios/Pods
+            example/ios/build
+            example/node_modules
+          key: ${{ runner.os }}-setup-cache
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+      - run: yarn test
+    
+  ios:
+    runs-on: macos-latest
+    needs: [lint, test]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        with:
+          path: |
+            node_modules
+            example/ios/Pods
+            example/ios/build
+            example/node_modules
+          key: ${{ runner.os }}-setup-cache
+      - uses: actions/cache@v3
+        with:
+          path: |
+            example/ios/build
+          key: ${{ runner.os }}-ios-cache
+  
+      - name: install detox deps
+        run: |
+          brew tap wix/brew
+          brew install applesimutils
+        env:
+          HOMEBREW_NO_AUTO_UPDATE: 1
+          HOMEBREW_NO_INSTALL_CLEANUP: 1
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'  
+      - run: yarn
+      - run: yarn e2e:reset 
+      - run: yarn e2e:build:ios:release 
+      - run: yarn e2e:test:ios:release 
+              
+  android:
+    runs-on: macos-latest
+    needs: [lint, test]
+    steps:
     - uses: actions/checkout@v3
-    - uses: actions/setup-java@v3
+    - uses: actions/cache@v3
       with:
-        distribution: 'temurin'
-        java-version: '17'
-        cache: gradle
-    - uses: actions/setup-node@v3
+        path: |
+          node_modules
+          example/ios/Pods
+          example/ios/build
+          example/node_modules
+        key: ${{ runner.os }}-setup-cache
+    - uses: actions/cache@v3
       with:
-        node-version-file: '.nvmrc'
-        cache: 'yarn'
-
-    - name: yarn
-      run: yarn
-
-    - name: e2e:build:android:release
-      run: yarn e2e:build:android:release 
-
+        path: |
+          android/build
+          example/android/build
+        key: ${{ runner.os }}-android-cache
+  
     - name: get device name
       id: device
       run: node -e "console.log('AVD_NAME=' + require('./.detoxrc').devices.android.device.avdName)" >> $GITHUB_OUTPUT
-    
-    - name: get android device image
+
+    - name: list possible devices
+      run: $ANDROID_HOME/tools/bin/avdmanager list
+      
+    - name: create ${{ steps.device.outputs.AVD_NAME }}
       run: |
-        echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install "system-images;android-31;x86"
-        echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd --force --name emu --device "${{ steps.device.outputs.AVD_NAME }}" -k 'system-images;android-31;x86'
+        echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install "system-images;android-31;default;x86_64"
+        echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd --force --name "${{ steps.device.outputs.AVD_NAME }}" --device "pixel_xl" -k 'system-images;android-31;default;x86_64'
         $ANDROID_HOME/emulator/emulator -list-avds
 
     - name: start android device
@@ -42,13 +136,24 @@ jobs:
       continue-on-error: true
       run: |
         echo "starting emulator"
-        nohup $ANDROID_HOME/emulator/emulator -avd emu -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none &
+        nohup $ANDROID_HOME/emulator/emulator -avd "${{ steps.device.outputs.AVD_NAME }}" -no-snapshot-save -no-window -no-boot-anim -camera-back none &
         $ANDROID_HOME/platform-tools/adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed | tr -d '\r') ]]; do sleep 1; done; input keyevent 82'
         $ANDROID_HOME/platform-tools/adb devices
         echo "emulator started"
 
-    - name: e2e:test:android:release
-      run: yarn e2e:test:android:release 
+    - uses: actions/setup-java@v3 
+      with:
+        distribution: 'temurin'
+        java-version: '11'
+        cache: gradle
 
+    - uses: actions/setup-node@v3
+      with:
+        node-version-file: '.nvmrc'
+        cache: 'yarn'
+
+    - run: yarn
+    - run: yarn e2e:build:android:release 
+    - run: yarn e2e:test:android:release 
         
 
