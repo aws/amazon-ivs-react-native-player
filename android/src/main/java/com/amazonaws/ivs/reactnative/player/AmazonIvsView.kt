@@ -130,6 +130,10 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     player?.isMuted = muted
   }
 
+  fun setLooping(shouldLoop: Boolean) {
+    player?.setLooping(shouldLoop)
+  }
+
   fun setVolume(volume: Double) {
     player?.setVolume(volume.toFloat())
   }

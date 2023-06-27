@@ -22,6 +22,7 @@ declare type Props = {|
   style?: ViewStyleProp,
   paused?: boolean,
   muted?: boolean,
+  loop?: boolean,
   autoplay?: boolean,
   streamUrl?: string,
   resizeMode?: ResizeMode,

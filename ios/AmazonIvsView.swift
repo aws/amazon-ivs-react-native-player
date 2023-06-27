@@ -51,6 +51,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
 
     override init(frame: CGRect) {
         self.muted = player.muted
+        self.loop = player.looping
         self.liveLowLatency = player.isLiveLowLatency
         self.autoQualityMode = player.autoQualityMode
         self.playbackRate = Double(player.playbackRate)
@@ -98,6 +99,12 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
         didSet {
             self.removeProgressObserver()
             self.addProgressObserver()
+        }
+    }
+    
+    @objc var loop: Bool {
+        didSet {
+            player.looping = loop
         }
     }
 

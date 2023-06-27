@@ -81,6 +81,7 @@ export default function AdvancedExample() {
         <IVSPlayer
           ref={mediaPlayerRef}
           autoplay={false}
+          loop
           paused={paused}
           streamUrl={URL}
           onDurationChange={setDuration}
