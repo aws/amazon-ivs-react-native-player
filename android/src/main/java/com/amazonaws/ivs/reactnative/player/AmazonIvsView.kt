@@ -93,7 +93,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
       }
 
       override fun onError(e: PlayerException) {
-        onError(e.errorMessage)
+        onError(e.getErrorMessage())
       }
     }
 
