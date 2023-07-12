@@ -21,7 +21,10 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: 'yarn'
-      - run: yarn
+
+      - run: yarn 
+      - run: yarn bootstrap
+      - run: yarn e2e:reset 
 
   lint:
     runs-on: macos-latest
@@ -40,6 +43,7 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: 'yarn'
+
       - run: yarn lint
       - run: yarn typescript
 
@@ -92,9 +96,8 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
-          cache: 'yarn'  
-      - run: yarn
-      - run: yarn e2e:reset 
+          cache: 'yarn'
+      
       - run: yarn e2e:build:ios:release 
       - run: yarn e2e:test:ios:release 
               
@@ -152,7 +155,6 @@ jobs:
         node-version-file: '.nvmrc'
         cache: 'yarn'
 
-    - run: yarn
     - run: yarn e2e:build:android:release 
     - run: yarn e2e:test:android:release 
         
