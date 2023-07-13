@@ -67,6 +67,11 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>() {
     view.setStreamUrl(streamUrl);
   }
 
+  @ReactProp(name = "loop")
+  fun setLooping(view: AmazonIvsView, shouldLoop: Boolean){
+    view.setLooping(shouldLoop);
+  }
+
   @ReactProp(name = "resizeMode")
   fun setResizeMode(view: AmazonIvsView, mode: String) {
     view.setResizeMode(mode);
