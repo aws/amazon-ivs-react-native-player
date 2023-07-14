@@ -22,8 +22,7 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'yarn'
 
-      - run: yarn 
-      - run: yarn e2e:reset 
+      - run: yarn bootstrap
 
   lint:
     runs-on: macos-latest
@@ -97,7 +96,7 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'yarn'
       
-      - run: yarn bootstrap
+      - run: yarn e2e:reset 
       - run: yarn e2e:build:ios:release 
       - run: yarn e2e:test:ios:release 
               
