@@ -97,6 +97,7 @@ jobs:
           cache: 'yarn'
       
       - run: yarn e2e:reset 
+      - run: yarn bootstrap
       - run: yarn e2e:build:ios:release 
       - run: yarn e2e:test:ios:release 
               
