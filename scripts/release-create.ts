@@ -55,16 +55,29 @@ async function run() {
     const branchName = `release/${pkg.version}`;
     await git.checkoutLocalBranch(branchName);
 
-    // write version change
-    fs.writeFileSync(
-      path.join(__dirname, '../package.json'),
-      `${JSON.stringify(pkg, null, '  ')}\n`
+    // write package.json version change
+    const pkgFilePath = path.join(__dirname, '../package.json');
+    fs.writeFileSync(pkgFilePath, `${JSON.stringify(pkg, null, '  ')}\n`);
+
+    // write example xcode project version change
+    const projectFilePath = path.join(
+      __dirname,
+      '../example/ios/AmazonIvsExample.xcodeproj/project.pbxproj'
+    );
+    const projectFile = fs.readFileSync(projectFilePath, { encoding: 'utf8' });
+
+    const updatedProjectFile = projectFile.replaceAll(
+      /MARKETING_VERSION = [\d.]+;/g,
+      `MARKETING_VERSION = ${pkg.version};`
     );
 
-    // commit version change
+    fs.writeFileSync(projectFilePath, updatedProjectFile);
+
+    // commit version change(s)
     const message = `created ${branchName} branch`;
     await git
-      .add('package.json')
+      .add(pkgFilePath)
+      .add(projectFilePath)
       .commit(`chore: ${message}`, { '--no-verify': null });
 
     logInfo(message);
