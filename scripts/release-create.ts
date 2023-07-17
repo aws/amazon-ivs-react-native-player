@@ -1,45 +1,33 @@
 import fs from 'fs';
 import path from 'path';
-import chalk from 'chalk';
 import semver from 'semver';
 import inquirer from 'inquirer';
 import { simpleGit } from 'simple-git';
 import pkg from '../package.json';
+import { logError, logInfo } from './utils';
 
 async function run() {
   const git = simpleGit();
   const status = await git.status();
 
   if (status.current !== 'main') {
-    console.log(
-      chalk.red('Error! Must be on main branch to create a release branch')
-    );
-    return;
+    return logError('Must be on main branch to create a release branch');
   }
 
   if (!status.isClean()) {
-    console.log(
-      chalk.red('Error! Cannot create release with dirty working tree')
-    );
-    return;
+    return logError('Cannot create release with dirty working tree');
   }
 
   if (status.ahead > 0) {
-    console.log(
-      chalk.red(
-        `Error! Local commits on main must match with origin/main. You are ${status.ahead} commit(s) ahead`
-      )
+    return logError(
+      `Local commits on main must match with origin/main. You are ${status.ahead} commit(s) ahead`
     );
-    return;
   }
 
   if (status.behind > 0) {
-    console.log(
-      chalk.red(
-        `Error! Local commits on main must match with origin/main. You are ${status.behind} commit(s) behind`
-      )
+    return logError(
+      `Local commits on main must match with origin/main. You are ${status.behind} commit(s) behind`
     );
-    return;
   }
 
   try {
@@ -79,9 +67,9 @@ async function run() {
       .add('package.json')
       .commit(`chore: ${message}`, { '--no-verify': null });
 
-    console.log(chalk.green(message));
+    logInfo(message);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 }
 
