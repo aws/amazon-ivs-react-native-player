@@ -5,5 +5,7 @@ export const parseSecondsToString = (seconds: number) => {
 
   const date = new Date(0);
   date.setSeconds(seconds);
-  return date.toISOString().slice(11, 19);
+  date.setMilliseconds(seconds % 1000);
+
+  return date.toISOString().slice(11, 22);
 };
