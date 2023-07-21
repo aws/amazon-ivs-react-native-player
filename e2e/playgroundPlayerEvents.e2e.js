@@ -57,7 +57,7 @@ describe('Playground player events', () => {
     );
     await element(by.id('closeIcon')).tap();
 
-    await atLeastOneLogIsVisible('duration changed: 00:06:02');
+    await atLeastOneLogIsVisible('duration changed: 00:06:02.36');
   });
 
   it('Player notifies about quality change', async () => {
