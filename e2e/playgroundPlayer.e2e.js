@@ -134,7 +134,7 @@ describe('Playground player', () => {
       .toBeVisible()
       .withTimeout(TIMEOUT);
     await element(by.id('settingsIcon')).tap();
-    await scrollToModalBottom();
+    await scrollToModalBottom(100);
     await waitToBeVisibleAndTap(by.id('autoplay'));
     await waitToBeVisibleAndTap(by.id('closeIcon'));
 
