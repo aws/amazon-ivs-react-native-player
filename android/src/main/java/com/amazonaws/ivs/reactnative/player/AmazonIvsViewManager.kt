@@ -32,9 +32,9 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>() {
       Commands.PLAY.ordinal,
       "pause",
       Commands.PAUSE.ordinal,
-      "seekTo",
-      Commands.SET_ORIGIN.ordinal,
       "setOrigin",
+      Commands.SET_ORIGIN.ordinal,
+      "seekTo",
       Commands.SEEK_TO.ordinal,
       "togglePip",
       Commands.TOGGLE_PIP.ordinal
