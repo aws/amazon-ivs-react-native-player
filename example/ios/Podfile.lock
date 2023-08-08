@@ -1,5 +1,5 @@
 PODS:
-  - amazon-ivs-react-native-player (1.4.0):
+  - amazon-ivs-react-native-player (1.4.1):
     - AmazonIVSPlayer (~> 1.18.0)
     - React-Core
   - AmazonIVSPlayer (1.18.0)
