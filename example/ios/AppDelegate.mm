@@ -6,6 +6,8 @@
 
 #import <React/RCTAppSetupUtils.h>
 
+#import <AVFAudio/AVAudioSession.h>
+
 #if RCT_NEW_ARCH_ENABLED
 #import <React/CoreModulesPlugins.h>
 #import <React/RCTCxxBridgeDelegate.h>
@@ -44,6 +46,11 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
   _bridgeAdapter = [[RCTSurfacePresenterBridgeAdapter alloc] initWithBridge:bridge contextContainer:_contextContainer];
   bridge.surfacePresenter = _bridgeAdapter.surfacePresenter;
 #endif
+
+  // https://stackoverflow.com/a/45430673
+  AVAudioSession *audioSession = [AVAudioSession sharedInstance];
+  [audioSession setCategory:AVAudioSessionCategoryPlayback error:nil];
+  [audioSession setActive:YES error:nil];
 
   NSDictionary *initProps = [self prepareInitialProps];
   UIView *rootView = RCTAppSetupDefaultRootView(bridge, @"AmazonIvsExample", initProps);

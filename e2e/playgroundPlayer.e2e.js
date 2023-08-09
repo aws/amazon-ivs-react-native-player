@@ -119,7 +119,7 @@ describe('Playground player', () => {
       .toBeVisible()
       .withTimeout(TIMEOUT);
     await element(by.id('settingsIcon')).tap();
-    await scrollToModalBottom();
+    await scrollToModalBottom(100);
     await element(by.id('muted')).tap();
     await element(by.id('closeIcon')).tap();
 
@@ -134,7 +134,7 @@ describe('Playground player', () => {
       .toBeVisible()
       .withTimeout(TIMEOUT);
     await element(by.id('settingsIcon')).tap();
-    await scrollToModalBottom();
+    await scrollToModalBottom(100);
     await waitToBeVisibleAndTap(by.id('autoplay'));
     await waitToBeVisibleAndTap(by.id('closeIcon'));
 
@@ -244,7 +244,7 @@ describe('Playground player', () => {
       .toBeVisible()
       .withTimeout(TIMEOUT);
     await element(by.id('settingsIcon')).tap();
-    await scrollToModalBottom();
+    await scrollToModalBottom(100);
     await element(by.id('progressInterval')).replaceText('1');
     await element(by.id('closeIcon')).tap();
 

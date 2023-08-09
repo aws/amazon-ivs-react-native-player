@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "android": "react-native run-android",
-    "ios": "react-native run-ios",
+    "ios": "react-native run-ios --simulator=\"iPhone 14\"",
     "start": "react-native start"
   },
   "dependencies": {
@@ -13,9 +13,6 @@
     "@react-native-community/slider": "^4.1.12",
     "@react-navigation/native": "^6.0.6",
     "@react-navigation/stack": "^6.0.11",
-    "appcenter": "^4.4.3",
-    "appcenter-analytics": "^4.4.3",
-    "appcenter-crashes": "^4.4.3",
     "react": "18.0.0",
     "react-native": "0.69.9",
     "react-native-config": "^1.4.3",
@@ -28,12 +25,14 @@
     "react-native-vector-icons": "^9.1.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.16.7",
-    "@babel/runtime": "^7.16.7",
+    "@babel/core": "^7.22.9",
+    "@babel/runtime": "^7.22.6",
     "@types/react-native": "0.66.15",
+    "@types/react-native-dotenv": "^0.2.0",
     "@types/react-native-vector-icons": "^6.4.6",
     "babel-plugin-module-resolver": "^4.0.0",
     "detox": "^20.1.0",
-    "metro-react-native-babel-preset": "^0.70.3"
+    "metro-react-native-babel-preset": "^0.70.3",
+    "react-native-dotenv": "^3.4.9"
   }
 }

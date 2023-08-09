@@ -4,6 +4,8 @@ import { Card, Paragraph } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import { SafeAreaView } from 'react-native-safe-area-context';
+// @ts-expect-error these values come from .env file
+import { GIT_BRANCH, GIT_COMMIT } from '@env';
 import type { RootStackParamList } from '../App';
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
@@ -56,6 +58,14 @@ function Home() {
             <Paragraph>
               Playground implementation to test and experiment with all props,
               refs and callbacks.
+            </Paragraph>
+          </Card.Content>
+        </Card>
+        <Card testID="Version" style={styles.card}>
+          <Card.Title title="Version" />
+          <Card.Content>
+            <Paragraph>
+              {GIT_BRANCH} @ {GIT_COMMIT}
             </Paragraph>
           </Card.Content>
         </Card>

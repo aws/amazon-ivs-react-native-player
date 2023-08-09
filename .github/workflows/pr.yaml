@@ -16,7 +16,7 @@ jobs:
             example/ios/Pods
             example/ios/build
             example/node_modules
-          key: ${{ runner.os }}-setup-cache
+          key: ${{ runner.os }}-setup-cache-2
       - uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
@@ -36,7 +36,7 @@ jobs:
             example/ios/Pods
             example/ios/build
             example/node_modules
-          key: ${{ runner.os }}-setup-cache
+          key: ${{ runner.os }}-setup-cache-2
       - uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
@@ -57,7 +57,7 @@ jobs:
             example/ios/Pods
             example/ios/build
             example/node_modules
-          key: ${{ runner.os }}-setup-cache
+          key: ${{ runner.os }}-setup-cache-2
       - uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
@@ -76,7 +76,7 @@ jobs:
             example/ios/Pods
             example/ios/build
             example/node_modules
-          key: ${{ runner.os }}-setup-cache
+          key: ${{ runner.os }}-setup-cache-2
       - uses: actions/cache@v3
         with:
           path: |
@@ -113,7 +113,7 @@ jobs:
           example/ios/Pods
           example/ios/build
           example/node_modules
-        key: ${{ runner.os }}-setup-cache
+        key: ${{ runner.os }}-setup-cache-2
     - uses: actions/cache@v3
       with:
         path: |
