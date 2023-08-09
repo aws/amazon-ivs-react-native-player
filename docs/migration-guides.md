@@ -2,6 +2,10 @@
 
 This document includes migration guides for each notable upgrade in the Amazon IVS React Native Player SDK.
 
+## 1.3.0 to 1.4.1
+
+This release contains added features along with bug fixes for both Android and iOS.
+
 ## 1.2.0 to 1.3.0
 
 No major updates for this version. Primarily React Native version updates and iOS IVS Player version updates.
