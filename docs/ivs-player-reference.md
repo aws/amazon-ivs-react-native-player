@@ -54,6 +54,13 @@ Opening a player or specifying new `streamUrl` will make it automatically play, 
 default: `true`
 type: `boolean`
 
+### loop _(optional)_
+
+Controls whether the stream should repeat when it reaches the end. 
+
+default: `true`
+type: `boolean`
+
 ### logLevel _(optional)_
 
 Specifies level of logging information from player to the console.
