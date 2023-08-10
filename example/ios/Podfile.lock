@@ -579,7 +579,7 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  amazon-ivs-react-native-player: d62a63eecb2d952f3b25a663928d5b5453cd055f
+  amazon-ivs-react-native-player: 68f2bbd53ecaeeeb666e42d0c1adf570283a1dbc
   AmazonIVSPlayer: 15b74392987e2385f9a859201273185f76d58959
   boost: a7c83b31436843459a1961bfd74b96033dc77234
   CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99

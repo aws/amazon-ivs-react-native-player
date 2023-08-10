@@ -20,7 +20,9 @@
     "test": "jest",
     "typescript": "tsc --noEmit",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
-    "prepare": "bob build && tsx ./scripts/example-dot-env.ts",
+    "reset": "git clean -xdfe .vscode && yarn && yarn prepare",
+    "markbuild": "tsx ./scripts/example-dot-env.ts",
+    "prepare": "bob build && yarn markbuild",
     "example": "yarn --cwd example",
     "pods": "cd example && pod-install --quiet",
     "bootstrap": "yarn example && yarn && yarn pods",
@@ -35,7 +37,8 @@
     "e2e:test:ios:release": "detox test --configuration ios.sim.release --headless --take-screenshots failing",
     "get:testbutler": "curl -f -o ./test-butler-app.apk https://repo1.maven.org/maven2/com/linkedin/testbutler/test-butler-app/2.2.1/test-butler-app-2.2.1.apk",
     "release:create": "tsx ./scripts/release-create.ts",
-    "release:verify": "tsx ./scripts/release-verify.ts"
+    "release:verify": "tsx ./scripts/release-verify.ts",
+    "release:tag": "tsx ./scripts/release-verify.ts"
   },
   "keywords": [
     "react-native",
@@ -105,7 +108,8 @@
   "husky": {
     "hooks": {
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
-      "pre-commit": "yarn lint && yarn typescript"
+      "pre-commit": "yarn lint && yarn typescript",
+      "post-commit": "yarn markbuild"
     }
   },
   "commitlint": {

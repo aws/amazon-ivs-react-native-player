@@ -81,6 +81,7 @@ async function run() {
       .commit(`chore: ${message}`, { '--no-verify': null });
 
     logInfo(message);
+    logInfo(`don't forget to git push -u origin ${branchName}`);
   } catch (err) {
     console.error(err);
   }
