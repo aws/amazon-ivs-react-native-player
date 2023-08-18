@@ -75,7 +75,7 @@ const VIEW_NAME = 'AmazonIvs';
 
 const IVSPlayer = requireNativeComponent<IVSPlayerProps>(VIEW_NAME);
 
-type Props = {
+export type Props = {
   style?: ViewStyle;
   testID?: string;
   paused?: boolean;
