@@ -142,6 +142,10 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     player?.setLiveLowLatencyEnabled(liveLowLatency)
   }
 
+  fun setRebufferToLive(rebufferToLive: Boolean) {
+    player?.setRebufferToLive(rebufferToLive)
+  }
+
   fun setPlaybackRate(playbackRate: Double) {
     player?.playbackRate = playbackRate.toFloat()
   }

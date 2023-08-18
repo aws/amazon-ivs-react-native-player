@@ -32,6 +32,7 @@ type IVSPlayerProps = {
   muted?: boolean;
   loop?: boolean;
   liveLowLatency?: boolean;
+  rebufferToLive?: boolean;
   playbackRate?: number;
   streamUrl?: string;
   resizeMode?: ResizeMode;
@@ -84,6 +85,7 @@ type Props = {
   autoplay?: boolean;
   streamUrl?: string;
   liveLowLatency?: boolean;
+  rebufferToLive?: boolean;
   playbackRate?: number;
   logLevel?: LogLevel;
   resizeMode?: ResizeMode;
@@ -131,6 +133,7 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
       resizeMode,
       autoplay = true,
       liveLowLatency,
+      rebufferToLive,
       playbackRate,
       logLevel,
       progressInterval,
@@ -338,6 +341,7 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
           muted={muted}
           loop={loop}
           liveLowLatency={liveLowLatency}
+          rebufferToLive={rebufferToLive}
           style={styles.mediaPlayer}
           ref={mediaPlayerRef}
           playbackRate={playbackRate}

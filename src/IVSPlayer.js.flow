@@ -27,6 +27,7 @@ declare type Props = {|
   streamUrl?: string,
   resizeMode?: ResizeMode,
   liveLowLatency?: boolean,
+  rebufferToLive?: boolean,
   playbackRate?: number,
   logLevel?: LogLevel,
   progressInterval?: number,

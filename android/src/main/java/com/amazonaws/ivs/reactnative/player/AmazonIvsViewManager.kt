@@ -92,6 +92,11 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>() {
     view.setLiveLowLatency(liveLowLatency)
   }
 
+  @ReactProp(name = "rebufferToLive")
+  fun setRebufferToLive(view: AmazonIvsView, rebufferToLive: Boolean) {
+    view.setRebufferToLive(rebufferToLive)
+  }
+
   @ReactProp(name = "playbackRate")
   fun setPlaybackRate(view: AmazonIvsView, playbackRate: Double) {
     view.setPlaybackRate(playbackRate)
