@@ -252,6 +252,14 @@ Callback that returns new quality that is used in video/stream playback.
 
 type: [`(quality: Quality) => void`](./types.md#Quality)
 
+### onPipChange _(optional)_
+
+Callback that returns changes to the picture in picture state.
+This returns false if no picture in picture is active. It returns true if picture in picture is active.
+Available only for Android N+ and iOS 15+
+
+type: `(isActive: boolean) => void`
+
 ### resizeMode _(optional)_
 
 Defines different modes for displaying video in a Player.

@@ -42,6 +42,7 @@ declare type Props = {|
   onPlayerStateChange?: (state: number) => void,
   onDurationChange?: (duration: number | null) => void,
   onQualityChange?: (quality: Quality | null) => void,
+  onPipChange?: (isActive: boolean) => void,
   onRebuffering?: () => void,
   onLoadStart?: () => void,
   onLoad?: (duration: number | null) => void,

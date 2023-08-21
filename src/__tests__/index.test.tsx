@@ -96,6 +96,14 @@ test('Passing onQualityChange down works correctly', async () => {
   );
 });
 
+test('Passing onPipChange down works correctly with boolean', async () => {
+  await testCallbackPassing('onPipChange', { active: true }, true);
+});
+
+test('Passing onPipChange down works correctly with string', async () => {
+  await testCallbackPassing('onPipChange', { active: 'true' }, true);
+});
+
 test('Passing onRebuffering down works correctly', async () => {
   await testCallbackPassing('onRebuffering');
 });

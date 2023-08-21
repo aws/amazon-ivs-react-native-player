@@ -56,6 +56,7 @@ type IVSPlayerProps = {
     event: NativeSyntheticEvent<{ duration: number | null }>
   ): void;
   onQualityChange?(event: NativeSyntheticEvent<{ quality: Quality }>): void;
+  onPipChange?(event: NativeSyntheticEvent<{ active: boolean | string }>): void;
   onRebuffering?(): void;
   onLoadStart?(): void;
   onLoad?(event: NativeSyntheticEvent<{ duration: number | null }>): void;
@@ -101,6 +102,7 @@ type Props = {
   onPlayerStateChange?(state: PlayerState): void;
   onDurationChange?(duration: number | null): void;
   onQualityChange?(quality: Quality | null): void;
+  onPipChange?(isActive: boolean): void;
   onRebuffering?(): void;
   onLoadStart?(): void;
   onLoad?(duration: number | null): void;
@@ -147,6 +149,7 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
       onPlayerStateChange,
       onDurationChange,
       onQualityChange,
+      onPipChange,
       onRebuffering,
       onLoadStart,
       onLoad,
@@ -258,6 +261,13 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
       onQualityChange?.(newQuality);
     };
 
+    const onPipChangeHandler = (
+      event: NativeSyntheticEvent<{ active: string | boolean }>
+    ) => {
+      const { active } = event.nativeEvent;
+      onPipChange?.(active === true || active === 'true');
+    };
+
     const onLoadHandler = (
       event: NativeSyntheticEvent<{
         duration: number | null;
@@ -358,6 +368,7 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
           onData={onDataHandler}
           onSeek={onSeekHandler}
           onQualityChange={onQualityChangeHandler}
+          onPipChange={onPipChangeHandler}
           onPlayerStateChange={onPlayerStateChangeHandler}
           onDurationChange={onDurationChangeHandler}
           onRebuffering={onRebuffering}

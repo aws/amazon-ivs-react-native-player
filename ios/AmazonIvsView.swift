@@ -10,6 +10,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
     @objc var onPlayerStateChange: RCTDirectEventBlock?
     @objc var onDurationChange: RCTDirectEventBlock?
     @objc var onQualityChange: RCTDirectEventBlock?
+    @objc var onPipChange: RCTDirectEventBlock?
     @objc var onRebuffering: RCTDirectEventBlock?
     @objc var onLoadStart: RCTDirectEventBlock?
     @objc var onLoad: RCTDirectEventBlock?
@@ -37,6 +38,8 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
 
 
     private var _pipController: Any? = nil
+    private var isPipActive: Bool = false
+
 
     @available(iOS 15, *)
     private var pipController: AVPictureInPictureController? {
@@ -470,3 +473,16 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
 
     }
 }
+@available(iOS 15, *)
+extension AmazonIvsView: AVPictureInPictureControllerDelegate {
+    func pictureInPictureControllerDidStartPictureInPicture(_ pictureInPictureController: AVPictureInPictureController) {
+        isPipActive = true
+        onPipChange?(["active": isPipActive])
+    }
+
+    func pictureInPictureControllerDidStopPictureInPicture(_ pictureInPictureController: AVPictureInPictureController) {
+        isPipActive = false
+        onPipChange?(["active": isPipActive])
+    }
+}
+
