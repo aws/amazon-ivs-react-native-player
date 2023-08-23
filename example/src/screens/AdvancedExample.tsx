@@ -90,6 +90,9 @@ export default function AdvancedExample() {
             if (state === PlayerState.Playing || state === PlayerState.Idle) {
               setBuffering(false);
             }
+            if (state === PlayerState.Idle) {
+              setPaused(true);
+            }
           }}
           onProgress={(newPosition) => {
             if (!lockPosition) {
