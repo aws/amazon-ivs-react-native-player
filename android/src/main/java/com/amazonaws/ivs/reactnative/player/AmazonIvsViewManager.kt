@@ -117,6 +117,11 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>() {
     view.setAutoQualityMode(autoQualityMode)
   }
 
+  @ReactProp(name = "pipEnabled")
+  fun setPipEnabled(view: AmazonIvsView, pipEnabled: Boolean) {
+    view.setPipEnabled(pipEnabled)
+  }
+
   @ReactProp(name = "maxBitrate")
   fun setMaxBitrate(view: AmazonIvsView, bitrate: Double) {
     view.setMaxBitrate(bitrate)

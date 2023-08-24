@@ -37,6 +37,7 @@ type IVSPlayerProps = {
   resizeMode?: ResizeMode;
   logLevel?: LogLevel;
   progressInterval?: number;
+  pipEnabled?: boolean;
   volume?: number;
   quality?: Quality | null;
   autoMaxQuality?: Quality | null;
@@ -95,6 +96,7 @@ type Props = {
   breakpoints?: number[];
   maxBitrate?: number;
   initialBufferDuration?: number;
+  pipEnabled?: boolean;
   onSeek?(position: number): void;
   onData?(data: PlayerData): void;
   onVideoStatistics?(data: VideoData): void;
@@ -132,6 +134,7 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
       autoplay = true,
       liveLowLatency,
       playbackRate,
+      pipEnabled,
       logLevel,
       progressInterval,
       volume,
@@ -352,6 +355,7 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
           autoQualityMode={autoQualityMode}
           breakpoints={breakpoints}
           maxBitrate={maxBitrate}
+          pipEnabled={pipEnabled}
           onVideoStatistics={
             onVideoStatistics ? onVideoStatisticsHandler : undefined
           }

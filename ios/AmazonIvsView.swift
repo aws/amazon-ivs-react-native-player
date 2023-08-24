@@ -54,6 +54,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
         self.loop = player.looping
         self.liveLowLatency = player.isLiveLowLatency
         self.autoQualityMode = player.autoQualityMode
+        self.pipEnabled = false
         self.playbackRate = Double(player.playbackRate)
         self.logLevel = NSNumber(value: player.logLevel.rawValue)
         self.progressInterval = 1
@@ -138,6 +139,24 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
             player.autoQualityMode = autoQualityMode
         }
     }
+
+    @objc var pipEnabled: Bool {
+        didSet {
+            guard #available(iOS 15, *), AVPictureInPictureController.isPictureInPictureSupported() else {
+                return
+            }
+            if self.pipController != nil {
+                self.pipController!.canStartPictureInPictureAutomaticallyFromInline = pipEnabled
+                self.togglePip()
+                if !self.pipEnabled {
+                    self.pipController = nil
+                }
+            } else {
+                self.preparePictureInPicture()
+            }
+        }
+    }
+
 
     @objc var autoMaxQuality: NSDictionary? {
         didSet {
@@ -259,7 +278,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
         }
         if pipController.isPictureInPictureActive {
             pipController.stopPictureInPicture()
-        } else {
+        } else if self.pipEnabled {
             pipController.startPictureInPicture()
         }
     }
@@ -453,7 +472,9 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
             return
         }
 
-
+        if !self.pipEnabled {
+            return
+        }
         if let existingController = self.pipController {
             if existingController.ivsPlayerLayer == playerView.playerLayer {
                 return
@@ -466,7 +487,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
         }
 
         self.pipController = pipController
-        pipController.canStartPictureInPictureAutomaticallyFromInline = true
+        pipController.canStartPictureInPictureAutomaticallyFromInline = self.pipEnabled
 
     }
 }
