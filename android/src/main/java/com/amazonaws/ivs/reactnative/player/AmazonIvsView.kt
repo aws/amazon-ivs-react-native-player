@@ -7,6 +7,7 @@ import android.net.Uri
 import android.widget.FrameLayout
 import com.amazonaws.ivs.player.*
 import android.os.Build
+import com.amazonaws.ivs.player.Player.State.*
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.LifecycleEventListener
 import com.facebook.react.bridge.ReactContext
@@ -314,7 +315,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     val reactContext = context as ReactContext
 
     when (state) {
-      Player.State.PLAYING -> {
+      PLAYING -> {
         if (!finishedLoading) {
           val onLoadData = Arguments.createMap()
           val parsedDuration = getDuration(player!!.duration);
@@ -325,7 +326,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
           reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.LOAD.toString(), onLoadData)
         }
       }
-      Player.State.READY -> {
+      READY -> {
         val data = Arguments.createMap()
         val playerData = Arguments.createMap()
         playerData.putString("version", player?.version)
@@ -346,8 +347,10 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
         data.putMap("playerData", playerData)
 
         reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.DATA.toString(), data)
-      }
-      else -> {}
+      };
+      BUFFERING -> {} // The following empty statements are intentional and avoid Kotlin’s "expression must be exhaustive" error.
+      IDLE -> {}
+      ENDED -> {}
     }
 
     val onStateChangeData = Arguments.createMap()
@@ -418,7 +421,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
       lastDuration = player?.duration
     }
     player?.position?.let { position ->
-      if (position > 0 && player?.state === Player.State.PLAYING) {
+      if (position > 0 && player?.state === PLAYING) {
         onProgress(position)
       }
     }
@@ -430,11 +433,11 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
 
   private fun mapPlayerState(state: Player.State): String {
     return when(state) {
-      Player.State.PLAYING -> "Playing"
-      Player.State.BUFFERING -> "Buffering"
-      Player.State.READY -> "Ready"
-      Player.State.IDLE -> "Idle"
-      Player.State.ENDED -> "Ended"
+      PLAYING -> "Playing"
+      BUFFERING -> "Buffering"
+      READY -> "Ready"
+      IDLE -> "Idle"
+      ENDED -> "Ended"
     }
   }
 
