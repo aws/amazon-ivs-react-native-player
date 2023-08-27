@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.PictureInPictureParams
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
 import android.widget.FrameLayout
 import com.amazonaws.ivs.player.*
 import android.os.Build
