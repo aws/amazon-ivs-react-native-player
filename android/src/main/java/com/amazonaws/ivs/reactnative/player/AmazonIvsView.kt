@@ -1,5 +1,7 @@
 package com.amazonaws.ivs.reactnative.player
 
+import android.app.Activity
+import android.app.PictureInPictureParams
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.widget.FrameLayout
@@ -14,10 +16,6 @@ import com.facebook.react.uimanager.events.RCTEventEmitter
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.timerTask
-import android.app.PictureInPictureParams
-import android.app.Activity
-import androidx.annotation.RequiresApi
-
 
 class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(context), LifecycleEventListener {
   private var playerView: PlayerView? = null
@@ -30,6 +28,8 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
   private var lastBitrate: Long? = null
   private var lastDuration: Long? = null
   private var finishedLoading: Boolean = false
+  private var pipEnabled: Boolean = false
+  private var isInBackground: Boolean = false
 
   enum class Events(private val mName: String) {
     STATE_CHANGED("onPlayerStateChange"),
@@ -198,6 +198,11 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
 
   fun setAutoQualityMode(autoQualityMode: Boolean) {
     player?.isAutoQualityMode = autoQualityMode
+  }
+
+  fun setPipEnabled(_pipEnabled: Boolean) {
+    pipEnabled = _pipEnabled
+    if (!pipEnabled) togglePip()
   }
 
   fun onTextCue(cue: TextCue) {
@@ -429,29 +434,43 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     }
   }
 
-
-
-  fun togglePip(){
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
-      && context.packageManager
-        .hasSystemFeature(
-          PackageManager.FEATURE_PICTURE_IN_PICTURE)) {
+  fun togglePip() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N &&
+            context.packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
+    ) {
       val activity: Activity? = context.currentActivity
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        val params = PictureInPictureParams.Builder()
-        activity?.enterPictureInPictureMode(params.build());
-      } else {
-        activity?.enterPictureInPictureMode();
+      val hasToBuild = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+
+      if (!pipEnabled) {
+
+        val isInPip =
+            if (hasToBuild) activity!!.isInPictureInPictureMode
+            else activity!!.isInPictureInPictureMode
+        if (isInPip) {
+          activity?.moveTaskToBack(false)
+        }
+        return
       }
 
+      if (hasToBuild) {
+        val params = PictureInPictureParams.Builder().build()
+        activity?.enterPictureInPictureMode(params)
+      } else {
+        activity?.enterPictureInPictureMode()
+      }
     }
   }
 
-
   override fun onHostResume() {
+    isInBackground = false
   }
 
-  override fun onHostPause() {}
+  override fun onHostPause() {
+    if (pipEnabled) {
+      isInBackground = true
+      togglePip()
+    }
+  }
 
   override fun onHostDestroy() {
     cleanup()
