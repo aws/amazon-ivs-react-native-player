@@ -80,6 +80,7 @@ export default function PlaygroundExample() {
   const [buffering, setBuffering] = useState(false);
   const [duration, setDuration] = useState<number | null>(null);
   const [liveLowLatency, setLiveLowLatency] = useState(true);
+  const [rebufferToLive, setRebufferToLive] = useState(false);
   const [playbackRate, setPlaybackRate] = useState(1);
   const [logLevel, setLogLevel] = useState(LogLevel.IVSLogLevelError);
   const [progressInterval, setProgressInterval] = useState(1);
@@ -161,6 +162,7 @@ export default function PlaygroundExample() {
           muted={muted}
           autoplay={autoplay}
           liveLowLatency={liveLowLatency}
+          rebufferToLive={rebufferToLive}
           streamUrl={url}
           logLevel={logLevel}
           initialBufferDuration={initialBufferDuration}
@@ -396,6 +398,12 @@ export default function PlaygroundExample() {
                     onValueChange={setLiveLowLatency}
                     value={liveLowLatency}
                     testID="liveLowLatency"
+                  />
+                  <SettingsSwitchItem
+                    label="Rebuffer To Live"
+                    onValueChange={setRebufferToLive}
+                    value={rebufferToLive}
+                    testID="rebufferToLive"
                   />
                   <SettingsSwitchItem
                     label="Pause in background"

@@ -133,6 +133,13 @@ Only works with live streams.
 
 type: `boolean`
 
+### rebufferToLive _(optional)_
+
+Enable skipping to the live edge on a rebuffer. Note this can cause video content and content associated with it such as timed metadata to be skipped.
+
+default: `false`
+type: `boolean`
+
 ### onRebuffering _(optional)_
 
 Indicates that the player is buffering from a previous PLAYING state.

@@ -53,6 +53,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
         self.muted = player.muted
         self.loop = player.looping
         self.liveLowLatency = player.isLiveLowLatency
+        self.rebufferToLive = false;
         self.autoQualityMode = player.autoQualityMode
         self.pipEnabled = false
         self.playbackRate = Double(player.playbackRate)
@@ -124,6 +125,12 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
     @objc var liveLowLatency: Bool {
         didSet {
             player.setLiveLowLatencyEnabled(liveLowLatency)
+        }
+    }
+
+    @objc var rebufferToLive: Bool {
+        didSet {
+            player.setRebufferToLive(rebufferToLive)
         }
     }
 
@@ -264,7 +271,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
         let parsedTime = CMTimeMakeWithSeconds(position, preferredTimescale: 1000000)
         player.seek(to: parsedTime)
     }
-    
+
     @objc func setOrigin(origin: NSString){
         let url = URL(string: origin as String)
         player.setOrigin(url)

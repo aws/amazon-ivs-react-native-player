@@ -171,6 +171,21 @@ describe('Playground player', () => {
     await expectNativePlayerToBeVisible(); // Not a crash
   });
 
+  it("Player doesn't crash after changing rebufferToLive property", async () => {
+    await expectNativePlayerToBeVisible();
+    await togglePlayPauseVideo();
+
+    await waitFor(element(by.id('settingsIcon')))
+      .toBeVisible()
+      .withTimeout(TIMEOUT);
+    await element(by.id('settingsIcon')).tap();
+    await scrollToModalBottom();
+    await element(by.id('rebufferToLive')).tap();
+    await element(by.id('closeIcon')).tap();
+
+    await expectNativePlayerToBeVisible(); // Not a crash
+  });
+
   it("Player doesn't crash after changing autoQuality property", async () => {
     await expectNativePlayerToBeVisible();
     await togglePlayPauseVideo();
