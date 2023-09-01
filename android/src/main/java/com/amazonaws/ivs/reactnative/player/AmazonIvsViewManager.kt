@@ -92,6 +92,11 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>() {
     view.setLiveLowLatency(liveLowLatency)
   }
 
+  @ReactProp(name = "rebufferToLive")
+  fun setRebufferToLive(view: AmazonIvsView, rebufferToLive: Boolean) {
+    view.setRebufferToLive(rebufferToLive)
+  }
+
   @ReactProp(name = "playbackRate")
   fun setPlaybackRate(view: AmazonIvsView, playbackRate: Double) {
     view.setPlaybackRate(playbackRate)
@@ -115,6 +120,11 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>() {
   @ReactProp(name = "autoQualityMode")
   fun setAutoQualityMode(view: AmazonIvsView, autoQualityMode: Boolean) {
     view.setAutoQualityMode(autoQualityMode)
+  }
+
+  @ReactProp(name = "pipEnabled")
+  fun setPipEnabled(view: AmazonIvsView, pipEnabled: Boolean) {
+    view.setPipEnabled(pipEnabled)
   }
 
   @ReactProp(name = "maxBitrate")

@@ -32,11 +32,13 @@ type IVSPlayerProps = {
   muted?: boolean;
   loop?: boolean;
   liveLowLatency?: boolean;
+  rebufferToLive?: boolean;
   playbackRate?: number;
   streamUrl?: string;
   resizeMode?: ResizeMode;
   logLevel?: LogLevel;
   progressInterval?: number;
+  pipEnabled?: boolean;
   volume?: number;
   quality?: Quality | null;
   autoMaxQuality?: Quality | null;
@@ -76,7 +78,7 @@ const VIEW_NAME = 'AmazonIvs';
 
 const IVSPlayer = requireNativeComponent<IVSPlayerProps>(VIEW_NAME);
 
-type Props = {
+export type Props = {
   style?: ViewStyle;
   testID?: string;
   paused?: boolean;
@@ -85,6 +87,7 @@ type Props = {
   autoplay?: boolean;
   streamUrl?: string;
   liveLowLatency?: boolean;
+  rebufferToLive?: boolean;
   playbackRate?: number;
   logLevel?: LogLevel;
   resizeMode?: ResizeMode;
@@ -96,6 +99,7 @@ type Props = {
   breakpoints?: number[];
   maxBitrate?: number;
   initialBufferDuration?: number;
+  pipEnabled?: boolean;
   onSeek?(position: number): void;
   onData?(data: PlayerData): void;
   onVideoStatistics?(data: VideoData): void;
@@ -133,7 +137,9 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
       resizeMode,
       autoplay = true,
       liveLowLatency,
+      rebufferToLive,
       playbackRate,
+      pipEnabled,
       logLevel,
       progressInterval,
       volume,
@@ -348,6 +354,7 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
           muted={muted}
           loop={loop}
           liveLowLatency={liveLowLatency}
+          rebufferToLive={rebufferToLive}
           style={styles.mediaPlayer}
           ref={mediaPlayerRef}
           playbackRate={playbackRate}
@@ -362,6 +369,7 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
           autoQualityMode={autoQualityMode}
           breakpoints={breakpoints}
           maxBitrate={maxBitrate}
+          pipEnabled={pipEnabled}
           onVideoStatistics={
             onVideoStatistics ? onVideoStatisticsHandler : undefined
           }
