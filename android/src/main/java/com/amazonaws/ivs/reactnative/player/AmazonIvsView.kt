@@ -21,8 +21,6 @@ import com.facebook.react.uimanager.events.RCTEventEmitter
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.timerTask
-import android.app.PictureInPictureParams
-import android.app.Activity
 import androidx.annotation.RequiresApi
 import android.graphics.Rect
 import android.view.View

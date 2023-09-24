@@ -82,6 +82,7 @@ export default function AdvancedExample() {
           ref={mediaPlayerRef}
           autoplay={false}
           loop
+          pipEnabled
           paused={paused}
           streamUrl={URL}
           onDurationChange={setDuration}
