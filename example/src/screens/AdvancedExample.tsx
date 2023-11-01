@@ -86,6 +86,9 @@ export default function AdvancedExample() {
           paused={paused}
           streamUrl={URL}
           onDurationChange={setDuration}
+          onPipModeChanged={(isPipModeEnabled) => {
+            console.log('isPipModeEnabled', isPipModeEnabled);
+          }}
           onRebuffering={() => setBuffering(true)}
           onPlayerStateChange={(state) => {
             if (state === PlayerState.Playing || state === PlayerState.Idle) {

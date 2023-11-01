@@ -13,6 +13,9 @@ import {
   View,
   NativeSyntheticEvent,
   Platform,
+  NativeEventEmitter,
+  NativeModules,
+  EmitterSubscription,
 } from 'react-native';
 import type { LogLevel, PlayerState } from './enums';
 import type {
@@ -76,6 +79,7 @@ type IVSPlayerProps = {
 const VIEW_NAME = 'AmazonIvs';
 
 const IVSPlayer = requireNativeComponent<IVSPlayerProps>(VIEW_NAME);
+const eventEmitter = new NativeEventEmitter(NativeModules.AmazonIvs);
 
 export type Props = {
   style?: ViewStyle;
@@ -114,6 +118,7 @@ export type Props = {
   onProgress?(progress: number): void;
   onError?(error: string): void;
   onTimePoint?(position: number): void;
+  onPipModeChanged?: (isPipModeEnabled: boolean) => void;
   children?: React.ReactNode;
 };
 
@@ -162,6 +167,7 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
       onProgress,
       onError,
       onTimePoint,
+      onPipModeChanged,
       children,
     },
     ref
@@ -222,6 +228,19 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
       }
       initialized.current = true;
     }, [pause, paused, play, autoplay]);
+
+    useEffect(() => {
+      let pipModeChangedSubscription: EmitterSubscription | null = null;
+      if (onPipModeChanged) {
+        pipModeChangedSubscription = eventEmitter.addListener(
+          'onPipModeChanged',
+          onPipModeChanged
+        );
+      }
+      return () => {
+        pipModeChangedSubscription?.remove();
+      };
+    }, [onPipModeChanged]);
 
     useImperativeHandle(
       ref,

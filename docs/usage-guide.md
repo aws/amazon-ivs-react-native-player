@@ -126,6 +126,9 @@ You can find the full list of events in the [api-reference](./ivs-player-referen
   onTimePoint={(timePoint) => {
     console.log('time point', timePoint)
   }}
+  onPipModeChanged={(isPipModeEnabled) => {
+    console.log('is Pip Mode Enabled', isPipModeEnabled);
+  }}
 />
 ```
 

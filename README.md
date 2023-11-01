@@ -16,6 +16,36 @@ npm install amazon-ivs-react-native-player
 pod install
 ```
 
+## Setup
+
+Add the following attrs in `/android/app/src/main/AndroidManifest.xml` file
+
+```xml
+  <activity
+    ...
+      android:supportsPictureInPicture="true"
+    ...
+```
+
+If you don't have to receive updates when the pip mode is entered or exited, you are good to go. In order to subscribe to the changes in the pip mode, add the following code to `MainActivity.java`.
+
+Add this import to the activity
+
+```java
+import com.amazonaws.ivs.reactnative.player.AmazonIvsView;
+
+
+public class MainActivity extends ReactActivity {
+
+...
+
+@Override
+  public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode, Configuration newConfig) {
+    super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig);
+    AmazonIvsView.Companion.emitPipModeChangedEvent(isInPictureInPictureMode);
+  }
+```
+
 ## Usage
 
 ```tsx

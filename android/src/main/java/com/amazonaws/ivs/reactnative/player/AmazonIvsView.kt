@@ -18,6 +18,7 @@ import com.facebook.react.bridge.ReactContext
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.events.RCTEventEmitter
+import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter;
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.timerTask
@@ -27,6 +28,8 @@ import android.view.View
 import android.util.Rational
 import android.app.RemoteAction
 import android.graphics.drawable.Icon
+
+
 private const val EXTRA_ACTION = "EXTRA_ACTION"
 private const val ACTION_MEDIA_CONTROL = "pip_media_control"
 private const val ACTION_PLAY = 0
@@ -62,7 +65,8 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     DATA("onData"),
     LIVE_LATENCY_CHANGED("onLiveLatencyChange"),
     VIDEO_STATISTICS("onVideoStatistics"),
-    PROGRESS("onProgress");
+    PROGRESS("onProgress"),
+    ON_PIP_MODE_CHANGED("onPipModeChanged");
 
     override fun toString(): String {
       return mName
@@ -73,6 +77,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     playerView = PlayerView(context)
     player = playerView?.player
     playerView?.controlsEnabled = false
+
 
     (context as ThemedReactContext).addLifecycleEventListener(this)
 
@@ -113,7 +118,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
         onError(e.getErrorMessage())
       }
     }
-
+    eventEmitter = context.getJSModule(RCTDeviceEventEmitter::class.java)
     player?.addListener(playerListener);
     addView(playerView)
 
@@ -122,6 +127,15 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
       intervalHandler()
     }, 0, 1000)
     enableBroadcastReceiver()
+  }
+
+
+  companion object {
+    var eventEmitter: RCTDeviceEventEmitter? = null
+
+    fun emitPipModeChangedEvent(isInPipMode: Boolean) {
+      eventEmitter?.emit(Events.ON_PIP_MODE_CHANGED.toString(), isInPipMode)
+    }
   }
 
   override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
@@ -352,6 +366,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
   fun setOrigin(origin: String) {
     player?.setOrigin(origin)
   }
+
 
 
   fun onPlayerStateChange(state: Player.State) {
