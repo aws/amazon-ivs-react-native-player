@@ -52,6 +52,7 @@ declare type Props = {|
   onProgress?: (progress: number) => void,
   onError?: (error: string) => void,
   onTimePoint?: (position: number) => void,
+  onPipModeChanged?: (isPipModeEnabled: boolean) => void,
 |};
 declare var IVSPlayerContainer: React.AbstractComponent<Props, IVSPlayerRef>;
 declare export default typeof IVSPlayerContainer;

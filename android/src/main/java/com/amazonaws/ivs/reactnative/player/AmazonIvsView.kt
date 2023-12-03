@@ -2,6 +2,11 @@ package com.amazonaws.ivs.reactnative.player
 
 import android.app.Activity
 import android.app.PictureInPictureParams
+import android.content.BroadcastReceiver
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.widget.FrameLayout
@@ -13,16 +18,30 @@ import com.facebook.react.bridge.ReactContext
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.events.RCTEventEmitter
+import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter;
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.timerTask
+import androidx.annotation.RequiresApi
+import android.graphics.Rect
+import android.view.View
+import android.util.Rational
+import android.app.RemoteAction
+import android.graphics.drawable.Icon
+
+
+private const val EXTRA_ACTION = "EXTRA_ACTION"
+private const val ACTION_MEDIA_CONTROL = "pip_media_control"
+private const val ACTION_PLAY = 0
+private const val ACTION_PAUSE = ACTION_PLAY + 1
 
 class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(context), LifecycleEventListener {
+
   private var playerView: PlayerView? = null
   private var player: Player? = null
   private var streamUri: Uri? = null
   private val playerListener: Player.Listener?
-
+  private var enabledBroadcast: Boolean = false
   var playerObserver: Timer? = null
   private var lastLiveLatency: Long? = null
   private var lastBitrate: Long? = null
@@ -31,6 +50,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
   private var pipEnabled: Boolean = false
   private var isInBackground: Boolean = false
 
+  private val broadcastReceiver: BroadcastReceiver = buildBroadcastReceiver()
   enum class Events(private val mName: String) {
     STATE_CHANGED("onPlayerStateChange"),
     DURATION_CHANGED("onDurationChange"),
@@ -45,7 +65,8 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     DATA("onData"),
     LIVE_LATENCY_CHANGED("onLiveLatencyChange"),
     VIDEO_STATISTICS("onVideoStatistics"),
-    PROGRESS("onProgress");
+    PROGRESS("onProgress"),
+    ON_PIP_MODE_CHANGED("onPipModeChanged");
 
     override fun toString(): String {
       return mName
@@ -56,6 +77,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     playerView = PlayerView(context)
     player = playerView?.player
     playerView?.controlsEnabled = false
+
 
     (context as ThemedReactContext).addLifecycleEventListener(this)
 
@@ -96,7 +118,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
         onError(e.getErrorMessage())
       }
     }
-
+    eventEmitter = context.getJSModule(RCTDeviceEventEmitter::class.java)
     player?.addListener(playerListener);
     addView(playerView)
 
@@ -104,6 +126,16 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     playerObserver?.schedule(timerTask {
       intervalHandler()
     }, 0, 1000)
+    enableBroadcastReceiver()
+  }
+
+
+  companion object {
+    var eventEmitter: RCTDeviceEventEmitter? = null
+
+    fun emitPipModeChangedEvent(isInPipMode: Boolean) {
+      eventEmitter?.emit(Events.ON_PIP_MODE_CHANGED.toString(), isInPipMode)
+    }
   }
 
   override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
@@ -121,9 +153,35 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
 
       finishedLoading = false
       player.load(uri)
-
       reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.LOAD_START.toString(), Arguments.createMap())
     }
+  }
+
+  fun enableBroadcastReceiver(){
+    val activity: Activity? = context.currentActivity
+    if (enabledBroadcast) {
+      return
+    }
+
+    activity?.registerReceiver(
+      broadcastReceiver,
+      IntentFilter(ACTION_MEDIA_CONTROL)
+    )
+    enabledBroadcast = true
+  }
+
+  fun disableBroadcastReceiver(){
+    val activity: Activity? = context.currentActivity
+    if (!enabledBroadcast) {
+      return
+    }
+
+    try {
+      activity?.unregisterReceiver(broadcastReceiver)
+    } catch(ignore: IllegalArgumentException) {
+      enabledBroadcast = false;
+    }
+
   }
 
   fun setMuted(muted: Boolean) {
@@ -310,9 +368,10 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
   }
 
 
+
   fun onPlayerStateChange(state: Player.State) {
     val reactContext = context as ReactContext
-
+    updatePipParams()
     when (state) {
       Player.State.PLAYING -> {
         if (!finishedLoading) {
@@ -438,10 +497,106 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     }
   }
 
-  fun togglePip() {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N &&
-            context.packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
-    ) {
+  private fun getVideoAspectRatio(): Rational {
+    val width = 16
+    val height =  9
+    return Rational(playerView?.getWidth() ?: 16,playerView?.getHeight() ?: 9)
+  }
+
+  private fun getVisibleRectForView(view: View): Rect? {
+    val visibleRect = Rect()
+    if (view.getGlobalVisibleRect(visibleRect)) {
+      return visibleRect
+    }
+    return null
+  }
+
+  private fun buildBroadcastReceiver(): BroadcastReceiver {
+    val reactContext = context as ReactContext
+    return object : BroadcastReceiver() {
+      @RequiresApi(Build.VERSION_CODES.O)
+      override fun onReceive(context: Context?, intent: Intent?) {
+        intent?.getIntExtra(EXTRA_ACTION, -1)?.let { action ->
+          when (action) {
+            ACTION_PLAY -> play()
+            ACTION_PAUSE -> pause()
+          }
+          reactContext.currentActivity?.setPictureInPictureParams(getPipParams())
+        }
+      }
+    }
+  }
+
+
+
+  @RequiresApi(Build.VERSION_CODES.O)
+  fun buildPipActions(
+    playing: Boolean,
+  ): List<RemoteAction> {
+    return mutableListOf<RemoteAction>().apply {
+      add(
+        if (playing) {
+          buildRemoteAction(
+            ACTION_PAUSE,
+            R.drawable.ic_pause,
+            "Pause",
+            "Pause Video"
+          )
+        } else {
+          buildRemoteAction(
+            ACTION_PLAY,
+            R.drawable.ic_play,
+            "Play",
+            "Play Video"
+          )
+        }
+      )
+    }
+  }
+
+
+
+  @RequiresApi(Build.VERSION_CODES.O)
+  fun getPipParams(): PictureInPictureParams {
+
+
+    val visibleRect = getVisibleRectForView(this)
+    val aspectRatio = getVideoAspectRatio()
+    val initialWidth = ((playerView?.getMeasuredWidth() ?: 0) * 0.75).toInt()
+    val initialHeight = ((playerView?.getMeasuredHeight() ?: 0) * 0.75).toInt()
+    val initialBonds = Rect(0, 0, initialWidth, initialHeight)
+
+    return PictureInPictureParams.Builder()
+      .setSourceRectHint(initialBonds)
+      .setActions(
+        buildPipActions(player?.getState() === Player.State.PLAYING)
+      )
+      .build()
+  }
+
+  @RequiresApi(Build.VERSION_CODES.O)
+  private fun buildRemoteAction(
+    requestId: Int,
+    iconId: Int,
+    title: String,
+    desc: String,
+  ): RemoteAction {
+    val reactContext = context as ReactContext
+    val requestCode =  requestId
+    val intent = Intent(ACTION_MEDIA_CONTROL).putExtra(EXTRA_ACTION, requestCode)
+    val pendingIntent =
+      PendingIntent.getBroadcast(reactContext, requestCode, intent, PendingIntent.FLAG_IMMUTABLE)
+    val icon: Icon = Icon.createWithResource(reactContext, iconId)
+    return RemoteAction(icon, title, desc, pendingIntent)
+  }
+
+
+
+  fun togglePip(){
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
+      && context.packageManager
+        .hasSystemFeature(
+          PackageManager.FEATURE_PICTURE_IN_PICTURE)) {
       val activity: Activity? = context.currentActivity
       val hasToBuild = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
 
@@ -457,13 +612,20 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
       }
 
       if (hasToBuild) {
-        val params = PictureInPictureParams.Builder().build()
-        activity?.enterPictureInPictureMode(params)
+        activity?.enterPictureInPictureMode(getPipParams());
       } else {
         activity?.enterPictureInPictureMode()
       }
     }
   }
+
+  private fun updatePipParams() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      val activity: Activity? = context.currentActivity
+      activity?.setPictureInPictureParams(getPipParams())
+    }
+  }
+
 
   override fun onHostResume() {
     isInBackground = false
@@ -481,10 +643,10 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
   }
 
   fun cleanup() {
+    disableBroadcastReceiver()
     player?.removeListener(playerListener!!)
     player?.release()
     player = null
-
     playerObserver?.cancel()
     playerObserver = null
   }

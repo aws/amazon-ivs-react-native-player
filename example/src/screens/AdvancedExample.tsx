@@ -82,13 +82,20 @@ export default function AdvancedExample() {
           ref={mediaPlayerRef}
           autoplay={false}
           loop
+          pipEnabled
           paused={paused}
           streamUrl={URL}
           onDurationChange={setDuration}
+          onPipModeChanged={(isPipModeEnabled) => {
+            console.log('isPipModeEnabled', isPipModeEnabled);
+          }}
           onRebuffering={() => setBuffering(true)}
           onPlayerStateChange={(state) => {
             if (state === PlayerState.Playing || state === PlayerState.Idle) {
               setBuffering(false);
+            }
+            if (state === PlayerState.Idle) {
+              setPaused(true);
             }
           }}
           onProgress={(newPosition) => {
