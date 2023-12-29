@@ -113,7 +113,7 @@ export default function PlaygroundExample() {
   );
 
   const onDimensionChange = useCallback(
-    ({ window: { width, height } }) => {
+    ({ window: { width, height } }: any) => {
       if (width < height) {
         setOrientation(Position.PORTRAIT);
 
@@ -128,10 +128,6 @@ export default function PlaygroundExample() {
 
   useEffect(() => {
     Dimensions.addEventListener('change', onDimensionChange);
-
-    return () => {
-      Dimensions.removeEventListener('change', onDimensionChange);
-    };
   }, [onDimensionChange]);
 
   const slidingCompleteHandler = (value: number) => {

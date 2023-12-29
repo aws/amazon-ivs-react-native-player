@@ -41,7 +41,9 @@ android.iml
 #
 example/ios/Pods
 /vendor/bundle/
-
+.cxx/
+*.keystore
+!debug.keystore
 # node.js
 #
 node_modules/
@@ -70,3 +72,8 @@ example/ios/.xcode.env.local
 
 # env var
 example/.env
+
+# Temporary files created by Metro to check the health of the file watcher
+.metro-health-check*
+# testing
+/coverage

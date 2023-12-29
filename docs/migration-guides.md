@@ -61,8 +61,8 @@ Overall there are not many code changes required.
    "dependencies": {
 -    "amazon-ivs-react-native": "^1.0.2-beta",
 +    "amazon-ivs-react-native-player": "^1.0.0",
-     "react": "17.0.1",
-     "react-native": "0.67.2"
+     "react": "18.2.0",
+     "react-native": "0.72.7"
    },
 ```
 

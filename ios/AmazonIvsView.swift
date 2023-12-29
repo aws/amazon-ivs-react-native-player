@@ -3,7 +3,7 @@ import UIKit
 import AmazonIVSPlayer
 
 @objc(AmazonIvsView)
-class AmazonIvsView: UIView, IVSPlayer.Delegate {
+class AmazonIvsView: UIView, AVPictureInPictureControllerDelegate, IVSPlayer.Delegate {
     @objc var onSeek: RCTDirectEventBlock?
     @objc var onData: RCTDirectEventBlock?
     @objc var onVideoStatistics: RCTDirectEventBlock?
@@ -34,7 +34,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
     private var lastDuration: CMTime?;
     private var lastFramesDropped: Int?;
     private var lastFramesDecoded: Int?;
-
+    var eventEmitter: AmazonIvsEventEmitter?
 
     private var _pipController: Any? = nil
 
@@ -84,6 +84,15 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
         self.removeTimePointObserver()
     }
 
+
+    func pictureInPictureControllerDidStartPictureInPicture(_ pictureInPictureController: AVPictureInPictureController) {
+        eventEmitter?.emitPipModeChanged(isPipModeEnabled: true)
+    }
+
+    func pictureInPictureControllerDidStopPictureInPicture(_ pictureInPictureController: AVPictureInPictureController) {
+        eventEmitter?.emitPipModeChanged(isPipModeEnabled: false)
+    }
+    
 
 
     func load(urlString: String) {

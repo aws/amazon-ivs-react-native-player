@@ -79,7 +79,10 @@ type IVSPlayerProps = {
 const VIEW_NAME = 'AmazonIvs';
 
 const IVSPlayer = requireNativeComponent<IVSPlayerProps>(VIEW_NAME);
-const eventEmitter = new NativeEventEmitter(NativeModules.AmazonIvs);
+const eventEmitter =
+  Platform.OS === 'android'
+    ? new NativeEventEmitter(NativeModules.AmazonIvs)
+    : null;
 
 export type Props = {
   style?: ViewStyle;
@@ -191,7 +194,7 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
       );
     }, []);
 
-    const seekTo = useCallback((value) => {
+    const seekTo = useCallback((value: number) => {
       UIManager.dispatchViewManagerCommand(
         findNodeHandle(mediaPlayerRef.current),
 
@@ -200,7 +203,7 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
       );
     }, []);
 
-    const setOrigin = useCallback((value) => {
+    const setOrigin = useCallback((value: string) => {
       UIManager.dispatchViewManagerCommand(
         findNodeHandle(mediaPlayerRef.current),
 
@@ -210,6 +213,7 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
     }, []);
 
     const togglePip = useCallback(() => {
+      console.log('TogglePip');
       UIManager.dispatchViewManagerCommand(
         findNodeHandle(mediaPlayerRef.current),
 
@@ -230,16 +234,19 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
     }, [pause, paused, play, autoplay]);
 
     useEffect(() => {
-      let pipModeChangedSubscription: EmitterSubscription | null = null;
-      if (onPipModeChanged) {
-        pipModeChangedSubscription = eventEmitter.addListener(
-          'onPipModeChanged',
-          onPipModeChanged
-        );
+      if (Platform.OS === 'android' && eventEmitter !== null) {
+        let pipModeChangedSubscription: EmitterSubscription | null = null;
+        if (onPipModeChanged) {
+          pipModeChangedSubscription = eventEmitter.addListener(
+            'onPipModeChanged',
+            onPipModeChanged
+          );
+        }
+        return () => {
+          pipModeChangedSubscription?.remove();
+        };
       }
-      return () => {
-        pipModeChangedSubscription?.remove();
-      };
+      return () => {};
     }, [onPipModeChanged]);
 
     useImperativeHandle(

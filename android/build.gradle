@@ -7,13 +7,11 @@ buildscript {
   repositories {
     google()
     mavenCentral()
-    google()
   }
 
   dependencies {
-    classpath("com.android.tools.build:gradle:7.0.4")
+    classpath("com.android.tools.build:gradle")
     classpath("com.facebook.react:react-native-gradle-plugin")
-    classpath("de.undercouch:gradle-download-task:4.1.2")
     // noinspection DifferentKotlinGradleVersion
     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
   }
@@ -124,8 +122,8 @@ repositories {
   }
 }
 
-def kotlin_version = getExtOrDefault('kotlinVersion')
 def ivs_version = getExtOrDefault('ivsVersion')
+def kotlin_version = getExtOrDefault('kotlinVersion')
 
 dependencies {
   // noinspection GradleDynamicVersion

@@ -30,7 +30,7 @@ export default function AdvancedExample() {
   const [orientation, setOrientation] = useState(Position.PORTRAIT);
 
   const onDimensionChange = useCallback(
-    ({ window: { width, height } }) => {
+    ({ window: { width, height } }: any) => {
       if (width < height) {
         setOrientation(Position.PORTRAIT);
 
@@ -45,10 +45,6 @@ export default function AdvancedExample() {
 
   useEffect(() => {
     Dimensions.addEventListener('change', onDimensionChange);
-
-    return () => {
-      Dimensions.removeEventListener('change', onDimensionChange);
-    };
   }, [onDimensionChange]);
 
   const slidingCompleteHandler = (value: number) => {

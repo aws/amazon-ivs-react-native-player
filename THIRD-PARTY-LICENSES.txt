@@ -554,7 +554,7 @@ definition file.
 https://github.com/DefinitelyTyped/DefinitelyTyped
 Copyrights are respective of each contributor listed at the beginning of each
 definition file.
-** @types/react-native; version 0.62.13 --
+** @types/react-native; version 0.72.7 --
 https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/react-native
 Copyrights are respective of each contributor listed at the beginning of each
 definition file.
