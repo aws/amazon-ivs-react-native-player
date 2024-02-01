@@ -34,8 +34,9 @@ async function run() {
   }
 
   try {
-    // different behavior based on rc version or not
+    // different behavior based on prerelease version or not
     const prerelease = (semver.prerelease(pkg.version) ?? []).length;
+    const prereleasepatch = prerelease > 2;
 
     let bumps = prerelease
       ? ['prereleasenext', 'prereleasepatch', 'prereleasedone']
@@ -44,36 +45,51 @@ async function run() {
     const versions = bumps.map((type) => {
       let version: string | null = pkg.version;
       if (version) {
-        const prereleasepatch = prerelease > 2;
         switch (type) {
           case 'prereleasenext':
-            version = semver.inc(
-              prereleasepatch ? version.replace(/\.[^.]*$/gm, '') : version,
-              'prerelease',
-              'rc',
-              '1'
-            );
+            if (prereleasepatch) {
+              // 1.2.3-rc.1.2 -> 1.2.3-rc.1
+              // strips the patch, so prerelease will inc to rc.2
+              version = version.replace(/\.[^.]*$/gm, '');
+            }
+            // 1.2.3-rc.1 -> 1.2.3-rc.2 or
+            // 1.2.3-rc.1.2 -> 1.2.3-rc.1.3
+            // increments the last digit
+            version = semver.inc(version, 'prerelease', 'rc', '1');
             break;
           case 'prereleasepatch':
-            version = prereleasepatch
-              ? semver.inc(version, 'prerelease', 'rc', '1')
-              : `${version}.2`;
+            if (prereleasepatch) {
+              // 1.2.3-rc.1.2 -> 1.2.3-rc.1.3
+              // increments the last digit
+              version = semver.inc(version, 'prerelease', 'rc', '1');
+            } else {
+              // 1.2.3-rc.1 -> 1.2.3-rc.1.2
+              // adds a patch digit
+              version = `${version}.2`;
+            }
             break;
           case 'prereleasedone':
+            // 1.2.3-rc.1.2 -> 1.2.3 or
+            // 1.2.3-rc.1 -> 1.2.3
+            // removes -rc from version
             version = version.replace(/-rc.*/gm, '');
             break;
           case 'premajor':
           case 'preminor':
-          case 'prepatch':
-          case 'prerelease':
-            version = semver.inc(
-              version,
-              type as semver.ReleaseType,
-              'rc',
-              '1'
-            );
+          case 'prepatch': {
+            // 1.2.3 -> 1.2.4-rc.1 or
+            // 1.2.3 -> 1.3.0-rc.1 or
+            // 1.2.3 -> 2.0.0-rc.1
+            // increments and adds prerelease version
+            const rtype = type as semver.ReleaseType;
+            version = semver.inc(version, rtype, 'rc', '1');
             break;
+          }
           default:
+            // 1.2.3 -> 1.2.4 or
+            // 1.2.3 -> 1.3.0 or
+            // 1.2.3 -> 2.0.0
+            // increments version
             version = semver.inc(version, type as semver.ReleaseType);
             break;
         }
