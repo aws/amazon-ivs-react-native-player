@@ -52,8 +52,7 @@ async function run() {
               // strips the patch, so prerelease will inc to rc.2
               version = version.replace(/\.[^.]*$/gm, '');
             }
-            // 1.2.3-rc.1 -> 1.2.3-rc.2 or
-            // 1.2.3-rc.1.2 -> 1.2.3-rc.1.3
+            // 1.2.3-rc.1 -> 1.2.3-rc.2
             // increments the last digit
             version = semver.inc(version, 'prerelease', 'rc', '1');
             break;
@@ -69,8 +68,8 @@ async function run() {
             }
             break;
           case 'prereleasedone':
-            // 1.2.3-rc.1.2 -> 1.2.3 or
-            // 1.2.3-rc.1 -> 1.2.3
+            // 1.2.3-rc.1 -> 1.2.3 or
+            // 1.2.3-rc.1.2 -> 1.2.3
             // removes -rc from version
             version = version.replace(/-rc.*/gm, '');
             break;
