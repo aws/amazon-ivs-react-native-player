@@ -27,15 +27,18 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
   private var lastLiveLatency: Long? = null
   private var lastBitrate: Long? = null
   private var lastDuration: Long? = null
+  private var lastPipState: Boolean = false;
   private var finishedLoading: Boolean = false
   private var pipEnabled: Boolean = false
   private var isInBackground: Boolean = false
+
 
   enum class Events(private val mName: String) {
     STATE_CHANGED("onPlayerStateChange"),
     DURATION_CHANGED("onDurationChange"),
     ERROR("onError"),
     QUALITY_CHANGED("onQualityChange"),
+    PIP_CHANGED("onPipChange"),
     CUE("onTextCue"),
     METADATA_CUE("onTextMetadataCue"),
     LOAD("onLoad"),
@@ -281,6 +284,14 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.PROGRESS.toString(), data)
   }
 
+  fun onPipChange(active: Boolean) {
+      val reactContext = context as ReactContext
+      val data = Arguments.createMap()
+      data.putString("active", if (active) "true" else "false")
+
+      reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.PIP_CHANGED.toString(), data)
+  }
+
   private fun convertMilliSecondsToSeconds (milliSeconds: Long): Double {
     return milliSeconds / 1000.0
   }
@@ -379,6 +390,17 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
 
   private fun intervalHandler() {
     val reactContext = context as ReactContext
+
+    if (pipEnabled)
+    {
+        val activity: Activity? = reactContext.currentActivity
+        val isPipActive = activity!!.isInPictureInPictureMode
+        if(lastPipState !== isPipActive)
+        {
+          lastPipState = isPipActive
+          onPipChange(isPipActive === true)
+        }
+    }
 
     if (lastLiveLatency != player?.liveLatency) {
       val liveLatencyData = Arguments.createMap()

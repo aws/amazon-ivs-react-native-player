@@ -83,6 +83,9 @@ You can find the full list of events in the [api-reference](./ivs-player-referen
   onQualityChange={(newQuality) => {
     console.log(`quality changed: ${newQuality?.name}`)
   }}
+  onPipChange={(isActive) => {
+    console.log(`picture in picture changed - isActive: ${isActive}`)
+  }}
   onRebuffering={() => {
      console.log('rebuffering...')
   }}

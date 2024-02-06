@@ -191,6 +191,9 @@ export default function PlaygroundExample() {
             setDetectedQuality(newQuality);
             log(`quality changed: ${newQuality?.name}`);
           }}
+          onPipChange={(isActive) => {
+            log(`picture in picture changed - isActive: ${isActive}`);
+          }}
           onRebuffering={() => setBuffering(true)}
           onLoadStart={() => log(`load started`)}
           onLoad={(loadedDuration) =>
