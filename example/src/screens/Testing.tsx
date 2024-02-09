@@ -216,6 +216,17 @@ export function Testing() {
   const [testPlan, setTestPlan] = React.useState(defaultPlan);
   const playerRef = React.useRef<IVSPlayerRef>(null);
 
+  React.useEffect(() => {
+    return () => {
+      planState.url = '';
+      planState.props = {};
+      planState.events = new Set();
+      planState.inputs = [];
+      planState.actions = {};
+      planState.qualities = [];
+    };
+  }, []);
+
   function runplan() {
     const plandata = parse(testPlan);
     Object.keys(plandata).forEach((name) => {
