@@ -90,6 +90,7 @@
     "simple-git": "^3.19.1",
     "tsx": "^3.12.7",
     "typescript": "^4.1.3",
+    "valtio": "^1.13.0",
     "yaml": "^2.3.4"
   },
   "peerDependencies": {

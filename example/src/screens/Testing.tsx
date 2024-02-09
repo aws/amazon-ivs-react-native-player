@@ -9,6 +9,7 @@ import IVSPlayer, {
 import { StyleSheet, View } from 'react-native';
 import { Button, TextInput, Chip, Subheading, Text } from 'react-native-paper';
 import { ScrollView } from 'react-native-gesture-handler';
+import { proxy, useSnapshot } from 'valtio';
 
 // const URL =
 //   'https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8';
@@ -37,7 +38,7 @@ type PlanInput = {
   name?: string;
   type: PlanInputType;
   icon?: string;
-  action?: PlanInputActionArg[];
+  args?: PlanInputActionArg[];
   options?: PlanInputOption[];
   default?: any;
 };
@@ -83,11 +84,11 @@ const InputTemplates: Record<string, PlanInput> = {
   pause: { type: PlanInputType.Action, icon: 'pause' },
   seekTo: {
     type: PlanInputType.Action,
-    action: [PlanInputActionArg.Number],
+    args: [PlanInputActionArg.Number],
   },
   setOrigin: {
     type: PlanInputType.Action,
-    action: [PlanInputActionArg.String],
+    args: [PlanInputActionArg.String],
   },
   togglePip: { type: PlanInputType.Action },
 };
@@ -96,6 +97,20 @@ const defaultPlan = `url: https://fcc3ddae59ed.us-west-2.playback.live-video.net
 inputs:
 `;
 
+const planState = proxy<{
+  url: string;
+  props: PlanProps;
+  inputs: PlanInput[];
+  actions: Record<string, PlanProps>;
+  qualities: Quality[];
+}>({
+  url: '',
+  props: {},
+  inputs: [],
+  actions: {},
+  qualities: [],
+});
+
 function qualitymatch(a: Quality | undefined, b: Quality | undefined) {
   // @ts-expect-error quick compare
   return a && b && Object.keys(a).every((key) => a[key] === b[key]);
@@ -103,10 +118,9 @@ function qualitymatch(a: Quality | undefined, b: Quality | undefined) {
 
 type PlayerProps = {
   playerRef: React.Ref<IVSPlayerRef>;
-  setQualities: (qualities: Quality[]) => void;
 } & IVSPlayerProps;
 
-function Player({ playerRef, setQualities, ...props }: PlayerProps) {
+function Player({ playerRef, ...props }: PlayerProps) {
   const [logs, setLogs] = React.useState<string[]>([]);
 
   function log(message: string) {
@@ -122,7 +136,7 @@ function Player({ playerRef, setQualities, ...props }: PlayerProps) {
         log(`onSeek: ${position}`);
       }}
       onData={(data) => {
-        setQualities(data.qualities);
+        planState.qualities = data.qualities;
       }}
       onVideoStatistics={(data) => {
         console.log('onVideoStatistics', data);
@@ -177,30 +191,27 @@ function Player({ playerRef, setQualities, ...props }: PlayerProps) {
 }
 
 export function Testing() {
-  const [url, setUrl] = React.useState('');
-  const [plan, setPlan] = React.useState(defaultPlan);
-  const [qualities, setQualities] = React.useState<Quality[]>([]);
-  const [props, setProps] = React.useState<PlanProps>({});
-  const [inputs, setInputs] = React.useState<PlanInput[]>([]);
+  const snapshot = useSnapshot(planState);
+  const [testPlan, setTestPlan] = React.useState(defaultPlan);
   const playerRef = React.useRef<IVSPlayerRef>(null);
 
   function runplan() {
-    const plandata = parse(plan);
+    const plandata = parse(testPlan);
     Object.keys(plandata).forEach((name) => {
       const lname = name.toLowerCase();
       const value = plandata[name];
       switch (lname) {
         case 'url':
           if (typeof value === 'string') {
-            setUrl(value);
+            planState.url = value;
           } else {
             // throw error with example input
           }
           break;
         case 'inputs':
           if (Array.isArray(value)) {
-            const newProps: PlanProps = {};
             const newInputs: PlanInput[] = [];
+
             value.forEach((input) => {
               if (typeof input === 'string') {
                 const template = InputTemplates[input];
@@ -211,14 +222,14 @@ export function Testing() {
                 Object.entries(input).forEach(([prop, data]) => {
                   const template = InputTemplates[prop];
                   if (template) {
-                    newProps[prop] = data;
+                    planState.props[prop] = data;
                     newInputs.push({ name: prop, ...template });
                   }
                 });
               }
             });
-            setInputs(newInputs);
-            setProps((state) => ({ ...state, ...newProps }));
+
+            planState.inputs = newInputs;
           } else {
             // throw error with example input
           }
@@ -232,7 +243,7 @@ export function Testing() {
 
   function renderinput(input: PlanInput) {
     const name = input.name ?? '';
-    const value = props[name];
+    const value = snapshot.props[name];
     switch (input.type) {
       case PlanInputType.Boolean:
         return (
@@ -242,7 +253,7 @@ export function Testing() {
               testID={name}
               selected={!!value}
               onPress={() => {
-                setProps((state) => ({ ...state, [name]: !value }));
+                planState.props[name] = !value;
               }}
             >
               {JSON.stringify(value)}
@@ -258,10 +269,8 @@ export function Testing() {
               dense
               value={`${value}`}
               onChangeText={(text) => {
-                setProps((state) => {
-                  const next = parseFloat(text);
-                  return { ...state, [name]: Number.isNaN(next) ? 0 : next };
-                });
+                const next = parseFloat(text);
+                planState.props[name] = Number.isNaN(next) ? 0 : next;
               }}
             />
           </>
@@ -277,7 +286,7 @@ export function Testing() {
                   testID={`${name}:${option.name}:${index}`}
                   selected={option.value === value}
                   onPress={() => {
-                    setProps((state) => ({ ...state, [name]: option.value }));
+                    planState.props[name] = option.value;
                   }}
                 >
                   {option.name}: {JSON.stringify(option.value)}
@@ -294,19 +303,19 @@ export function Testing() {
               testID={`${name}:auto:-1`}
               selected={value === undefined}
               onPress={() => {
-                setProps((state) => ({ ...state, [name]: undefined }));
+                planState.props[name] = undefined;
               }}
             >
               auto: undefined
             </Chip>
-            {qualities.map((option, index) => {
+            {snapshot.qualities.map((option, index) => {
               return (
                 <Chip
                   key={index}
                   testID={`${name}:${option.name}:${index}`}
                   selected={qualitymatch(option, value)}
                   onPress={() => {
-                    setProps((state) => ({ ...state, [name]: option }));
+                    planState.props[name] = option;
                   }}
                 >
                   {option.name}: {JSON.stringify(option)}
@@ -318,33 +327,78 @@ export function Testing() {
       case PlanInputType.Action:
         return (
           <>
-            <Chip
-              testID={`${name}`}
-              icon={input.icon}
-              onPress={() => {
-                if (!playerRef.current) {
-                  return;
+            <View style={styles.row}>
+              {(input.args ?? []).map((arg, i) => {
+                switch (arg) {
+                  case PlanInputActionArg.Number:
+                    return (
+                      <TextInput
+                        key={i}
+                        testID={`${name}:${i}`}
+                        dense
+                        style={styles.rowInput}
+                        value={`${planState.actions?.[name]?.[i] ?? ''}`}
+                        onChangeText={(text) => {
+                          if (!snapshot.actions[name]) {
+                            planState.actions[name] = {};
+                          }
+                          const next = parseFloat(text);
+                          planState.actions[name][i] = Number.isNaN(next)
+                            ? 0
+                            : next;
+                        }}
+                      />
+                    );
+                  case PlanInputActionArg.String:
+                    return (
+                      <TextInput
+                        key={i}
+                        testID={`${name}:${i}`}
+                        dense
+                        style={styles.rowInput}
+                        value={planState.actions?.[name]?.[i] ?? ''}
+                        onChangeText={(text) => {
+                          if (!snapshot.actions[name]) {
+                            planState.actions[name] = {};
+                          }
+                          planState.actions[name][i] = text;
+                        }}
+                      />
+                    );
+                  default:
+                    return null;
                 }
-
-                switch (name) {
-                  case 'play':
-                    playerRef.current.play();
-                    break;
-                  case 'pause':
-                    playerRef.current.pause();
-                    break;
-                  case 'seekTo':
-                    break;
-                  case 'setOrigin':
-                    break;
-                  case 'togglePip':
-                    playerRef.current.togglePip();
-                    break;
-                }
-              }}
-            >
-              {name}
-            </Chip>
+              })}
+              <Button
+                testID={`${name}`}
+                icon={input.icon}
+                mode="contained"
+                onPress={() => {
+                  if (!playerRef.current) {
+                    return;
+                  }
+                  switch (name) {
+                    case 'play':
+                      playerRef.current.play();
+                      break;
+                    case 'pause':
+                      playerRef.current.pause();
+                      break;
+                    case 'seekTo':
+                      playerRef.current.seekTo(snapshot.actions[name][0]);
+                      break;
+                    case 'setOrigin':
+                      playerRef.current.setOrigin(snapshot.actions[name][0]);
+                      break;
+                    case 'togglePip':
+                      playerRef.current.togglePip();
+                      break;
+                  }
+                }}
+              >
+                {name}
+              </Button>
+            </View>
           </>
         );
     }
@@ -354,16 +408,15 @@ export function Testing() {
     <ScrollView style={styles.container}>
       <View style={styles.player}>
         <Player
-          streamUrl={url}
+          streamUrl={snapshot.url}
           playerRef={playerRef}
-          setQualities={setQualities}
-          {...props}
+          {...snapshot.props}
         />
       </View>
       <View style={styles.config}>
-        {inputs.map((input, index) => (
+        {snapshot.inputs.map((input, index) => (
           <View key={input.name ?? index} style={styles.input}>
-            {renderinput(input)}
+            {renderinput(input as PlanInput)}
           </View>
         ))}
         <View style={styles.input}>
@@ -377,8 +430,8 @@ export function Testing() {
           label="Test Plan"
           dense
           multiline
-          value={plan}
-          onChangeText={setPlan}
+          value={testPlan}
+          onChangeText={setTestPlan}
         />
       </View>
     </ScrollView>
@@ -407,6 +460,15 @@ const styles = StyleSheet.create({
   input: {
     marginBottom: 10,
     marginHorizontal: 8,
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  rowInput: {
+    flex: 1,
+    marginRight: 10,
   },
   testPlan: {
     flex: 1,
