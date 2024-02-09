@@ -13,6 +13,7 @@ import PlaygroundExample from './screens/PlaygroundExample';
 import Home from './screens/Home';
 import SimpleExample from './screens/SimpleExample';
 import AdvancedExample from './screens/AdvancedExample';
+import { Testing } from './screens/Testing';
 
 export const theme = {
   ...DefaultTheme,
@@ -26,6 +27,7 @@ export const theme = {
 
 export type RootStackParamList = {
   Home: undefined;
+  Testing: undefined;
   SimpleExample: undefined;
   AdvancedExample: undefined;
   PlaygroundExample: undefined;
@@ -57,6 +59,7 @@ export default function App() {
               component={Home}
               options={{ title: 'Examples' }}
             />
+            <Stack.Screen name="Testing" component={Testing} />
             <Stack.Screen name="SimpleExample" component={SimpleExample} />
             <Stack.Screen name="AdvancedExample" component={AdvancedExample} />
             <Stack.Screen
