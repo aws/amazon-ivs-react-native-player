@@ -7,12 +7,16 @@ import IVSPlayer, {
   Quality,
 } from 'amazon-ivs-react-native-player';
 import { StyleSheet, View } from 'react-native';
-import { Button, TextInput, Chip, Subheading, Text } from 'react-native-paper';
+import {
+  Button,
+  TextInput,
+  Chip,
+  Subheading,
+  Text,
+  ToggleButton,
+} from 'react-native-paper';
 import { ScrollView } from 'react-native-gesture-handler';
 import { proxy, useSnapshot } from 'valtio';
-
-// const URL =
-//   'https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8';
 
 type PlanProps = Record<string, any>;
 
@@ -84,28 +88,36 @@ const InputTemplates: Record<string, PlanInput> = {
   pause: { type: PlanInputType.Action, icon: 'pause' },
   seekTo: {
     type: PlanInputType.Action,
+    icon: 'fast-forward',
     args: [PlanInputActionArg.Number],
   },
   setOrigin: {
     type: PlanInputType.Action,
+    icon: 'crosshairs-gps',
     args: [PlanInputActionArg.String],
   },
-  togglePip: { type: PlanInputType.Action },
+  togglePip: {
+    type: PlanInputType.Action,
+    icon: 'picture-in-picture-top-right-outline',
+  },
 };
 
-const defaultPlan = `url: https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8
+const defaultPlan = `
+url: https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8
 inputs:
 `;
 
 const planState = proxy<{
   url: string;
   props: PlanProps;
+  events: Set<string>;
   inputs: PlanInput[];
   actions: Record<string, PlanProps>;
   qualities: Quality[];
 }>({
   url: '',
   props: {},
+  events: new Set(),
   inputs: [],
   actions: {},
   qualities: [],
@@ -120,12 +132,21 @@ type PlayerProps = {
   playerRef: React.Ref<IVSPlayerRef>;
 } & IVSPlayerProps;
 
+function logstring(name: string, message?: string) {
+  return `${name} ::: ${message ?? ''}`;
+}
+
 function Player({ playerRef, ...props }: PlayerProps) {
+  const snapshot = useSnapshot(planState);
   const [logs, setLogs] = React.useState<string[]>([]);
 
-  function log(message: string) {
-    console.log(message);
-    setLogs((logs) => [message, ...logs.slice(0, 30)]);
+  function log(name: string, message?: string) {
+    if (!snapshot.events.has(name)) {
+      return;
+    }
+    const logmessage = logstring(name, message);
+    console.log(logmessage);
+    setLogs((logs) => [logmessage, ...logs.slice(0, 30)]);
   }
 
   return (
@@ -133,52 +154,52 @@ function Player({ playerRef, ...props }: PlayerProps) {
       {...props}
       ref={playerRef}
       onSeek={(position) => {
-        log(`onSeek: ${position}`);
+        log('onSeek', `${position}`);
       }}
       onData={(data) => {
         planState.qualities = data.qualities;
       }}
       onVideoStatistics={(data) => {
-        console.log('onVideoStatistics', data);
+        log('onVideoStatistics', `${JSON.stringify(data)}`);
       }}
       onPlayerStateChange={(state) => {
-        log(`onPlayerStateChange: ${state}`);
+        log('onPlayerStateChange', `${state}`);
       }}
       onDurationChange={(duration) => {
-        log(`onDurationChange: ${duration}`);
+        log('onDurationChange', `${duration}`);
       }}
       onQualityChange={(quality) => {
-        console.log('quality changed', quality);
+        log('onQualityChange', `${JSON.stringify(quality)}`);
       }}
       onPipChange={(isActive) => {
-        log(`onPipChange: ${isActive}`);
+        log('onPipChange', `${isActive}`);
       }}
       onRebuffering={() => {
-        log(`onRebuffering:`);
+        log('onRebuffering');
       }}
       onLoadStart={() => {
-        log(`onLoadStart:`);
+        log('onLoadStart');
       }}
       onLoad={(duration) => {
-        log(`onLoad: ${duration}`);
+        log('onLoad', `${duration}`);
       }}
       onLiveLatencyChange={(liveLatency) => {
-        log(`onLiveLatencyChange: ${liveLatency}`);
+        log('onLiveLatencyChange', `${liveLatency}`);
       }}
       onTextCue={(textCue) => {
-        log(`onTextCue: ${JSON.stringify(textCue)}`);
+        log('onTextCue', `${JSON.stringify(textCue)}`);
       }}
       onTextMetadataCue={(textMetadataCue) => {
-        log(`onTextMetadataCue: ${JSON.stringify(textMetadataCue)}`);
+        log('onTextMetadataCue', `${JSON.stringify(textMetadataCue)}`);
       }}
-      onProgress={() => {
-        // console.log('progress', progress);
+      onProgress={(progress) => {
+        log('onProgress', `${progress}`);
       }}
       onError={(error: string) => {
-        log(`onError: ${error}`);
+        log('onError', `${error}`);
       }}
       onTimePoint={(position) => {
-        log(`onTimePoint: ${position}`);
+        log('onTimePoint', `${position}`);
       }}
     >
       {logs.map((log, index) => (
@@ -230,6 +251,23 @@ export function Testing() {
             });
 
             planState.inputs = newInputs;
+          } else {
+            // throw error with example input
+          }
+          break;
+        case 'events':
+          if (Array.isArray(value)) {
+            const newEvents = new Set<string>();
+
+            value.forEach((event) => {
+              if (typeof event === 'string') {
+                newEvents.add(event);
+              } else {
+                // throw error with example input
+              }
+            });
+
+            planState.events = newEvents;
           } else {
             // throw error with example input
           }
@@ -289,7 +327,7 @@ export function Testing() {
                     planState.props[name] = option.value;
                   }}
                 >
-                  {option.name}: {JSON.stringify(option.value)}
+                  {logstring(option.name, JSON.stringify(option.value))}
                 </Chip>
               );
             })}
@@ -306,7 +344,7 @@ export function Testing() {
                 planState.props[name] = undefined;
               }}
             >
-              auto: undefined
+              {logstring('auto', 'undefined')}
             </Chip>
             {snapshot.qualities.map((option, index) => {
               return (
@@ -318,7 +356,7 @@ export function Testing() {
                     planState.props[name] = option;
                   }}
                 >
-                  {option.name}: {JSON.stringify(option)}
+                  {logstring(option.name, JSON.stringify(option))}
                 </Chip>
               );
             })}
@@ -327,6 +365,7 @@ export function Testing() {
       case PlanInputType.Action:
         return (
           <>
+            <Subheading>{name}</Subheading>
             <View style={styles.row}>
               {(input.args ?? []).map((arg, i) => {
                 switch (arg) {
@@ -369,10 +408,11 @@ export function Testing() {
                     return null;
                 }
               })}
-              <Button
-                testID={`${name}`}
-                icon={input.icon}
-                mode="contained"
+              <ToggleButton
+                // @ts-expect-error docs say this prop exists?
+                testID={name}
+                icon={input.icon ?? ''}
+                status="checked"
                 onPress={() => {
                   if (!playerRef.current) {
                     return;
@@ -395,9 +435,7 @@ export function Testing() {
                       break;
                   }
                 }}
-              >
-                {name}
-              </Button>
+              />
             </View>
           </>
         );
@@ -431,6 +469,10 @@ export function Testing() {
           dense
           multiline
           value={testPlan}
+          autoFocus={true}
+          spellCheck={false}
+          autoCorrect={false}
+          autoCapitalize="none"
           onChangeText={setTestPlan}
         />
       </View>
