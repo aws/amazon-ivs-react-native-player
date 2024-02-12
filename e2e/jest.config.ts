@@ -1,6 +1,7 @@
 module.exports = {
+  "preset": "ts-jest",
   "rootDir": "..",
-  "testMatch": ["<rootDir>/e2e/**/*.e2e.js"],
+  "testMatch": ["<rootDir>/e2e/**/*.e2e.ts"],
   "testTimeout": 2400000,
   "verbose": true,
   "maxWorkers": 1,

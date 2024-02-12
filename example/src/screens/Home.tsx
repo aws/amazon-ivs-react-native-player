@@ -21,13 +21,13 @@ function Home() {
 
       <ScrollView style={styles.list}>
         <Card
-          testID="Testing"
+          testID="TestPlan"
           style={styles.card}
           onPress={() => {
-            navigate('Testing');
+            navigate('TestPlan');
           }}
         >
-          <Card.Title title="Testing" />
+          <Card.Title title="TestPlan" />
           <Card.Content>
             <Paragraph>Testing harness for the player.</Paragraph>
           </Card.Content>

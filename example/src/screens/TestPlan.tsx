@@ -102,8 +102,10 @@ const InputTemplates: Record<string, PlanInput> = {
   },
 };
 
+const defaultUrl = `https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8`;
+
 const defaultPlan = `
-url: https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8
+url: ${defaultUrl}
 inputs:
 `;
 
@@ -150,68 +152,78 @@ function Player({ playerRef, ...props }: PlayerProps) {
   }
 
   return (
-    <IVSPlayer
-      {...props}
-      ref={playerRef}
-      onSeek={(position) => {
-        log('onSeek', `${position}`);
-      }}
-      onData={(data) => {
-        planState.qualities = data.qualities;
-      }}
-      onVideoStatistics={(data) => {
-        log('onVideoStatistics', `${JSON.stringify(data)}`);
-      }}
-      onPlayerStateChange={(state) => {
-        log('onPlayerStateChange', `${state}`);
-      }}
-      onDurationChange={(duration) => {
-        log('onDurationChange', `${duration}`);
-      }}
-      onQualityChange={(quality) => {
-        log('onQualityChange', `${JSON.stringify(quality)}`);
-      }}
-      onPipChange={(isActive) => {
-        log('onPipChange', `${isActive}`);
-      }}
-      onRebuffering={() => {
-        log('onRebuffering');
-      }}
-      onLoadStart={() => {
-        log('onLoadStart');
-      }}
-      onLoad={(duration) => {
-        log('onLoad', `${duration}`);
-      }}
-      onLiveLatencyChange={(liveLatency) => {
-        log('onLiveLatencyChange', `${liveLatency}`);
-      }}
-      onTextCue={(textCue) => {
-        log('onTextCue', `${JSON.stringify(textCue)}`);
-      }}
-      onTextMetadataCue={(textMetadataCue) => {
-        log('onTextMetadataCue', `${JSON.stringify(textMetadataCue)}`);
-      }}
-      onProgress={(progress) => {
-        log('onProgress', `${progress}`);
-      }}
-      onError={(error: string) => {
-        log('onError', `${error}`);
-      }}
-      onTimePoint={(position) => {
-        log('onTimePoint', `${position}`);
-      }}
-    >
-      {logs.map((log, index) => (
-        <Text key={index} style={styles.log} accessibilityLabel={log}>
-          {log}
-        </Text>
-      ))}
-    </IVSPlayer>
+    <>
+      <IVSPlayer
+        {...props}
+        ref={playerRef}
+        onSeek={(position) => {
+          log('onSeek', `${position}`);
+        }}
+        onData={(data) => {
+          planState.qualities = data.qualities;
+        }}
+        onVideoStatistics={(data) => {
+          log('onVideoStatistics', `${JSON.stringify(data)}`);
+        }}
+        onPlayerStateChange={(state) => {
+          log('onPlayerStateChange', `${state}`);
+        }}
+        onDurationChange={(duration) => {
+          log('onDurationChange', `${duration}`);
+        }}
+        onQualityChange={(quality) => {
+          log('onQualityChange', `${JSON.stringify(quality)}`);
+        }}
+        onPipChange={(isActive) => {
+          log('onPipChange', `${isActive}`);
+        }}
+        onRebuffering={() => {
+          log('onRebuffering');
+        }}
+        onLoadStart={() => {
+          log('onLoadStart');
+        }}
+        onLoad={(duration) => {
+          log('onLoad', `${duration}`);
+        }}
+        onLiveLatencyChange={(liveLatency) => {
+          log('onLiveLatencyChange', `${liveLatency}`);
+        }}
+        onTextCue={(textCue) => {
+          log('onTextCue', `${JSON.stringify(textCue)}`);
+        }}
+        onTextMetadataCue={(textMetadataCue) => {
+          log('onTextMetadataCue', `${JSON.stringify(textMetadataCue)}`);
+        }}
+        onProgress={(progress) => {
+          log('onProgress', `${progress}`);
+        }}
+        onError={(error: string) => {
+          log('onError', `${error}`);
+        }}
+        onTimePoint={(position) => {
+          log('onTimePoint', `${position}`);
+        }}
+      >
+        {logs.length === 0 && (
+          <Text style={styles.log} testID="onClearLogs :::">
+            onClearLogs :::
+          </Text>
+        )}
+        {logs.map((log, index) => (
+          <Text key={index} style={styles.log} testID={log}>
+            {log}
+          </Text>
+        ))}
+      </IVSPlayer>
+      <Button testID="clearLogs" onPress={() => setLogs([])}>
+        Clear Logs
+      </Button>
+    </>
   );
 }
 
-export function Testing() {
+export function TestPlan() {
   const snapshot = useSnapshot(planState);
   const [testPlan, setTestPlan] = React.useState(defaultPlan);
   const playerRef = React.useRef<IVSPlayerRef>(null);
@@ -288,6 +300,10 @@ export function Testing() {
           break;
       }
     });
+
+    if (!planState.url) {
+      planState.url = defaultUrl;
+    }
   }
 
   function renderinput(input: PlanInput) {
@@ -332,7 +348,7 @@ export function Testing() {
               return (
                 <Chip
                   key={index}
-                  testID={`${name}:${option.name}:${index}`}
+                  testID={`${name}:${index}`}
                   selected={option.value === value}
                   onPress={() => {
                     planState.props[name] = option.value;
@@ -361,7 +377,7 @@ export function Testing() {
               return (
                 <Chip
                   key={index}
-                  testID={`${name}:${option.name}:${index}`}
+                  testID={`${name}:${index}`}
                   selected={qualitymatch(option, value)}
                   onPress={() => {
                     planState.props[name] = option;
@@ -469,12 +485,12 @@ export function Testing() {
           </View>
         ))}
         <View style={styles.input}>
-          <Button testID="planRun" mode="contained" onPress={runplan}>
+          <Button testID="runPlan" mode="contained" onPress={runplan}>
             Run Plan
           </Button>
         </View>
         <TextInput
-          testID="planText"
+          testID="testPlan"
           style={styles.testPlan}
           label="Test Plan"
           dense
@@ -505,6 +521,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   log: {
+    color: '#fff',
     fontSize: 7,
   },
   config: {
