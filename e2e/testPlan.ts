@@ -1,4 +1,7 @@
+/* eslint-env detox/detox, mocha, jest/globals */
 import { by, device, element, waitFor } from 'detox';
+
+type NativeMatcher = Parameters<typeof element>[0];
 
 export const beforeAllTestPlan = async () => {
   await device.launchApp();
@@ -9,16 +12,7 @@ export const afterAllTestPlan = async () => {
   await device.terminateApp();
 };
 
-export const waitToBeVisible = async (match: Detox.NativeMatcher) => {
-  await waitFor(element(match)).toBeVisible();
-};
-
-export const waitForTap = async (match: Detox.NativeMatcher) => {
-  await waitToBeVisible(match);
-  await element(match).tap();
-};
-
-export const setupTestPlan = async (testPlan: string) => {
+export const waitForTestPlan = async (testPlan: string) => {
   // reload app
   await device.reloadReactNative();
 
@@ -26,34 +20,50 @@ export const setupTestPlan = async (testPlan: string) => {
   await waitForTap(by.id('TestPlan'));
 
   // set test plan content
-  await waitToBeVisible(by.id('testPlan'));
-  await element(by.id('testPlan')).replaceText(testPlan);
+  await waitForReplaceText(by.id('testPlan'), testPlan);
 
   // execute test plan
   await waitForTap(by.id('runPlan'));
 };
 
-export const waitForLogMessage = async (
-  text: string | RegExp,
-  timeout = 8000
+export const waitToBeVisible = async (match: NativeMatcher, seconds = 8) => {
+  await waitFor(element(match))
+    .toBeVisible()
+    .withTimeout(seconds * 1000);
+};
+
+export const waitForTap = async (match: NativeMatcher, seconds?: number) => {
+  await waitToBeVisible(match, seconds);
+  await element(match).tap();
+};
+
+export const waitForReplaceText = async (
+  match: NativeMatcher,
+  text: any,
+  seconds?: number
 ) => {
+  await waitToBeVisible(match, seconds);
+  await element(match).replaceText(`${text}`);
+};
+
+export const waitForLogMessage = async (text: string | RegExp, seconds = 8) => {
   const match = typeof text === 'string' ? new RegExp(`${text}.*`) : text;
-  console.info('waitForLogMessage', match)
+  console.info('waitForLogMessage', match);
   await waitFor(element(by.id(match)))
     .toExist()
-    .withTimeout(timeout);
+    .withTimeout(seconds * 1000);
 };
 
-export const clearLogs = async () => {
+export const waitForClearLogs = async () => {
   await waitForTap(by.id('clearLogs'));
-  await waitForLogMessage('onClearLogs :::')
-}
-
-export const waitForEvent = async (name: string) => {
-  await waitForLogMessage(`${name} ::: `);
+  await waitForLogMessage('onClearLogs :::');
 };
 
-export const sleep = (milliseconds: number) => {
+export const waitForEvent = async (name: string, seconds?: number) => {
+  await waitForLogMessage(`${name} ::: `, seconds);
+};
+
+const sleep = (milliseconds: number) => {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
 };
 

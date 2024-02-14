@@ -1,8 +1,9 @@
+/* eslint-env detox/detox, mocha, jest/globals */
 import {
   afterAllTestPlan,
   beforeAllTestPlan,
-  clearLogs,
-  setupTestPlan,
+  waitForClearLogs,
+  waitForTestPlan,
   waitForLogMessage,
   waitForTap,
 } from './testPlan';
@@ -12,7 +13,7 @@ describe('Basic Props', () => {
   afterAll(afterAllTestPlan);
 
   it('paused controls playback state', async () => {
-    await setupTestPlan(`
+    await waitForTestPlan(`
     inputs:
     - paused: true
     events:
@@ -23,7 +24,7 @@ describe('Basic Props', () => {
   });
 
   it('paused controls playback state', async () => {
-    await setupTestPlan(`
+    await waitForTestPlan(`
     inputs:
     - paused: false
     events:
@@ -35,7 +36,7 @@ describe('Basic Props', () => {
   });
 
   it('autoMaxQuality controls highest quality picked on auto', async () => {
-    await setupTestPlan(`
+    await waitForTestPlan(`
     inputs:
     - autoMaxQuality
     events:
@@ -43,14 +44,13 @@ describe('Basic Props', () => {
     - onQualityChange
     `);
     await waitForLogMessage('onPlayerStateChange ::: Playing');
-    await waitForTap(by.id('clearLogs'));
+    await waitForClearLogs();
     // bump down
     await waitForTap(by.id('autoMaxQuality:1'));
     await waitForLogMessage(/.*480p.*/);
-    await clearLogs();
+    await waitForClearLogs();
     // back to max
     await waitForTap(by.id('autoMaxQuality:0'));
     await waitForLogMessage(/.*720p.*/);
   });
 });
-
