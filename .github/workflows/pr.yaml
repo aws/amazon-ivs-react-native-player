@@ -6,7 +6,7 @@ on:
   
 jobs:
   setup:
-    runs-on: macos-latest
+    runs-on: macos-13
     steps:
       - uses: actions/checkout@v4
       - uses: actions/cache@v4
@@ -25,7 +25,7 @@ jobs:
       - run: yarn bootstrap
 
   lint:
-    runs-on: macos-latest
+    runs-on: macos-13
     needs: setup
     steps:
       - uses: actions/checkout@v4
@@ -46,7 +46,7 @@ jobs:
       - run: yarn typescript
 
   test:
-    runs-on: macos-latest
+    runs-on: macos-13
     needs: setup
     steps:
       - uses: actions/checkout@v4
@@ -65,7 +65,7 @@ jobs:
       - run: yarn test
     
   ios:
-    runs-on: macos-latest
+    runs-on: macos-13
     needs: [lint, test]
     steps:
       - uses: actions/checkout@v4
@@ -102,7 +102,7 @@ jobs:
       - run: yarn e2e:test:ios:release 
               
   android:
-    runs-on: macos-latest
+    runs-on: macos-13
     needs: [lint, test]
     steps:
     - uses: actions/checkout@v4
