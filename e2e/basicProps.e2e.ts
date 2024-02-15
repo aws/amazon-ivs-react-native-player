@@ -1,10 +1,10 @@
-/* eslint-env detox/detox, mocha, jest/globals */
+/* eslint-env detox/detox, jest/globals */
 import {
   afterAllTestPlan,
   beforeAllTestPlan,
   waitForClearLogs,
   waitForTestPlan,
-  waitForLogMessage,
+  waitForLogLabel,
   waitForTap,
 } from './testPlan';
 
@@ -20,7 +20,7 @@ describe('Basic Props', () => {
     - onPlayerStateChange
     `);
     await waitForTap(by.id('paused'));
-    await waitForLogMessage('onPlayerStateChange ::: Playing');
+    await waitForLogLabel('onPlayerStateChange ::: Playing');
   });
 
   it('paused controls playback state', async () => {
@@ -30,9 +30,9 @@ describe('Basic Props', () => {
     events:
     - onPlayerStateChange
     `);
-    await waitForLogMessage('onPlayerStateChange ::: Playing');
+    await waitForLogLabel('onPlayerStateChange ::: Playing');
     await waitForTap(by.id('paused'));
-    await waitForLogMessage('onPlayerStateChange ::: Idle');
+    await waitForLogLabel('onPlayerStateChange ::: Idle');
   });
 
   it('autoMaxQuality controls highest quality picked on auto', async () => {
@@ -40,17 +40,16 @@ describe('Basic Props', () => {
     inputs:
     - autoMaxQuality
     events:
-    - onPlayerStateChange
     - onQualityChange
     `);
-    await waitForLogMessage('onPlayerStateChange ::: Playing');
+    await waitForLogLabel('onQualityChange ::: name ::: 720p', 24);
     await waitForClearLogs();
     // bump down
-    await waitForTap(by.id('autoMaxQuality:1'));
-    await waitForLogMessage(/.*480p.*/);
+    await waitForTap(by.id('autoMaxQuality:480p'));
+    await waitForLogLabel('onQualityChange ::: name ::: 480p', 24);
     await waitForClearLogs();
     // back to max
-    await waitForTap(by.id('autoMaxQuality:0'));
-    await waitForLogMessage(/.*720p.*/);
+    await waitForTap(by.id('autoMaxQuality:720p'));
+    await waitForLogLabel('onQualityChange ::: name ::: 720p', 24);
   });
 });

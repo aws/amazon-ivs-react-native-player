@@ -134,21 +134,39 @@ type PlayerProps = {
   playerRef: React.Ref<IVSPlayerRef>;
 } & IVSPlayerProps;
 
-function logstring(name: string, message?: string) {
-  return `${name} ::: ${message ?? ''}`;
+function logstring(name: string, message: string) {
+  return `${name} ::: ${message}`.trim();
 }
 
 function Player({ playerRef, ...props }: PlayerProps) {
   const snapshot = useSnapshot(planState);
-  const [logs, setLogs] = React.useState<string[]>([]);
+  const [logs, setLogs] = React.useState<[string, string?][]>([]);
 
-  function log(name: string, message?: string) {
+  function log(name: string, message?: any) {
     if (!snapshot.events.has(name)) {
       return;
     }
-    const logmessage = logstring(name, message);
-    console.log(logmessage);
-    setLogs((logs) => [logmessage, ...logs.slice(0, 30)]);
+    if (typeof message === 'object') {
+      const messages: [string, string?][] = [];
+
+      const mainlog = logstring(name, '');
+      console.log(mainlog);
+      messages.push([name, mainlog]);
+
+      Object.entries(message).forEach(([key, value]) => {
+        const keyname = `${name} ::: ${key}`;
+
+        const keylog = logstring(keyname, `${value}`);
+        console.log(keylog);
+        messages.push([keyname, keylog]);
+      });
+
+      setLogs((logs) => [...messages, ...logs.slice(0, 128)]);
+    } else {
+      const logmessage = logstring(name, `${message}`);
+      console.log(logmessage);
+      setLogs((logs) => [[name, logmessage], ...logs.slice(0, 128)]);
+    }
   }
 
   return (
@@ -163,19 +181,19 @@ function Player({ playerRef, ...props }: PlayerProps) {
           planState.qualities = data.qualities;
         }}
         onVideoStatistics={(data) => {
-          log('onVideoStatistics', `${JSON.stringify(data)}`);
+          log('onVideoStatistics', data);
         }}
         onPlayerStateChange={(state) => {
-          log('onPlayerStateChange', `${state}`);
+          log('onPlayerStateChange', state);
         }}
         onDurationChange={(duration) => {
-          log('onDurationChange', `${duration}`);
+          log('onDurationChange', duration);
         }}
         onQualityChange={(quality) => {
-          log('onQualityChange', `${JSON.stringify(quality)}`);
+          log('onQualityChange', quality);
         }}
         onPipChange={(isActive) => {
-          log('onPipChange', `${isActive}`);
+          log('onPipChange', isActive);
         }}
         onRebuffering={() => {
           log('onRebuffering');
@@ -184,35 +202,40 @@ function Player({ playerRef, ...props }: PlayerProps) {
           log('onLoadStart');
         }}
         onLoad={(duration) => {
-          log('onLoad', `${duration}`);
+          log('onLoad', duration);
         }}
         onLiveLatencyChange={(liveLatency) => {
-          log('onLiveLatencyChange', `${liveLatency}`);
+          log('onLiveLatencyChange', liveLatency);
         }}
         onTextCue={(textCue) => {
-          log('onTextCue', `${JSON.stringify(textCue)}`);
+          log('onTextCue', textCue);
         }}
         onTextMetadataCue={(textMetadataCue) => {
-          log('onTextMetadataCue', `${JSON.stringify(textMetadataCue)}`);
+          log('onTextMetadataCue', textMetadataCue);
         }}
         onProgress={(progress) => {
-          log('onProgress', `${progress}`);
+          log('onProgress', progress);
         }}
         onError={(error: string) => {
-          log('onError', `${error}`);
+          log('onError', error);
         }}
         onTimePoint={(position) => {
-          log('onTimePoint', `${position}`);
+          log('onTimePoint', position);
         }}
       >
         {logs.length === 0 && (
-          <Text style={styles.log} testID="onClearLogs :::">
+          <Text style={styles.log} testID="onClearLogs">
             onClearLogs :::
           </Text>
         )}
         {logs.map((log, index) => (
-          <Text key={index} style={styles.log} testID={log}>
-            {log}
+          <Text
+            key={index}
+            style={styles.log}
+            testID={log[0]}
+            accessibilityLabel={log[1]}
+          >
+            {log[1]}
           </Text>
         ))}
       </IVSPlayer>
@@ -348,7 +371,7 @@ export function TestPlan() {
               return (
                 <Chip
                   key={index}
-                  testID={`${name}:${index}`}
+                  testID={`${name}:${option.name}`}
                   selected={option.value === value}
                   onPress={() => {
                     planState.props[name] = option.value;
@@ -377,7 +400,7 @@ export function TestPlan() {
               return (
                 <Chip
                   key={index}
-                  testID={`${name}:${index}`}
+                  testID={`${name}:${option.name}`}
                   selected={qualitymatch(option, value)}
                   onPress={() => {
                     planState.props[name] = option;
@@ -496,7 +519,6 @@ export function TestPlan() {
           dense
           multiline
           value={testPlan}
-          autoFocus={true}
           spellCheck={false}
           autoCorrect={false}
           autoCapitalize="none"

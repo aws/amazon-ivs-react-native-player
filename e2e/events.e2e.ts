@@ -1,12 +1,12 @@
-/* eslint-env detox/detox, mocha, jest/globals */
+/* eslint-env detox/detox, jest/globals */
 import {
   afterAllTestPlan,
   beforeAllTestPlan,
   waitForTestPlan,
   waitForReplaceText,
-  waitForEvent,
   waitForTap,
-  waitForLogMessage,
+  waitForLogID,
+  waitForLogLabel,
 } from './testPlan';
 
 describe('Events', () => {
@@ -21,10 +21,10 @@ describe('Events', () => {
       - onSeek
       - onPlayerStateChange
       `);
-    await waitForLogMessage('onPlayerStateChange ::: Playing');
+    await waitForLogLabel('onPlayerStateChange ::: Playing');
     await waitForReplaceText(by.id('seekTo:0'), 10);
     await waitForTap(by.id('seekTo'));
-    await waitForEvent('onSeek', 24);
+    await waitForLogLabel('onSeek ::: 10', 32);
   });
 
   it('player raises a video statistics event', async () => {
@@ -32,7 +32,7 @@ describe('Events', () => {
       events:
       - onVideoStatistics
       `);
-    await waitForEvent('onVideoStatistics');
+    await waitForLogID('onVideoStatistics');
   });
 
   it('player raises a player state change event', async () => {
@@ -40,7 +40,7 @@ describe('Events', () => {
       events:
       - onPlayerStateChange
       `);
-    await waitForEvent('onPlayerStateChange');
+    await waitForLogLabel('onPlayerStateChange ::: Playing');
   });
 
   it('player raises a duration change event', async () => {
@@ -49,7 +49,7 @@ describe('Events', () => {
       events:
       - onDurationChange
       `);
-    await waitForEvent('onDurationChange');
+    await waitForLogID('onDurationChange');
   });
 
   it('player raises a quality change event', async () => {
@@ -57,7 +57,7 @@ describe('Events', () => {
       events:
       - onQualityChange
       `);
-    await waitForEvent('onQualityChange');
+    await waitForLogID('onQualityChange');
   });
 
   // it('player raises a pip change event', async () => {
@@ -65,7 +65,7 @@ describe('Events', () => {
   //     events:
   //     - onPipChange
   //     `);
-  //   await waitForEvent('onPipChange');
+  //   await waitForLogID('onPipChange');
   // });
 
   // it('player raises a rebuffering event', async () => {
@@ -73,7 +73,7 @@ describe('Events', () => {
   //     events:
   //     - onRebuffering
   //     `);
-  //   await waitForEvent('onRebuffering');
+  //   await waitForLogID('onRebuffering');
   // });
 
   it('player raises a load start event', async () => {
@@ -84,7 +84,7 @@ describe('Events', () => {
       - onLoadStart
       `);
     await waitForTap(by.id('paused'));
-    await waitForEvent('onLoadStart');
+    await waitForLogID('onLoadStart');
   });
 
   it('player raises a load event', async () => {
@@ -95,7 +95,7 @@ describe('Events', () => {
       - onLoad
       `);
     await waitForTap(by.id('paused'));
-    await waitForEvent('onLoad');
+    await waitForLogID('onLoad');
   });
 
   it('player raises a live latency change event', async () => {
@@ -103,7 +103,7 @@ describe('Events', () => {
       events:
       - onLiveLatencyChange
       `);
-    await waitForEvent('onLiveLatencyChange');
+    await waitForLogID('onLiveLatencyChange');
   });
 
   it('player raises a text cue event', async () => {
@@ -112,7 +112,7 @@ describe('Events', () => {
       events:
       - onTextCue
       `);
-    await waitForEvent('onTextCue');
+    await waitForLogID('onTextCue', 24);
   });
 
   it('player raises a text metadata cue event', async () => {
@@ -121,7 +121,7 @@ describe('Events', () => {
       events:
       - onTextMetadataCue
       `);
-    await waitForEvent('onTextMetadataCue', 24);
+    await waitForLogID('onTextMetadataCue', 24);
   });
 
   it('player raises a progress event', async () => {
@@ -129,7 +129,7 @@ describe('Events', () => {
       events:
       - onProgress
       `);
-    await waitForEvent('onProgress');
+    await waitForLogID('onProgress');
   });
 
   it('player raises an error event when given a bad uri to load', async () => {
@@ -138,7 +138,7 @@ describe('Events', () => {
       events:
       - onError
       `);
-    await waitForEvent('onError');
+    await waitForLogID('onError');
   });
 
   // it('player raises a time point event', async () => {

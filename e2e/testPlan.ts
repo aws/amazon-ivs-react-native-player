@@ -1,4 +1,4 @@
-/* eslint-env detox/detox, mocha, jest/globals */
+/* eslint-env detox/detox, jest/globals */
 import { by, device, element, waitFor } from 'detox';
 
 type NativeMatcher = Parameters<typeof element>[0];
@@ -13,8 +13,11 @@ export const afterAllTestPlan = async () => {
 };
 
 export const waitForTestPlan = async (testPlan: string) => {
-  // reload app
-  await device.reloadReactNative();
+  try {
+    await waitForTap(by.id('goBack'), 1);
+  } catch (err) {
+    //
+  }
 
   // navigate to testing screen
   await waitForTap(by.id('TestPlan'));
@@ -46,21 +49,21 @@ export const waitForReplaceText = async (
   await element(match).replaceText(`${text}`);
 };
 
-export const waitForLogMessage = async (text: string | RegExp, seconds = 8) => {
-  const match = typeof text === 'string' ? new RegExp(`${text}.*`) : text;
-  console.info('waitForLogMessage', match);
-  await waitFor(element(by.id(match)))
+export const waitForLogID = async (id: string, seconds = 8) => {
+  await waitFor(element(by.id(id.trim())))
+    .toExist()
+    .withTimeout(seconds * 1000);
+};
+
+export const waitForLogLabel = async (label: string, seconds = 8) => {
+  await waitFor(element(by.label(label.trim())))
     .toExist()
     .withTimeout(seconds * 1000);
 };
 
 export const waitForClearLogs = async () => {
   await waitForTap(by.id('clearLogs'));
-  await waitForLogMessage('onClearLogs :::');
-};
-
-export const waitForEvent = async (name: string, seconds?: number) => {
-  await waitForLogMessage(`${name} ::: `, seconds);
+  await waitForLogID('onClearLogs');
 };
 
 const sleep = (milliseconds: number) => {

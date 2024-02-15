@@ -40,7 +40,9 @@ function Header({ navigation, route }: StackHeaderProps) {
 
   return (
     <Appbar.Header>
-      {canGoBack ? <Appbar.BackAction onPress={navigation.goBack} /> : null}
+      {canGoBack ? (
+        <Appbar.BackAction testID="goBack" onPress={navigation.goBack} />
+      ) : null}
       <Appbar.Content title={route.name} />
     </Appbar.Header>
   );
