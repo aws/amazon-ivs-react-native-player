@@ -22,9 +22,9 @@ describe('Events', () => {
       - onPlayerStateChange
       `);
     await waitForLogLabel('onPlayerStateChange ::: Playing');
-    await waitForReplaceText(by.id('seekTo:0'), 10);
+    await waitForReplaceText(by.id('seekTo:0'), 1);
     await waitForTap(by.id('seekTo'));
-    await waitForLogLabel('onSeek ::: 10', 32);
+    await waitForLogLabel('onSeek ::: 1', 32);
   });
 
   it('player raises a video statistics event', async () => {
