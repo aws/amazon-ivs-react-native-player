@@ -8,8 +8,8 @@ jobs:
   setup:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/cache@v3
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
         with:
           path: |
             node_modules
@@ -17,7 +17,7 @@ jobs:
             example/ios/build
             example/node_modules
           key: ${{ runner.os }}-setup-cache-2
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: 'yarn'
@@ -28,8 +28,8 @@ jobs:
     runs-on: macos-latest
     needs: setup
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/cache@v3
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
         with:
           path: |
             node_modules
@@ -37,7 +37,7 @@ jobs:
             example/ios/build
             example/node_modules
           key: ${{ runner.os }}-setup-cache-2
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: 'yarn'
@@ -49,8 +49,8 @@ jobs:
     runs-on: macos-latest
     needs: setup
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/cache@v3
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
         with:
           path: |
             node_modules
@@ -58,7 +58,7 @@ jobs:
             example/ios/build
             example/node_modules
           key: ${{ runner.os }}-setup-cache-2
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: 'yarn'
@@ -68,8 +68,8 @@ jobs:
     runs-on: macos-latest
     needs: [lint, test]
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/cache@v3
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
         with:
           path: |
             node_modules
@@ -77,7 +77,7 @@ jobs:
             example/ios/build
             example/node_modules
           key: ${{ runner.os }}-setup-cache-2
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: |
             example/ios/build
@@ -91,7 +91,7 @@ jobs:
           HOMEBREW_NO_AUTO_UPDATE: 1
           HOMEBREW_NO_INSTALL_CLEANUP: 1
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: 'yarn'
@@ -105,8 +105,8 @@ jobs:
     runs-on: macos-latest
     needs: [lint, test]
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/cache@v3
+    - uses: actions/checkout@v4
+    - uses: actions/cache@v4
       with:
         path: |
           node_modules
@@ -114,7 +114,7 @@ jobs:
           example/ios/build
           example/node_modules
         key: ${{ runner.os }}-setup-cache-2
-    - uses: actions/cache@v3
+    - uses: actions/cache@v4
       with:
         path: |
           android/build
@@ -144,17 +144,18 @@ jobs:
         $ANDROID_HOME/platform-tools/adb devices
         echo "emulator started"
 
-    - uses: actions/setup-java@v3 
+    - uses: actions/setup-java@v4 
       with:
         distribution: 'temurin'
         java-version: '11'
         cache: gradle
 
-    - uses: actions/setup-node@v3
+    - uses: actions/setup-node@v4
       with:
         node-version-file: '.nvmrc'
         cache: 'yarn'
 
+    - run: yarn add detox@20.1.0 -D
     - run: yarn e2e:build:android:release 
     - run: yarn e2e:test:android:release 
         

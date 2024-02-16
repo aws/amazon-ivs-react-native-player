@@ -13,6 +13,7 @@ import PlaygroundExample from './screens/PlaygroundExample';
 import Home from './screens/Home';
 import SimpleExample from './screens/SimpleExample';
 import AdvancedExample from './screens/AdvancedExample';
+import { TestPlan } from './screens/TestPlan';
 
 export const theme = {
   ...DefaultTheme,
@@ -26,6 +27,7 @@ export const theme = {
 
 export type RootStackParamList = {
   Home: undefined;
+  TestPlan: undefined;
   SimpleExample: undefined;
   AdvancedExample: undefined;
   PlaygroundExample: undefined;
@@ -38,7 +40,9 @@ function Header({ navigation, route }: StackHeaderProps) {
 
   return (
     <Appbar.Header>
-      {canGoBack ? <Appbar.BackAction onPress={navigation.goBack} /> : null}
+      {canGoBack ? (
+        <Appbar.BackAction testID="goBack" onPress={navigation.goBack} />
+      ) : null}
       <Appbar.Content title={route.name} />
     </Appbar.Header>
   );
@@ -57,6 +61,7 @@ export default function App() {
               component={Home}
               options={{ title: 'Examples' }}
             />
+            <Stack.Screen name="TestPlan" component={TestPlan} />
             <Stack.Screen name="SimpleExample" component={SimpleExample} />
             <Stack.Screen name="AdvancedExample" component={AdvancedExample} />
             <Stack.Screen
