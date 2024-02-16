@@ -127,6 +127,20 @@ const SwipeableVideo = (props: SwipeableVideoProps) => {
   useEffect(() => {
     // On mount, load the first source
     loadSource(0);
+
+    // On unmount, release any remaining sources
+    () => {
+        if (playerRef.current === null) {
+            return;
+        }
+        const player = playerRef.current;
+
+        [prevSource.current, currentSource.current, nextSource.current].forEach((source: Source | undefined) => {
+            if (source !== undefined) {
+                player.releaseSource(source);
+            }
+        })
+    }
   }, []);
 
   return (
