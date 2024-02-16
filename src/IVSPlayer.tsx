@@ -23,7 +23,9 @@ import type {
   VideoData,
   IVSPlayerRef,
   ResizeMode,
+  Source,
 } from './types';
+import { createSourceWrapper } from './source';
 
 type IVSPlayerProps = {
   style?: ViewStyle;
@@ -169,6 +171,37 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
     const mediaPlayerRef = useRef(null);
     const initialized = useRef(false);
 
+    const preload = useCallback((url: string) => {
+      const sourceWrapper = createSourceWrapper(url);
+      
+      UIManager.dispatchViewManagerCommand(
+        findNodeHandle(mediaPlayerRef.current),
+
+        UIManager.getViewManagerConfig(VIEW_NAME).Commands.preload,
+        [sourceWrapper.getId(), sourceWrapper.getUri()]
+      );
+
+      return sourceWrapper;
+    }, []);
+
+    const loadSource = useCallback((source: Source) => {
+      UIManager.dispatchViewManagerCommand(
+        findNodeHandle(mediaPlayerRef.current),
+
+        UIManager.getViewManagerConfig(VIEW_NAME).Commands.loadSource,
+        [source.getId()]
+      );
+    }, []);
+
+    const releaseSource = useCallback((source: Source) => {
+      UIManager.dispatchViewManagerCommand(
+        findNodeHandle(mediaPlayerRef.current),
+
+        UIManager.getViewManagerConfig(VIEW_NAME).Commands.releaseSource,
+        [source.getId()]
+      );
+    }, []);
+
     const play = useCallback(() => {
       UIManager.dispatchViewManagerCommand(
         findNodeHandle(mediaPlayerRef.current),
@@ -226,13 +259,16 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
     useImperativeHandle(
       ref,
       () => ({
+        preload,
+        loadSource,
+        releaseSource,
         play,
         pause,
         seekTo,
         setOrigin,
         togglePip,
       }),
-      [play, pause, seekTo, setOrigin, togglePip]
+      [preload, loadSource, releaseSource, play, pause, seekTo, setOrigin, togglePip]
     );
 
     const onSeekHandler = (
