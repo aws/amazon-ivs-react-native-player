@@ -1,8 +1,8 @@
 PODS:
   - amazon-ivs-react-native-player (1.4.1):
-    - AmazonIVSPlayer (~> 1.18.0)
+    - AmazonIVSPlayer (~> 1.25.0-rc.2.1)
     - React-Core
-  - AmazonIVSPlayer (1.18.0)
+  - AmazonIVSPlayer (1.25.0-rc.2.1)
   - boost (1.76.0)
   - CocoaAsyncSocket (7.6.5)
   - DoubleConversion (1.1.6)
@@ -579,8 +579,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  amazon-ivs-react-native-player: 68f2bbd53ecaeeeb666e42d0c1adf570283a1dbc
-  AmazonIVSPlayer: 15b74392987e2385f9a859201273185f76d58959
+  amazon-ivs-react-native-player: 8d77be2a79382c8a23bf0650fff90bf2f1597600
+  AmazonIVSPlayer: eac627800d289abd3d004bc34223137047ec8b5e
   boost: a7c83b31436843459a1961bfd74b96033dc77234
   CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
   DoubleConversion: 5189b271737e1565bdce30deb4a08d647e3f5f54
@@ -640,4 +640,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 10b965f81e7d51bcd1f3d840c000ea2ebdaf2ec6
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.14.3
