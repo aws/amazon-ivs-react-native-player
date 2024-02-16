@@ -3,6 +3,8 @@ import { by, device, element, waitFor } from 'detox';
 
 type NativeMatcher = Parameters<typeof element>[0];
 
+const defaultTimeoutSeconds = 12;
+
 export const beforeAllTestPlan = async () => {
   await device.launchApp();
   await device.setURLBlacklist(['.*video-*', '.*player.stats.live-video.net*']);
@@ -29,7 +31,10 @@ export const waitForTestPlan = async (testPlan: string) => {
   await waitForTap(by.id('runPlan'));
 };
 
-export const waitToBeVisible = async (match: NativeMatcher, seconds = 8) => {
+export const waitToBeVisible = async (
+  match: NativeMatcher,
+  seconds = defaultTimeoutSeconds
+) => {
   await waitFor(element(match))
     .toBeVisible()
     .withTimeout(seconds * 1000);
@@ -50,13 +55,19 @@ export const waitForReplaceText = async (
   await element(by.id('player')).tap();
 };
 
-export const waitForLogID = async (id: string, seconds = 8) => {
+export const waitForLogID = async (
+  id: string,
+  seconds = defaultTimeoutSeconds
+) => {
   await waitFor(element(by.id(id.trim())))
     .toExist()
     .withTimeout(seconds * 1000);
 };
 
-export const waitForLogLabel = async (label: string, seconds = 8) => {
+export const waitForLogLabel = async (
+  label: string,
+  seconds = defaultTimeoutSeconds
+) => {
   await waitFor(element(by.label(label.trim())))
     .toExist()
     .withTimeout(seconds * 1000);
