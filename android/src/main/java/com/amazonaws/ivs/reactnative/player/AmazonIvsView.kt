@@ -508,7 +508,12 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
   }
 
   fun cleanup() {
+    // Cleanup any remaining sources
+    for (source in preloadSourceMap.values) {
+      source.release()
+    }
     preloadSourceMap.clear()
+
     player?.removeListener(playerListener!!)
     player?.release()
     player = null
