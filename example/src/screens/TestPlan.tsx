@@ -494,7 +494,7 @@ export function TestPlan() {
 
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.player}>
+      <View style={styles.player} testID="player">
         <Player
           streamUrl={snapshot.url}
           playerRef={playerRef}

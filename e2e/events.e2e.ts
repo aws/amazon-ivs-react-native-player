@@ -112,7 +112,7 @@ describe('Events', () => {
       events:
       - onTextCue
       `);
-    await waitForLogID('onTextCue', 24);
+    await waitForLogID('onTextCue', 32);
   });
 
   it('player raises a text metadata cue event', async () => {
@@ -121,7 +121,7 @@ describe('Events', () => {
       events:
       - onTextMetadataCue
       `);
-    await waitForLogID('onTextMetadataCue', 24);
+    await waitForLogID('onTextMetadataCue', 32);
   });
 
   it('player raises a progress event', async () => {

@@ -47,7 +47,7 @@ export const waitForReplaceText = async (
 ) => {
   await waitToBeVisible(match, seconds);
   await element(match).replaceText(`${text}`);
-  await element(match).tapReturnKey();
+  await element(by.id('player')).tap();
 };
 
 export const waitForLogID = async (id: string, seconds = 8) => {
