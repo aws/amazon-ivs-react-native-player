@@ -7,6 +7,7 @@ import android.net.Uri
 import android.widget.FrameLayout
 import com.amazonaws.ivs.player.*
 import android.os.Build
+import android.util.Log
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.LifecycleEventListener
 import com.facebook.react.bridge.ReactContext
@@ -31,6 +32,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
   private var finishedLoading: Boolean = false
   private var pipEnabled: Boolean = false
   private var isInBackground: Boolean = false
+  private var preloadSourceMap: HashMap<Int, Source> = hashMapOf()
 
 
   enum class Events(private val mName: String) {
@@ -320,6 +322,31 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     player?.setOrigin(origin)
   }
 
+  fun preload(id: Int, url: String) {
+    // Beta API
+    val mplayer = player as? MediaPlayer
+    val source = mplayer?.preload(Uri.parse(url))
+    source?.let {
+      preloadSourceMap.put(id, source)
+    }
+  }
+
+  fun loadSource(id: Int) {
+    // Beta API
+    val source = preloadSourceMap.get(id)
+    source?.let {
+      val mplayer = player as? MediaPlayer
+      mplayer?.loadSource(source)
+    }
+  }
+
+  fun releaseSource(id: Int) {
+    // Beta API
+    val source = preloadSourceMap.remove(id)
+    source?.let {
+      source.release()
+    }
+  }
 
   fun onPlayerStateChange(state: Player.State) {
     val reactContext = context as ReactContext
@@ -503,6 +530,12 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
   }
 
   fun cleanup() {
+    // Cleanup any remaining sources
+    for (source in preloadSourceMap.values) {
+      source.release()
+    }
+    preloadSourceMap.clear()
+
     player?.removeListener(playerListener!!)
     player?.release()
     player = null

@@ -59,6 +59,20 @@ function Home() {
           </Card.Content>
         </Card>
         <Card
+          testID="Swipeable"
+          style={styles.card}
+          onPress={() => {
+            navigate('SwipeableExample');
+          }}
+        >
+          <Card.Title title="Swipeable" />
+          <Card.Content>
+            <Paragraph>
+              A simple implementation of a swipeable video flow.
+            </Paragraph>
+          </Card.Content>
+        </Card>
+        <Card
           testID="Playground"
           style={styles.card}
           onPress={() => {

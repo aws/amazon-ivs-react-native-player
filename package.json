@@ -90,6 +90,7 @@
     "react-native-builder-bob": "^0.18.1",
     "react-native-paper": "^5.12.3",
     "react-test-renderer": "18.0.0",
+    "react-native-gesture-handler": "2.14.1",
     "semver": "^7.5.4",
     "simple-git": "^3.19.1",
     "ts-jest": "^29.1.2",

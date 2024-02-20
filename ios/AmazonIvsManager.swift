@@ -40,4 +40,25 @@ class AmazonIvsManager: RCTViewManager {
             component.togglePip()
         }
     }
+
+    @objc func preload(_ node: NSNumber, id: NSNumber, url: NSString) {
+        DispatchQueue.main.async {
+            let component = self.bridge.uiManager.view(forReactTag: node) as! AmazonIvsView
+            component.preload(id: id.intValue, url: url)
+        }
+    }
+
+    @objc func loadSource(_ node: NSNumber, id: NSNumber) {
+        DispatchQueue.main.async {
+            let component = self.bridge.uiManager.view(forReactTag: node) as! AmazonIvsView
+            component.loadSource(id: id.intValue)
+        }
+    }
+
+    @objc func releaseSource(_ node: NSNumber, id: NSNumber) {
+        DispatchQueue.main.async {
+            let component = self.bridge.uiManager.view(forReactTag: node) as! AmazonIvsView
+            component.releaseSource(id: id.intValue)
+        }
+    }
 }
