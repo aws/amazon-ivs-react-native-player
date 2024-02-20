@@ -21,6 +21,18 @@ function Home() {
 
       <ScrollView style={styles.list}>
         <Card
+          testID="TestPlan"
+          style={styles.card}
+          onPress={() => {
+            navigate('TestPlan');
+          }}
+        >
+          <Card.Title title="TestPlan" />
+          <Card.Content>
+            <Paragraph>Testing harness for the player.</Paragraph>
+          </Card.Content>
+        </Card>
+        <Card
           testID="Simple"
           style={styles.card}
           onPress={() => {
