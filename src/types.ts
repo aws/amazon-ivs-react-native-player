@@ -38,10 +38,10 @@ export type TextMetadataCue = {
 export type Source = {
   getId: () => void;
   getUri: () => void;
-}
+};
 
 export type IVSPlayerRef = {
-  preload: (url: string) => Source
+  preload: (url: string) => Source;
   loadSource: (source: Source) => void;
   releaseSource: (source: Source) => void;
   play: () => void;

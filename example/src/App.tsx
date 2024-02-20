@@ -66,7 +66,10 @@ export default function App() {
             <Stack.Screen name="TestPlan" component={TestPlan} />
             <Stack.Screen name="SimpleExample" component={SimpleExample} />
             <Stack.Screen name="AdvancedExample" component={AdvancedExample} />
-            <Stack.Screen name="SwipeableExample" component={SwipeableExample} />
+            <Stack.Screen
+              name="SwipeableExample"
+              component={SwipeableExample}
+            />
             <Stack.Screen
               name="PlaygroundExample"
               component={PlaygroundExample}

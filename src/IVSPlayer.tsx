@@ -176,7 +176,7 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
 
     const preload = useCallback((url: string) => {
       const sourceWrapper = createSourceWrapper(url);
-      
+
       UIManager.dispatchViewManagerCommand(
         findNodeHandle(mediaPlayerRef.current),
 
@@ -271,7 +271,16 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
         setOrigin,
         togglePip,
       }),
-      [preload, loadSource, releaseSource, play, pause, seekTo, setOrigin, togglePip]
+      [
+        preload,
+        loadSource,
+        releaseSource,
+        play,
+        pause,
+        seekTo,
+        setOrigin,
+        togglePip,
+      ]
     );
 
     const onSeekHandler = (

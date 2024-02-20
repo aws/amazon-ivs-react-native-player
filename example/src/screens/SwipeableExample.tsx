@@ -61,7 +61,9 @@ const SwipeableVideo = (props: SwipeableVideoProps) => {
         // Swiped from the left
       } else {
         // For demo app purposes, only allow swiping right
-        console.warn('[onSwipe] the demo doesn\'t allow navigating to previous videos');
+        console.warn(
+          "[onSwipe] the demo doesn't allow navigating to previous videos"
+        );
       }
     }
   };
@@ -89,7 +91,9 @@ const SwipeableVideo = (props: SwipeableVideoProps) => {
       // Example of how to discard a source we no longer intend to use
       const prevSourceInstance = prevSource.current;
       if (prevSourceInstance !== undefined) {
-        console.log('\t\treleasing old prevSource, as we don\'t intend to use it again');
+        console.log(
+          "\t\treleasing old prevSource, as we don't intend to use it again"
+        );
         player.releaseSource(prevSourceInstance);
       }
 
@@ -114,7 +118,7 @@ const SwipeableVideo = (props: SwipeableVideoProps) => {
     // Preload the next source
     nextSource.current = player.preload(nextUrl);
 
-    console.log('\tcurrent indexes:')
+    console.log('\tcurrent indexes:');
     console.log('\t\tprevIndex:', lastIndex);
     console.log('\t\tcurrentIndex:', indexToLoad);
     console.log('\t\tnextIndex:', nextIndex);
@@ -130,17 +134,19 @@ const SwipeableVideo = (props: SwipeableVideoProps) => {
 
     // On unmount, release any remaining sources
     () => {
-        if (playerRef.current === null) {
-            return;
-        }
-        const player = playerRef.current;
+      if (playerRef.current === null) {
+        return;
+      }
+      const player = playerRef.current;
 
-        [prevSource.current, currentSource.current, nextSource.current].forEach((source: Source | undefined) => {
-            if (source !== undefined) {
-                player.releaseSource(source);
-            }
-        })
-    }
+      [prevSource.current, currentSource.current, nextSource.current].forEach(
+        (source: Source | undefined) => {
+          if (source !== undefined) {
+            player.releaseSource(source);
+          }
+        }
+      );
+    };
   }, []);
 
   return (
@@ -158,28 +164,30 @@ const SwipeableVideo = (props: SwipeableVideoProps) => {
           <Card testID="Simple" style={{}}>
             <Card.Title title="Preload sources, status" />
             <Card.Content style={{ marginLeft: 10, marginTop: -10 }}>
-                <View style={styles.controlsRow}>
-                    <Text style={styles.textShadow}>Loaded video:</Text>
-                    <Text style={{ marginLeft: 2, textAlign: "right"}}>#{prevIndex + 1}</Text>
-                </View>
-                <View style={styles.controlsRow}>
-                    <Text style={styles.textShadow}>Playing video:</Text>
-                    <Text style={styles.controlsRow}>#{currentIndex + 1}</Text>
-                </View>
-                <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-                    <Text style={styles.textShadow}>Loading video:</Text>
-                    <Text style={styles.controlsRow}>#{loadingIndex + 1}</Text>
-                </View>
+              <View style={styles.controlsRow}>
+                <Text style={styles.textShadow}>Loaded video:</Text>
+                <Text style={{ marginLeft: 2, textAlign: 'right' }}>
+                  #{prevIndex + 1}
+                </Text>
+              </View>
+              <View style={styles.controlsRow}>
+                <Text style={styles.textShadow}>Playing video:</Text>
+                <Text style={styles.controlsRow}>#{currentIndex + 1}</Text>
+              </View>
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+                <Text style={styles.textShadow}>Loading video:</Text>
+                <Text style={styles.controlsRow}>#{loadingIndex + 1}</Text>
+              </View>
             </Card.Content>
           </Card>
           <Card style={styles.card}>
             <Card.Content>
-                <Paragraph>
-                Swipe from right-to-left to go to the next video.
-                The next video will automatically preload when the first starts playing.
-                </Paragraph>
+              <Paragraph>
+                Swipe from right-to-left to go to the next video. The next video
+                will automatically preload when the first starts playing.
+              </Paragraph>
             </Card.Content>
-            </Card>
+          </Card>
         </View>
       </PanGestureHandler>
     </GestureHandlerRootView>
@@ -195,26 +203,26 @@ const IVSPlayerContainer = (props: IVSPlayerContainerProps) => {
 };
 
 const styles = StyleSheet.create({
-    card: {
-        marginBottom: 10,
-    },
+  card: {
+    marginBottom: 10,
+  },
 
-    controlsRow: {
-        flexDirection: 'row',
-        flexWrap: 'wrap'
+  controlsRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  textShadow: {
+    fontSize: 14,
+    color: ' #FFFFFF',
+    paddingLeft: 20,
+    paddingRight: 20,
+    textShadowColor: '#585858',
+    textShadowOffset: {
+      width: 10,
+      height: 10,
     },
-    textShadow: {
-        fontSize: 14,
-        color:" #FFFFFF",
-        paddingLeft: 20,
-        paddingRight: 20,
-        textShadowColor: "#585858",
-        textShadowOffset: {
-            width: 10,
-            height: 10
-        },
-        textShadowRadius: 20,
+    textShadowRadius: 20,
 
-        marginBottom: 2,
-    }
+    marginBottom: 2,
+  },
 });
