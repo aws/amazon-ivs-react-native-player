@@ -1,6 +1,6 @@
 {
   "name": "amazon-ivs-react-native-player",
-  "version": "1.5.0",
+  "version": "1.5.1-rc.1",
   "description": "amazon-ivs-react-native-player",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
