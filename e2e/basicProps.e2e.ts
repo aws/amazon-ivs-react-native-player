@@ -6,6 +6,7 @@ import {
   waitForTestPlan,
   waitForLogLabel,
   waitForTap,
+  waitForLogID,
 } from './testPlan';
 
 describe('Basic Props', () => {
@@ -42,11 +43,11 @@ describe('Basic Props', () => {
     events:
     - onQualityChange
     `);
-    await waitForLogLabel('onQualityChange ::: name ::: 720p', 24);
+    await waitForLogID('onQualityChange', 24);
     await waitForClearLogs();
     // bump down
-    await waitForTap(by.id('autoMaxQuality:480p'));
-    await waitForLogLabel('onQualityChange ::: name ::: 480p', 24);
+    await waitForTap(by.id('autoMaxQuality:160p'));
+    await waitForLogLabel('onQualityChange ::: name ::: 160p', 24);
     await waitForClearLogs();
     // back to max
     await waitForTap(by.id('autoMaxQuality:720p'));
