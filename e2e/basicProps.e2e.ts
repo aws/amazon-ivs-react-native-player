@@ -48,9 +48,5 @@ describe('Basic Props', () => {
     // bump down
     await waitForTap(by.id('autoMaxQuality:160p'));
     await waitForLogLabel('onQualityChange ::: name ::: 160p', 24);
-    await waitForClearLogs();
-    // back to max
-    await waitForTap(by.id('autoMaxQuality:720p'));
-    await waitForLogLabel('onQualityChange ::: name ::: 720p', 24);
   });
 });

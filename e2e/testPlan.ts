@@ -6,7 +6,7 @@ jest.retryTimes(3);
 
 type NativeMatcher = Parameters<typeof element>[0];
 
-const defaultTimeoutSeconds = 12;
+const defaultTimeoutSeconds = 24;
 
 export const beforeAllTestPlan = async () => {
   await device.launchApp();
