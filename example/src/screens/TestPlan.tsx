@@ -154,11 +154,13 @@ function Player({ playerRef, ...props }: PlayerProps) {
       messages.push([name, mainlog]);
 
       Object.entries(message).forEach(([key, value]) => {
-        const keyname = `${name} ::: ${key}`;
+        if (key) {
+          const keyname = `${name} ::: ${key}`;
 
-        const keylog = logstring(keyname, `${value}`);
-        console.log(keylog);
-        messages.push([keyname, keylog]);
+          const keylog = logstring(keyname, `${value}`);
+          console.log(keylog);
+          messages.push([keyname, keylog]);
+        }
       });
 
       setLogs((logs) => [...messages, ...logs.slice(0, 128)]);

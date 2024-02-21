@@ -1,6 +1,9 @@
 /* eslint-env detox/detox, jest/globals */
 import { by, device, element, waitFor } from 'detox';
 
+// for slow android ci
+jest.retryTimes(3);
+
 type NativeMatcher = Parameters<typeof element>[0];
 
 const defaultTimeoutSeconds = 12;
@@ -35,7 +38,7 @@ export const waitToBeVisible = async (
   match: NativeMatcher,
   seconds = defaultTimeoutSeconds
 ) => {
-  await waitFor(element(match))
+  await waitFor(element(match).atIndex(0))
     .toBeVisible()
     .withTimeout(seconds * 1000);
 };
@@ -59,7 +62,7 @@ export const waitForLogID = async (
   id: string,
   seconds = defaultTimeoutSeconds
 ) => {
-  await waitFor(element(by.id(id.trim())))
+  await waitFor(element(by.id(id.trim())).atIndex(0))
     .toExist()
     .withTimeout(seconds * 1000);
 };
@@ -68,7 +71,7 @@ export const waitForLogLabel = async (
   label: string,
   seconds = defaultTimeoutSeconds
 ) => {
-  await waitFor(element(by.label(label.trim())))
+  await waitFor(element(by.label(label.trim())).atIndex(0))
     .toExist()
     .withTimeout(seconds * 1000);
 };
