@@ -40,7 +40,8 @@
     "get:testbutler": "curl -f -o ./test-butler-app.apk https://repo1.maven.org/maven2/com/linkedin/testbutler/test-butler-app/2.2.1/test-butler-app-2.2.1.apk",
     "release:create": "tsx ./scripts/release-create.ts",
     "release:verify": "tsx ./scripts/release-verify.ts",
-    "release:tag": "tsx ./scripts/release-tag.ts"
+    "release:tag": "tsx ./scripts/release-tag.ts",
+    "release:next": "npm publish --tag next"
   },
   "keywords": [
     "react-native",
@@ -88,9 +89,9 @@
     "react": "18.0.0",
     "react-native": "0.69.9",
     "react-native-builder-bob": "^0.18.1",
+    "react-native-gesture-handler": "2.14.1",
     "react-native-paper": "^5.12.3",
     "react-test-renderer": "18.0.0",
-    "react-native-gesture-handler": "2.14.1",
     "semver": "^7.5.4",
     "simple-git": "^3.19.1",
     "ts-jest": "^29.1.2",
