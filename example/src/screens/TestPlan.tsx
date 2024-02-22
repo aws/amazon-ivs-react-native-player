@@ -5,6 +5,7 @@ import IVSPlayer, {
   IVSPlayerRef,
   LogLevel,
   Quality,
+  Source,
 } from 'amazon-ivs-react-native-player';
 import { StyleSheet, View } from 'react-native';
 import {
@@ -14,6 +15,7 @@ import {
   Subheading,
   Text,
   ToggleButton,
+  IconButton,
 } from 'react-native-paper';
 import { ScrollView } from 'react-native-gesture-handler';
 import { proxy, useSnapshot } from 'valtio';
@@ -36,6 +38,7 @@ type PlanInputOption = {
 enum PlanInputActionArg {
   Number,
   String,
+  Prefetch,
 }
 
 type PlanInput = {
@@ -100,6 +103,11 @@ const InputTemplates: Record<string, PlanInput> = {
     type: PlanInputType.Action,
     icon: 'picture-in-picture-top-right-outline',
   },
+  loadSource: {
+    type: PlanInputType.Action,
+    icon: 'web',
+    args: [PlanInputActionArg.Prefetch],
+  },
 };
 
 const defaultUrl = `https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8`;
@@ -116,6 +124,8 @@ const planState = proxy<{
   inputs: PlanInput[];
   actions: Record<string, PlanProps>;
   qualities: Quality[];
+  prefetchurls: string[];
+  prefetchsources: Record<string, Source | undefined>;
 }>({
   url: '',
   props: {},
@@ -123,6 +133,8 @@ const planState = proxy<{
   inputs: [],
   actions: {},
   qualities: [],
+  prefetchurls: [],
+  prefetchsources: {},
 });
 
 function qualitymatch(a: Quality | undefined, b: Quality | undefined) {
@@ -232,7 +244,7 @@ function Player({ playerRef, ...props }: PlayerProps) {
         )}
         {logs.map((log, index) => (
           <Text
-            key={index}
+            key={`${index}${log[1]}`}
             style={styles.log}
             testID={log[0]}
             accessibilityLabel={log[1]}
@@ -261,6 +273,8 @@ export function TestPlan() {
       planState.inputs = [];
       planState.actions = {};
       planState.qualities = [];
+      planState.prefetchurls = [];
+      planState.prefetchsources = {};
     };
   }, []);
 
@@ -316,6 +330,30 @@ export function TestPlan() {
             });
 
             planState.events = newEvents;
+          } else {
+            // throw error with example input
+          }
+          break;
+        case 'prefetch':
+          if (Array.isArray(value)) {
+            const newPrefetchurls: string[] = [];
+            value.forEach((input) => {
+              if (typeof input === 'string') {
+                newPrefetchurls.push(input);
+                planState.prefetchsources[input] =
+                  playerRef.current?.preload(input);
+              } else {
+                // throw error with example input
+              }
+            });
+
+            planState.prefetchurls = newPrefetchurls;
+            planState.inputs.push({
+              name: 'prefetch',
+              type: PlanInputType.Action,
+              icon: 'web',
+              args: [PlanInputActionArg.Prefetch],
+            });
           } else {
             // throw error with example input
           }
@@ -456,38 +494,70 @@ export function TestPlan() {
                         }}
                       />
                     );
+                  case PlanInputActionArg.Prefetch:
+                    return (
+                      <View style={styles.col}>
+                        {snapshot.prefetchurls.map((url, index) => {
+                          return (
+                            <View key={url} style={styles.row}>
+                              <IconButton
+                                testID={`${name}:${index}`}
+                                icon={
+                                  snapshot.prefetchsources[url] !== undefined
+                                    ? 'web'
+                                    : 'warning'
+                                }
+                                onPress={() => {
+                                  const maybesource =
+                                    snapshot.prefetchsources[url];
+                                  if (
+                                    maybesource !== undefined &&
+                                    playerRef.current
+                                  ) {
+                                    playerRef.current.loadSource(maybesource);
+                                  }
+                                }}
+                              />
+                              <Text>{url}</Text>
+                            </View>
+                          );
+                        })}
+                      </View>
+                    );
                   default:
                     return null;
                 }
               })}
-              <ToggleButton
-                // @ts-expect-error docs say this prop exists?
-                testID={name}
-                icon={input.icon ?? ''}
-                status="checked"
-                onPress={() => {
-                  if (!playerRef.current) {
-                    return;
-                  }
-                  switch (name) {
-                    case 'play':
-                      playerRef.current.play();
-                      break;
-                    case 'pause':
-                      playerRef.current.pause();
-                      break;
-                    case 'seekTo':
-                      playerRef.current.seekTo(snapshot.actions[name][0]);
-                      break;
-                    case 'setOrigin':
-                      playerRef.current.setOrigin(snapshot.actions[name][0]);
-                      break;
-                    case 'togglePip':
-                      playerRef.current.togglePip();
-                      break;
-                  }
-                }}
-              />
+              {name !== 'prefetch' && (
+                <ToggleButton
+                  // @ts-expect-error docs say this prop exists?
+                  testID={name}
+                  icon={input.icon ?? ''}
+                  status="checked"
+                  onPress={() => {
+                    if (!playerRef.current) {
+                      return;
+                    }
+                    switch (name) {
+                      case 'play':
+                        playerRef.current.play();
+                        break;
+                      case 'pause':
+                        playerRef.current.pause();
+                        break;
+                      case 'seekTo':
+                        playerRef.current.seekTo(snapshot.actions[name][0]);
+                        break;
+                      case 'setOrigin':
+                        playerRef.current.setOrigin(snapshot.actions[name][0]);
+                        break;
+                      case 'togglePip':
+                        playerRef.current.togglePip();
+                        break;
+                    }
+                  }}
+                />
+              )}
             </View>
           </>
         );
@@ -498,7 +568,7 @@ export function TestPlan() {
     <ScrollView style={styles.container}>
       <View style={styles.player} testID="player">
         <Player
-          streamUrl={snapshot.url}
+          streamUrl={snapshot.prefetchurls.length ? '' : snapshot.url}
           playerRef={playerRef}
           {...snapshot.props}
         />
@@ -556,9 +626,15 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
   },
   row: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    paddingBottom: 8,
+  },
+  col: {
+    flex: 1,
+    flexDirection: 'column',
   },
   rowInput: {
     flex: 1,
