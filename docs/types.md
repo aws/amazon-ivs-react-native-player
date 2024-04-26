@@ -74,3 +74,12 @@ export type TextMetadataCue = {
 ```ts
 export type ResizeMode = 'aspectFill' | 'aspectFit' | 'aspectZoom';
 ```
+
+## Source
+
+```ts
+export type Source = {
+  getId: () => void;
+  getUri: () => void;
+};
+```

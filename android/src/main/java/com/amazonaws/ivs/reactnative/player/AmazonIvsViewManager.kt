@@ -1,5 +1,6 @@
 package com.amazonaws.ivs.reactnative.player
 
+import android.util.Log
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.common.MapBuilder
@@ -9,6 +10,9 @@ import com.facebook.react.uimanager.annotations.ReactProp
 
 class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>() {
   private enum class Commands {
+    PRELOAD,
+    LOAD_SOURCE,
+    RELEASE_SOURCE,
     PLAY,
     PAUSE,
     SEEK_TO,
@@ -27,22 +31,41 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>() {
   }
 
   override fun getCommandsMap(): Map<String, Int>? {
-    return MapBuilder.of(
-      "play",
-      Commands.PLAY.ordinal,
-      "pause",
-      Commands.PAUSE.ordinal,
-      "setOrigin",
-      Commands.SET_ORIGIN.ordinal,
-      "seekTo",
-      Commands.SEEK_TO.ordinal,
-      "togglePip",
-      Commands.TOGGLE_PIP.ordinal
+    return mapOf(
+      "preload" to Commands.PRELOAD.ordinal,
+      "loadSource" to Commands.LOAD_SOURCE.ordinal,
+      "releaseSource" to Commands.RELEASE_SOURCE.ordinal,
+      "play" to Commands.PLAY.ordinal,
+      "pause" to Commands.PAUSE.ordinal,
+      "setOrigin" to Commands.SET_ORIGIN.ordinal,
+      "seekTo" to Commands.SEEK_TO.ordinal,
+      "togglePip" to Commands.TOGGLE_PIP.ordinal
     )
   }
 
   override fun receiveCommand(view: AmazonIvsView, commandType: Int, args: ReadableArray?) {
     when (commandType) {
+      Commands.PRELOAD.ordinal -> {
+        val id = args?.getInt(0)
+        val url = args?.getString(1)
+        id?.let {
+          url?.let {
+            view.preload(id, url)
+          }
+        }
+      }
+      Commands.LOAD_SOURCE.ordinal -> {
+        val id = args?.getInt(0)
+        id?.let {
+          view.loadSource(id)
+        }
+      }
+      Commands.RELEASE_SOURCE.ordinal -> {
+        val id = args?.getInt(0)
+        id?.let {
+          view.releaseSource(id)
+        }
+      }
       Commands.PLAY.ordinal -> view.play()
       Commands.PAUSE.ordinal -> view.pause()
       Commands.TOGGLE_PIP.ordinal -> view.togglePip()

@@ -8,6 +8,7 @@ import android.widget.FrameLayout
 import com.amazonaws.ivs.player.*
 import android.os.Build
 import com.amazonaws.ivs.player.Player.State.*
+import android.util.Log
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.LifecycleEventListener
 import com.facebook.react.bridge.ReactContext
@@ -28,15 +29,19 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
   private var lastLiveLatency: Long? = null
   private var lastBitrate: Long? = null
   private var lastDuration: Long? = null
+  private var lastPipState: Boolean = false;
   private var finishedLoading: Boolean = false
   private var pipEnabled: Boolean = false
   private var isInBackground: Boolean = false
+  private var preloadSourceMap: HashMap<Int, Source> = hashMapOf()
+
 
   enum class Events(private val mName: String) {
     STATE_CHANGED("onPlayerStateChange"),
     DURATION_CHANGED("onDurationChange"),
     ERROR("onError"),
     QUALITY_CHANGED("onQualityChange"),
+    PIP_CHANGED("onPipChange"),
     CUE("onTextCue"),
     METADATA_CUE("onTextMetadataCue"),
     LOAD("onLoad"),
@@ -282,6 +287,14 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.PROGRESS.toString(), data)
   }
 
+  fun onPipChange(active: Boolean) {
+      val reactContext = context as ReactContext
+      val data = Arguments.createMap()
+      data.putString("active", if (active) "true" else "false")
+
+      reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.PIP_CHANGED.toString(), data)
+  }
+
   private fun convertMilliSecondsToSeconds (milliSeconds: Long): Double {
     return milliSeconds / 1000.0
   }
@@ -310,6 +323,31 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     player?.setOrigin(origin)
   }
 
+  fun preload(id: Int, url: String) {
+    // Beta API
+    val mplayer = player as? MediaPlayer
+    val source = mplayer?.preload(Uri.parse(url))
+    source?.let {
+      preloadSourceMap.put(id, source)
+    }
+  }
+
+  fun loadSource(id: Int) {
+    // Beta API
+    val source = preloadSourceMap.get(id)
+    source?.let {
+      val mplayer = player as? MediaPlayer
+      mplayer?.loadSource(source)
+    }
+  }
+
+  fun releaseSource(id: Int) {
+    // Beta API
+    val source = preloadSourceMap.remove(id)
+    source?.let {
+      source.release()
+    }
+  }
 
   fun onPlayerStateChange(state: Player.State) {
     val reactContext = context as ReactContext
@@ -382,6 +420,17 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
 
   private fun intervalHandler() {
     val reactContext = context as ReactContext
+
+    if (pipEnabled)
+    {
+        val activity: Activity? = reactContext.currentActivity
+        val isPipActive = activity!!.isInPictureInPictureMode
+        if(lastPipState !== isPipActive)
+        {
+          lastPipState = isPipActive
+          onPipChange(isPipActive === true)
+        }
+    }
 
     if (lastLiveLatency != player?.liveLatency) {
       val liveLatencyData = Arguments.createMap()
@@ -484,6 +533,12 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
   }
 
   fun cleanup() {
+    // Cleanup any remaining sources
+    for (source in preloadSourceMap.values) {
+      source.release()
+    }
+    preloadSourceMap.clear()
+
     player?.removeListener(playerListener!!)
     player?.release()
     player = null

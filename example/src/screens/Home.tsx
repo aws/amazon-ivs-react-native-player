@@ -21,6 +21,18 @@ function Home() {
 
       <ScrollView style={styles.list}>
         <Card
+          testID="TestPlan"
+          style={styles.card}
+          onPress={() => {
+            navigate('TestPlan');
+          }}
+        >
+          <Card.Title title="TestPlan" />
+          <Card.Content>
+            <Paragraph>Testing harness for the player.</Paragraph>
+          </Card.Content>
+        </Card>
+        <Card
           testID="Simple"
           style={styles.card}
           onPress={() => {
@@ -43,6 +55,20 @@ function Home() {
           <Card.Content>
             <Paragraph>
               More advanced implementation that allows stream management.
+            </Paragraph>
+          </Card.Content>
+        </Card>
+        <Card
+          testID="Swipeable"
+          style={styles.card}
+          onPress={() => {
+            navigate('SwipeableExample');
+          }}
+        >
+          <Card.Title title="Swipeable" />
+          <Card.Content>
+            <Paragraph>
+              A simple implementation of a swipeable video flow.
             </Paragraph>
           </Card.Content>
         </Card>

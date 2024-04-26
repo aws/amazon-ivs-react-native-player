@@ -259,6 +259,14 @@ Callback that returns new quality that is used in video/stream playback.
 
 type: [`(quality: Quality) => void`](./types.md#Quality)
 
+### onPipChange _(optional)_
+
+Callback that returns changes to the picture in picture state.
+This returns false if no picture in picture is active. It returns true if picture in picture is active.
+Available only for Android N+ and iOS 15+
+
+type: `(isActive: boolean) => void`
+
 ### resizeMode _(optional)_
 
 Defines different modes for displaying video in a Player.
@@ -424,3 +432,133 @@ function App() {
   );
 }
 ```
+
+### preload
+
+Creates a loadable source from the given url. This affords preloading the manifest the player uses for playback.
+
+type: `(url: string) => Source`
+
+```tsx
+import IVSPlayer, { IVSPlayerRef } from 'amazon-ivs-react-native-player';
+
+const URL0 = 'https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8';
+const URL1 = 'https://3d26876b73d7.us-west-2.playback.live-video.net/api/video/v1/us-west-2.913157848533.channel.rkCBS9iD1eyd.m3u8';
+const URL2 = 'https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8';
+
+function App() {
+  const mediaPlayerRef = React.useRef<IVSPlayerRef>(null);
+  const [sources, setSources] = React.useState<Source[]>([]);
+
+  useEffect(() => {
+    const { current } = mediaPlayerRef;
+    if (!current) {
+      return
+    }
+    // this will preload the given 3 urls for playback
+    const prefetch = [
+      current.preload(URL0),
+      current.preload(URL1),
+      current.preload(URL2)
+    ];
+    setSources(prefetch);
+  },[]);
+
+  return (
+    <>
+      <IVSPlayer ref={mediaPlayerRef} />
+    </>
+  );
+}
+```
+
+### loadSource
+
+Instructs the player to begin playing the given source.
+
+type: `(source: Source) => void`
+
+```tsx
+import IVSPlayer, { IVSPlayerRef } from 'amazon-ivs-react-native-player';
+
+const URL0 = 'https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8';
+const URL1 = 'https://3d26876b73d7.us-west-2.playback.live-video.net/api/video/v1/us-west-2.913157848533.channel.rkCBS9iD1eyd.m3u8';
+const URL2 = 'https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8';
+
+function App() {
+  const mediaPlayerRef = React.useRef<IVSPlayerRef>(null);
+  const [sources, setSources] = React.useState<Source[]>([]);
+
+  useEffect(() => {
+    const { current } = mediaPlayerRef;
+    if (!current) {
+      return
+    }
+
+    const prefetch = [
+      current.preload(URL0),
+      current.preload(URL1),
+      current.preload(URL2)
+    ];
+
+    setSources(prefetch);
+  },[]);
+
+  return (
+    <>
+      <IVSPlayer ref={mediaPlayerRef} />
+      {sources.map((source, i) => {
+        return <Button key={i} onPress={() => mediaPlayerRef.current?.loadSource(source)} title={`URL${i}`} />;
+      })}
+    </>
+  );
+}
+
+```
+
+### releaseSource
+
+Frees a source created by `preload`
+
+type: `(source: Source) => void`
+
+```tsx
+import IVSPlayer, { IVSPlayerRef } from 'amazon-ivs-react-native-player';
+
+const URL0 = 'https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8';
+const URL1 = 'https://3d26876b73d7.us-west-2.playback.live-video.net/api/video/v1/us-west-2.913157848533.channel.rkCBS9iD1eyd.m3u8';
+const URL2 = 'https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8';
+
+function App() {
+  const mediaPlayerRef = React.useRef<IVSPlayerRef>(null);
+  const [sources, setSources] = React.useState<Source[]>([]);
+
+  useEffect(() => {
+    const { current } = mediaPlayerRef;
+    if (!current) {
+      return
+    }
+
+    const prefetch = [
+      current.preload(URL0),
+      current.preload(URL1),
+      current.preload(URL2)
+    ];
+    setSources(prefetch);
+
+    return () => {
+      prefetch.forEach((source) => current.releaseSource(source));
+    };
+  },[]);
+
+  return (
+    <>
+      <IVSPlayer ref={mediaPlayerRef} />
+      {sources.map((source, i) => {
+        return <Button key={i} onPress={() => mediaPlayerRef.current?.loadSource(source)} title={`URL${i}`} />;
+      })}
+    </>
+  );
+}
+```
+
