@@ -1,6 +1,9 @@
 # Amazon IVS React Native Player
 
-This package implements native binding for Amazon IVS Player for iOS and Android.
+This package implements native binding for Amazon IVS Player for iOS and Android Mobile Only. 
+| Android Mobile | iOS | Android TV | tvOS |
+| :-----: | :-: | :---: | :-: |
+|   SDK >= 21    | >= 13  |  **X**   | **X**   |
 
 ## Installation
 
