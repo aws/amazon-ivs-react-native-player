@@ -221,7 +221,7 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
       );
     }, []);
 
-    const seekTo = useCallback((value) => {
+    const seekTo = useCallback((value: number) => {
       UIManager.dispatchViewManagerCommand(
         findNodeHandle(mediaPlayerRef.current),
 
@@ -230,7 +230,7 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
       );
     }, []);
 
-    const setOrigin = useCallback((value) => {
+    const setOrigin = useCallback((value: string) => {
       UIManager.dispatchViewManagerCommand(
         findNodeHandle(mediaPlayerRef.current),
 
