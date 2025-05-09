@@ -35,5 +35,13 @@
     "detox": "^20.13.0",
     "metro-react-native-babel-preset": "^0.77.0",
     "react-native-dotenv": "^3.4.9"
+  },
+  "resolutions": {
+    "cross-spawn": "^7.0.3",
+    "ws": "^7.5.10",
+    "braces": "^3.0.3",
+    "ip": "^2.0.1",
+    "esbuild": "^0.25.0",
+    "nanoid": "^3.3.8"
   }
 }
