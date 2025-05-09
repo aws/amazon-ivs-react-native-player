@@ -37,9 +37,9 @@ const SwipeableVideo = (props: SwipeableVideoProps) => {
   const [loadingIndex, setLoadingIndex] = useState(-1);
 
   const playerRef = useRef<IVSPlayerRef>(null);
-  const prevSource = useRef<Source | undefined>();
-  const currentSource = useRef<Source | undefined>();
-  const nextSource = useRef<Source | undefined>();
+  const prevSource = useRef<Source | undefined>(null);
+  const currentSource = useRef<Source | undefined>(null);
+  const nextSource = useRef<Source | undefined>(null);
 
   const calcPrevIndex = (index: number) => {
     return index === 0 ? props.videos.length - 1 : index - 1;
@@ -133,7 +133,7 @@ const SwipeableVideo = (props: SwipeableVideoProps) => {
     loadSource(0);
 
     // On unmount, release any remaining sources
-    () => {
+    return () => {
       if (playerRef.current === null) {
         return;
       }
@@ -159,7 +159,9 @@ const SwipeableVideo = (props: SwipeableVideoProps) => {
           <View
             style={{ width: '100%', height: '70%', backgroundColor: 'black' }}
           >
-            <IVSPlayerContainer playerRef={playerRef} />
+            <IVSPlayerContainer
+              playerRef={playerRef as RefObject<IVSPlayerRef>}
+            />
           </View>
           <Card testID="Simple" style={{}}>
             <Card.Title title="Preload sources, status" />

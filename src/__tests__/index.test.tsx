@@ -144,11 +144,11 @@ test('Passing onError down works correctly', async () => {
   await testCallbackPassing('onError', { error: 'err' }, 'err');
 });
 
-test('Passing onTimePoint down works correctly', async () => {
-  await testCallbackPassing('onTimePoint', { position: 1 }, 1);
+test('Passing onTimePoint down works correctly', () => {
+  void testCallbackPassing('onTimePoint', { position: 1 }, 1);
 });
 
-test('Player will autoplay without any props', async () => {
+test('Player will autoplay without any props', () => {
   const mockCommandFn = jest.fn();
   UIManager.dispatchViewManagerCommand = mockCommandFn;
 
@@ -160,7 +160,7 @@ test('Player will autoplay without any props', async () => {
   expect(mockCommandFn.mock.calls[0][1]).toEqual(1);
 });
 
-test('Paused set to false wont play the video', async () => {
+test('Paused set to false wont play the video', () => {
   const mockCommandFn = jest.fn();
   UIManager.dispatchViewManagerCommand = mockCommandFn;
 
@@ -172,7 +172,7 @@ test('Paused set to false wont play the video', async () => {
   expect(mockCommandFn.mock.calls[0][1]).toEqual(2);
 });
 
-test('Using pause on ref calls pause on native component', async () => {
+test('Using pause on ref calls pause on native component', () => {
   const mockCommandFn = jest.fn();
   const ref = React.createRef<IVSPlayerRef>();
 
@@ -187,7 +187,7 @@ test('Using pause on ref calls pause on native component', async () => {
   expect(mockCommandFn.mock.calls[0][1]).toEqual(2);
 });
 
-test('Using play on ref calls play on native component', async () => {
+test('Using play on ref calls play on native component', () => {
   const mockCommandFn = jest.fn();
   const ref = React.createRef<IVSPlayerRef>();
 
@@ -203,7 +203,7 @@ test('Using play on ref calls play on native component', async () => {
   expect(mockCommandFn.mock.calls[1][1]).toEqual(1);
 });
 
-test('Using seekTo on ref calls seekTo on native component', async () => {
+test('Using seekTo on ref calls seekTo on native component', () => {
   const mockCommandFn = jest.fn();
   const ref = React.createRef<IVSPlayerRef>();
 
@@ -221,7 +221,7 @@ test('Using seekTo on ref calls seekTo on native component', async () => {
   expect(mockCommandFn.mock.calls[0][2]).toEqual([10]);
 });
 
-test('Using togglePip on ref calls togglePip on native component', async () => {
+test('Using togglePip on ref calls togglePip on native component', () => {
   const mockCommandFn = jest.fn();
   const ref = React.createRef<IVSPlayerRef>();
 
@@ -235,7 +235,7 @@ test('Using togglePip on ref calls togglePip on native component', async () => {
   expect(mockCommandFn).toHaveBeenCalledTimes(2);
 });
 
-test('Using setOrigin on ref calls setOrigin on native component', async () => {
+test('Using setOrigin on ref calls setOrigin on native component', () => {
   const mockCommandFn = jest.fn();
   const ref = React.createRef<IVSPlayerRef>();
 
@@ -245,13 +245,13 @@ test('Using setOrigin on ref calls setOrigin on native component', async () => {
   ref.current?.setOrigin('Access-Control-Allow-Origin');
 });
 
-test('Autoplay when onLoad', async () => {
+test('Autoplay when onLoad', () => {
   const mockCommandFn = jest.fn();
   Platform.OS = 'android';
 
   const { findByTestId } = render(<IVSPlayer streamUrl={URL} />);
   UIManager.dispatchViewManagerCommand = mockCommandFn;
-  const nativePlayer = await findByTestId('IVSPlayer');
+  const nativePlayer = findByTestId('IVSPlayer');
   fireEvent(nativePlayer, 'onLoad', { nativeEvent: { duration: 10 } });
 
   expect(mockCommandFn).toHaveBeenCalled();

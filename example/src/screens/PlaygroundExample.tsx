@@ -113,7 +113,11 @@ export default function PlaygroundExample() {
   );
 
   const onDimensionChange = useCallback(
-    ({ window: { width, height } }) => {
+    ({
+      window: { width, height },
+    }: {
+      window: { width: number; height: number };
+    }) => {
       if (width < height) {
         setOrientation(Position.PORTRAIT);
 
@@ -127,10 +131,13 @@ export default function PlaygroundExample() {
   );
 
   useEffect(() => {
-    Dimensions.addEventListener('change', onDimensionChange);
+    const dimensionsListener = Dimensions.addEventListener(
+      'change',
+      onDimensionChange
+    );
 
     return () => {
-      Dimensions.removeEventListener('change', onDimensionChange);
+      dimensionsListener.remove();
     };
   }, [onDimensionChange]);
 
@@ -245,7 +252,7 @@ export default function PlaygroundExample() {
                         {parseSecondsToString(position ? position : 0)}
                       </Text>
                     ) : (
-                      <Text />
+                      <Text>{''}</Text>
                     )}
                     {duration ? (
                       <Text style={styles.positionText} testID="durationLabel">
@@ -274,7 +281,7 @@ export default function PlaygroundExample() {
                   testID="playPauseButton"
                   icon={paused ? 'play' : 'pause'}
                   size={40}
-                  color="white"
+                  iconColor="white"
                   onPress={() => {
                     setPaused((prev) => !prev);
                   }}

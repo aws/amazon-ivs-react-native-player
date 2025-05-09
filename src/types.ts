@@ -36,8 +36,8 @@ export type TextMetadataCue = {
 };
 
 export type Source = {
-  getId: () => void;
-  getUri: () => void;
+  getId: () => number;
+  getUri: () => string;
 };
 
 export type IVSPlayerRef = {

@@ -26,4 +26,5 @@ async function run() {
   });
 }
 
-run();
+// Add void to fix the no-floating-promises error
+void run();
