@@ -23,6 +23,7 @@
     "reset": "git clean -xdfe .vscode && yarn && yarn prepare",
     "markbuild": "tsx ./scripts/example-dot-env.ts",
     "prepare": "bob build && yarn markbuild",
+    "postinstall": "husky",
     "example": "yarn --cwd example",
     "pods": "cd example && pod-install --quiet",
     "bootstrap": "yarn example && yarn && yarn pods",
@@ -65,28 +66,31 @@
     "@babel/plugin-transform-react-jsx": "^7.27.1",
     "@babel/runtime": "^7.20.0",
     "@callstack/eslint-config": "^15.0.0",
-    "@commitlint/config-conventional": "^13.1.0",
+    "@commitlint/config-conventional": "^19.8.1",
     "@commitlint/prompt-cli": "^17.6.6",
+    "@eslint/js": "^9.26.0",
     "@react-native-community/cli": "^18.0.0",
     "@react-native-community/eslint-config": "^3.2.0",
     "@react-native/typescript-config": "^0.79.2",
-    "@testing-library/jest-native": "^5.4.3",
     "@testing-library/react-native": "^12.4.3",
     "@types/inquirer": "^9.0.3",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.11.17",
     "@types/react": "^18.2.6",
     "@types/semver": "^7.5.0",
+    "@typescript-eslint/eslint-plugin": "^8.32.0",
+    "@typescript-eslint/parser": "^8.32.0",
     "chalk": "^5.3.0",
-    "commitlint": "^13.1.0",
+    "commitlint": "^19.8.1",
     "detox": "^20.18.1",
-    "eslint": "^8.19.0",
+    "eslint": "^9.26.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-detox": "^1.0.0",
     "eslint-plugin-flowtype": "^8.0.3",
     "eslint-plugin-jest": "^28.11.0",
-    "eslint-plugin-prettier": "^5.0.0",
-    "husky": "^4.2.5",
+    "eslint-plugin-prettier": "^5.4.0",
+    "eslint-plugin-react": "^7.37.5",
+    "husky": "^9.1.7",
     "inquirer": "^9.2.7",
     "jest": "^29.7.0",
     "jest-circus": "^29.7.0",
@@ -95,7 +99,7 @@
     "prettier": "^3.0.0",
     "react": "18.2.0",
     "react-native": "0.76.0",
-    "react-native-builder-bob": "^0.20.0",
+    "react-native-builder-bob": "^0.40.10",
     "react-native-gesture-handler": "^2.15.0",
     "react-native-paper": "^5.12.3",
     "react-test-renderer": "18.2.0",
@@ -111,22 +115,24 @@
     "react": "*",
     "react-native": "*"
   },
+  "resolutions": {
+    "cross-spawn": "^7.0.3",
+    "ws": "^7.5.10",
+    "braces": "^3.0.3",
+    "ip": "^2.0.1",
+    "esbuild": "^0.25.0",
+    "nanoid": "^3.3.8",
+    "glob": "^8.1.0"
+  },
   "jest": {
     "preset": "react-native",
     "setupFilesAfterEnv": [
-      "@testing-library/jest-native/extend-expect"
+      "@testing-library/react-native/extend-expect"
     ],
     "modulePathIgnorePatterns": [
       "<rootDir>/example/node_modules",
       "<rootDir>/lib/"
     ]
-  },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
-      "pre-commit": "yarn lint && yarn typescript",
-      "post-commit": "yarn markbuild"
-    }
   },
   "commitlint": {
     "extends": [
@@ -175,7 +181,8 @@
       [
         "typescript",
         {
-          "project": "tsconfig.build.json"
+          "project": "tsconfig.build.json",
+          "tsc": "./node_modules/.bin/tsc"
         }
       ]
     ]
