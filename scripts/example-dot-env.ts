@@ -18,4 +18,5 @@ GIT_COMMIT=${hash}
   console.log(chalk.green(`wrote example .env with:\n${env}`));
 }
 
-run();
+// Add await to fix the no-floating-promises error
+void run();

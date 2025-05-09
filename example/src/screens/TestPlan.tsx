@@ -138,7 +138,6 @@ const planState = proxy<{
 });
 
 function qualitymatch(a: Quality | undefined, b: Quality | undefined) {
-  // @ts-expect-error quick compare
   return a && b && Object.keys(a).every((key) => a[key] === b[key]);
 }
 
@@ -530,7 +529,6 @@ export function TestPlan() {
               })}
               {name !== 'prefetch' && (
                 <ToggleButton
-                  // @ts-expect-error docs say this prop exists?
                   testID={name}
                   icon={input.icon ?? ''}
                   status="checked"

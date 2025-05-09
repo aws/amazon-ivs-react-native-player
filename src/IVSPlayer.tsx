@@ -30,7 +30,7 @@ import { createSourceWrapper } from './source';
 type IVSPlayerProps = {
   style?: ViewStyle;
   testID?: string;
-  ref: any;
+  ref?: React.RefObject<any>;
   muted?: boolean;
   loop?: boolean;
   liveLowLatency?: boolean;
@@ -393,7 +393,7 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
     };
 
     return (
-      <View style={[styles.container, style]} ref={ref as any}>
+      <View style={[styles.container, style]}>
         <IVSPlayer
           testID="IVSPlayer"
           muted={muted}
