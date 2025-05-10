@@ -1,10 +1,8 @@
 require_relative '../node_modules/react-native/scripts/react_native_pods'
-require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
-platform :ios, '12.4'
+# React Native 0.76 requires iOS 14.0 minimum
+platform :ios, '15.1'
 install! 'cocoapods', :deterministic_uuids => false
-
-production = ENV["PRODUCTION"] == "1"
 
 target 'AmazonIvsExample' do
   config = use_native_modules!
@@ -14,35 +12,15 @@ target 'AmazonIvsExample' do
 
   use_react_native!(
     :path => config[:reactNativePath],
-    # to enable hermes on iOS, change `false` to `true` and then install pods
-    :production => production,
     :hermes_enabled => flags[:hermes_enabled],
     :fabric_enabled => flags[:fabric_enabled],
-    :flipper_configuration => FlipperConfiguration.enabled,
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
   pod 'amazon-ivs-react-native-player', :path => '../..'
-  
-  # Enables Flipper.
-  #
-  # Note that if you have use_frameworks! enabled, Flipper will not work and
-  # you should disable these next few lines.
-  # use_flipper!
-  post_install do |installer|
-    __apply_Xcode_12_5_M1_post_install_workaround(installer)
-    # flipper_post_install(installer)
 
-    # Backport of: https://github.com/AlexanderEggers/react-native/blob/18ac6a3743749c0b8273c64dac982c30b74928e3/packages/react-native/scripts/cocoapods/utils.rb#L124
-    installer.target_installation_results.pod_target_installation_results
-      .each do |pod_name, target_installation_result|
-        target_installation_result.native_target.build_configurations.each do |config|
-          # unary_function and binary_function are no longer provided in C++17 and newer standard modes as part of Xcode 15. They can be re-enabled with setting _LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION
-          # Ref: https://developer.apple.com/documentation/xcode-release-notes/xcode-15-release-notes#Deprecations
-          config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= '$(inherited) '
-          config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << '"_LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION" '
-        end
-      end
+  post_install do |installer|
+    react_native_post_install(installer)
   end
 end
