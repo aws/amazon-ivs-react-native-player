@@ -63,6 +63,7 @@
   "devDependencies": {
     "@babel/core": "^7.27.1",
     "@babel/plugin-syntax-flow": "^7.27.1",
+    "@babel/plugin-transform-flow-strip-types": "^7.27.1",
     "@babel/plugin-transform-react-jsx": "^7.27.1",
     "@babel/runtime": "^7.20.0",
     "@callstack/eslint-config": "^15.0.0",
@@ -71,6 +72,7 @@
     "@eslint/js": "^9.26.0",
     "@react-native-community/cli": "^18.0.0",
     "@react-native-community/eslint-config": "^3.2.0",
+    "@react-native/babel-preset": "^0.79.2",
     "@react-native/typescript-config": "^0.79.2",
     "@testing-library/react-native": "^12.4.3",
     "@types/inquirer": "^9.0.3",
@@ -132,6 +134,9 @@
     "modulePathIgnorePatterns": [
       "<rootDir>/example/node_modules",
       "<rootDir>/lib/"
+    ],
+    "transformIgnorePatterns": [
+      "node_modules/(?!(react-native|@react-native|react-native-vector-icons)/)"
     ]
   },
   "commitlint": {

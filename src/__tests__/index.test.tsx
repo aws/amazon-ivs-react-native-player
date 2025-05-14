@@ -245,13 +245,18 @@ test('Using setOrigin on ref calls setOrigin on native component', () => {
   ref.current?.setOrigin('Access-Control-Allow-Origin');
 });
 
-test('Autoplay when onLoad', () => {
+test('Autoplay when onLoad', async () => {
   const mockCommandFn = jest.fn();
   Platform.OS = 'android';
+  UIManager.dispatchViewManagerCommand = mockCommandFn;
 
   const { findByTestId } = render(<IVSPlayer streamUrl={URL} />);
-  UIManager.dispatchViewManagerCommand = mockCommandFn;
-  const nativePlayer = findByTestId('IVSPlayer');
+  const nativePlayer = await findByTestId('IVSPlayer');
+
+  // Clear any previous calls to the mock function
+  mockCommandFn.mockClear();
+
+  // Now fire the event
   fireEvent(nativePlayer, 'onLoad', { nativeEvent: { duration: 10 } });
 
   expect(mockCommandFn).toHaveBeenCalled();
