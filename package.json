@@ -192,5 +192,7 @@
       ]
     ]
   },
-  "dependencies": {}
+  "dependencies": {
+    "ip": "^2.0.1"
+  }
 }
