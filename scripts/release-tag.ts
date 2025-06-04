@@ -19,5 +19,10 @@ async function run() {
   }
 }
 
-// Add void to fix the no-floating-promises error
-void run();
+run()
+  .then((result) => {
+    console.log('Success: ', result);
+  })
+  .catch((error) => {
+    console.error('Error: ', error);
+  });

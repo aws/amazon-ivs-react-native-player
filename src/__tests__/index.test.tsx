@@ -221,7 +221,7 @@ test('Using seekTo on ref calls seekTo on native component', () => {
   expect(mockCommandFn.mock.calls[0][2]).toEqual([10]);
 });
 
-test('Using togglePip on ref calls togglePip on native component', () => {
+test('Using togglePip on ref calls togglePip on native component', async () => {
   const mockCommandFn = jest.fn();
   const ref = React.createRef<IVSPlayerRef>();
 
