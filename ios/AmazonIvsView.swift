@@ -1,7 +1,6 @@
 import Foundation
 import UIKit
 import AmazonIVSPlayer
-import AmazonIVSPlayer_Private // Beta API access
 
 @objc(AmazonIvsView)
 class AmazonIvsView: UIView, IVSPlayer.Delegate {
@@ -36,7 +35,7 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
     private var lastDuration: CMTime?;
     private var lastFramesDropped: Int?;
     private var lastFramesDecoded: Int?;
-    private var preloadSourceMap: [Int: IVSSource] = [:]
+    private var preloadSourceMap: [Int: URL] = [:]
 
 
     private var _pipController: Any? = nil
@@ -284,23 +283,20 @@ class AmazonIvsView: UIView, IVSPlayer.Delegate {
     }
 
     @objc func preload(id: Int, url: NSString) {
-        // Beta API
         let url = URL(string: url as String)
         if let url = url {
-            let source = player.preload(url)
-            preloadSourceMap[id] = source; 
+            player.load(url)
+            preloadSourceMap[id] = url;
         }
     }
 
     @objc func loadSource(id: Int) {
-        // Beta API
         if let source = preloadSourceMap[id] {
             player.load(source)
         }
     }
 
     @objc func releaseSource(id: Int) {
-        // Beta API
         preloadSourceMap.removeValue(forKey: id)
     }
 
