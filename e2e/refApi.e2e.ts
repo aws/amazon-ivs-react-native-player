@@ -30,7 +30,6 @@ describe('Ref Api', () => {
       events:
       - onPlayerStateChange
       `);
-    await waitForClearLogs();
     await waitForTap(by.id('prefetch:0'));
     await waitForLogLabel('onPlayerStateChange ::: Playing');
     await waitForClearLogs();
