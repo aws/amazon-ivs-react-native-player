@@ -131,7 +131,7 @@ dependencies {
 
     androidTestImplementation(project(path: ":detox"))
 
-    androidTestUtil 'com.linkedin.testbutler:test-butler-app:2.2.1'
+    androidTestImplementation 'com.github.wix-incubator:detox-butler:1.1.0'
 
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")

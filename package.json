@@ -38,7 +38,7 @@
     "e2e:build:ios:release": "detox build --configuration ios.sim.release",
     "e2e:test:android:release": "yarn get:testbutler && detox test --configuration android.emu.release --headless --take-screenshots failing",
     "e2e:test:ios:release": "detox test --configuration ios.sim.release --headless --take-screenshots failing",
-    "get:testbutler": "curl -f -o ./test-butler-app.apk https://repo1.maven.org/maven2/com/linkedin/testbutler/test-butler-app/2.2.1/test-butler-app-2.2.1.apk",
+    "get:testbutler": "curl -L -o ./test-butler-app.apk https://github.com/wix-incubator/detox-butler/releases/download/1.1.0/detoxbutler-1.1.0-aosp-release.apk",
     "release:create": "tsx ./scripts/release-create.ts",
     "release:verify": "tsx ./scripts/release-verify.ts",
     "release:latest": "npm publish",
