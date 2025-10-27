@@ -1,4 +1,4 @@
-import { render, fireEvent } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 import React from 'react';
 import { Platform, UIManager } from 'react-native';
 import type { IVSPlayerRef } from '../types';
@@ -8,25 +8,19 @@ import IVSPlayer from '../IVSPlayer';
 const URL =
   'https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8';
 
-jest.mock('react-native', () => {
-  const RN = jest.requireActual('react-native');
-
-  RN.UIManager.getViewManagerConfig = (name: string) => {
-    if (name === 'AmazonIvs') {
-      return {
-        Commands: {
-          play: 1,
-          pause: 2,
-          seekTo: 3,
-          setOrigin: 4,
-          togglePip: undefined,
-        },
-      };
-    }
-    return {};
-  };
-
-  return RN;
+jest.mocked(UIManager.getViewManagerConfig).mockImplementation((name) => {
+  if (name === 'AmazonIvs') {
+    return {
+      Commands: {
+        play: 1,
+        pause: 2,
+        seekTo: 3,
+        setOrigin: 4,
+        togglePip: undefined,
+      },
+    };
+  }
+  return { Commands: {} };
 });
 
 const testCallbackPassing = async (
