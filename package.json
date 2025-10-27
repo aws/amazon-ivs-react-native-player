@@ -132,6 +132,7 @@
     "glob": "^8.1.0"
   },
   "jest": {
+    "preset": "react-native",
     "setupFilesAfterEnv": [
       "@testing-library/react-native/extend-expect"
     ],
