@@ -192,7 +192,7 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
         findNodeHandle(mediaPlayerRef.current),
 
         UIManager.getViewManagerConfig(VIEW_NAME).Commands.loadSource,
-        [source.getId()]
+        [source?.getId()]
       );
     }, []);
 
@@ -201,7 +201,7 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
         findNodeHandle(mediaPlayerRef.current),
 
         UIManager.getViewManagerConfig(VIEW_NAME).Commands.releaseSource,
-        [source.getId()]
+        [source?.getId()]
       );
     }, []);
 

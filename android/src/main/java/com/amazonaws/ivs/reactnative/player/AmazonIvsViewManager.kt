@@ -27,7 +27,7 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>() {
     for (event in AmazonIvsView.Events.values()) {
       builder.put(event.toString(), MapBuilder.of("registrationName", event.toString()))
     }
-    return builder.build()
+    return builder.build().toMutableMap()
   }
 
   override fun getCommandsMap(): Map<String, Int>? {
