@@ -12,11 +12,11 @@ jest.mocked(UIManager.getViewManagerConfig).mockImplementation((name) => {
   if (name === 'AmazonIvs') {
     return {
       Commands: {
-        play: 1,
-        pause: 2,
-        seekTo: 3,
-        setOrigin: 4,
-        togglePip: undefined,
+        play: 'play',
+        pause: 'pause',
+        seekTo: 'seekTo',
+        setOrigin: 'setOrigin',
+        togglePip: 'togglePip',
       },
     };
   }
@@ -94,10 +94,6 @@ test('Passing onPipChange down works correctly with boolean', async () => {
   await testCallbackPassing('onPipChange', { active: true }, true);
 });
 
-test('Passing onPipChange down works correctly with string', async () => {
-  await testCallbackPassing('onPipChange', { active: 'true' }, true);
-});
-
 test('Passing onRebuffering down works correctly', async () => {
   await testCallbackPassing('onRebuffering');
 });
@@ -144,6 +140,8 @@ test('Passing onTimePoint down works correctly', () => {
 
 test('Player will autoplay without any props', () => {
   const mockCommandFn = jest.fn();
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-expect-error
   UIManager.dispatchViewManagerCommand = mockCommandFn;
 
   render(<IVSPlayer streamUrl={URL} />);
@@ -151,11 +149,13 @@ test('Player will autoplay without any props', () => {
   expect(mockCommandFn).toHaveBeenCalled();
 
   // Checking if the second argument of the function is the "play" command
-  expect(mockCommandFn.mock.calls[0][1]).toEqual(1);
+  expect(mockCommandFn.mock.calls[0][1]).toEqual('play');
 });
 
 test('Paused set to false wont play the video', () => {
   const mockCommandFn = jest.fn();
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-expect-error
   UIManager.dispatchViewManagerCommand = mockCommandFn;
 
   render(<IVSPlayer streamUrl={URL} paused />);
@@ -163,7 +163,7 @@ test('Paused set to false wont play the video', () => {
   expect(mockCommandFn).toHaveBeenCalled();
 
   // Checking if the second argument of the function is the "pause" command
-  expect(mockCommandFn.mock.calls[0][1]).toEqual(2);
+  expect(mockCommandFn.mock.calls[0][1]).toEqual('pause');
 });
 
 test('Using pause on ref calls pause on native component', () => {
@@ -172,13 +172,15 @@ test('Using pause on ref calls pause on native component', () => {
 
   render(<IVSPlayer streamUrl={URL} ref={ref} />);
 
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-expect-error
   UIManager.dispatchViewManagerCommand = mockCommandFn;
   ref.current?.pause();
 
   expect(mockCommandFn).toHaveBeenCalled();
 
   // Checking if the second argument of the function is the "pause" command
-  expect(mockCommandFn.mock.calls[0][1]).toEqual(2);
+  expect(mockCommandFn.mock.calls[0][1]).toEqual('pause');
 });
 
 test('Using play on ref calls play on native component', () => {
@@ -187,6 +189,8 @@ test('Using play on ref calls play on native component', () => {
 
   render(<IVSPlayer streamUrl={URL} ref={ref} />);
 
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-expect-error
   UIManager.dispatchViewManagerCommand = mockCommandFn;
   ref.current?.pause();
   ref.current?.play();
@@ -194,7 +198,7 @@ test('Using play on ref calls play on native component', () => {
   expect(mockCommandFn).toHaveBeenCalledTimes(2);
 
   // Checking if the second argument of the function is the "play" command
-  expect(mockCommandFn.mock.calls[1][1]).toEqual(1);
+  expect(mockCommandFn.mock.calls[1][1]).toEqual('play');
 });
 
 test('Using seekTo on ref calls seekTo on native component', () => {
@@ -203,13 +207,15 @@ test('Using seekTo on ref calls seekTo on native component', () => {
 
   render(<IVSPlayer streamUrl={URL} ref={ref} />);
 
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-expect-error
   UIManager.dispatchViewManagerCommand = mockCommandFn;
   ref.current?.seekTo(10);
 
   expect(mockCommandFn).toHaveBeenCalled();
 
   // Checking if the second argument of the function is the "play" command
-  expect(mockCommandFn.mock.calls[0][1]).toEqual(3);
+  expect(mockCommandFn.mock.calls[0][1]).toEqual('seekTo');
 
   // Checking if the value we pass down is proper
   expect(mockCommandFn.mock.calls[0][2]).toEqual([10]);
@@ -221,6 +227,8 @@ test('Using togglePip on ref calls togglePip on native component', async () => {
 
   render(<IVSPlayer streamUrl={URL} ref={ref} />);
 
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-expect-error
   UIManager.dispatchViewManagerCommand = mockCommandFn;
   ref.current?.togglePip();
 
@@ -235,6 +243,8 @@ test('Using setOrigin on ref calls setOrigin on native component', () => {
 
   render(<IVSPlayer streamUrl={URL} ref={ref} />);
 
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-expect-error
   UIManager.dispatchViewManagerCommand = mockCommandFn;
   ref.current?.setOrigin('Access-Control-Allow-Origin');
 });
@@ -242,6 +252,8 @@ test('Using setOrigin on ref calls setOrigin on native component', () => {
 test('Autoplay when onLoad', async () => {
   const mockCommandFn = jest.fn();
   Platform.OS = 'android';
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-expect-error
   UIManager.dispatchViewManagerCommand = mockCommandFn;
 
   const { findByTestId } = render(<IVSPlayer streamUrl={URL} />);
@@ -256,5 +268,5 @@ test('Autoplay when onLoad', async () => {
   expect(mockCommandFn).toHaveBeenCalled();
 
   // Checking if the second argument of the function is the "play" command
-  expect(mockCommandFn.mock.calls[0][1]).toEqual(1);
+  expect(mockCommandFn.mock.calls[0][1]).toEqual('play');
 });

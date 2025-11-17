@@ -4,21 +4,34 @@ import android.app.Activity
 import android.app.PictureInPictureParams
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.widget.FrameLayout
-import com.amazonaws.ivs.player.*
 import android.os.Build
 import android.util.Log
+import android.widget.FrameLayout
+import com.amazonaws.ivs.player.Cue
+import com.amazonaws.ivs.player.MediaPlayer
+import com.amazonaws.ivs.player.Player
+import com.amazonaws.ivs.player.PlayerException
+import com.amazonaws.ivs.player.PlayerView
+import com.amazonaws.ivs.player.Quality
+import com.amazonaws.ivs.player.ResizeMode
+import com.amazonaws.ivs.player.Source
+import com.amazonaws.ivs.player.TextCue
+import com.amazonaws.ivs.player.TextMetadataCue
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.LifecycleEventListener
 import com.facebook.react.bridge.ReactContext
+import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.uimanager.ThemedReactContext
-import com.facebook.react.uimanager.events.RCTEventEmitter
-import java.util.*
-import java.util.concurrent.TimeUnit
+import com.facebook.react.uimanager.UIManagerHelper.getEventDispatcherForReactTag
+import com.facebook.react.uimanager.UIManagerHelper.getSurfaceId
+import com.facebook.react.uimanager.events.EventDispatcher
+import java.util.Timer
 import kotlin.concurrent.timerTask
 
-class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(context), LifecycleEventListener {
+
+class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(context),
+  LifecycleEventListener {
   private var playerView: PlayerView? = null
   private var player: Player? = null
   private var streamUri: Uri? = null
@@ -34,6 +47,13 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
   private var isInBackground: Boolean = false
   private var preloadSourceMap: HashMap<Int, Source> = hashMapOf()
 
+  private var breakpoints: List<Long> = emptyList()
+  private var lastPosition: Long = 0
+
+  private var progressInterval: Long = 1000
+
+
+  private val eventDispatcher: EventDispatcher
 
   enum class Events(private val mName: String) {
     STATE_CHANGED("onPlayerStateChange"),
@@ -50,7 +70,8 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     DATA("onData"),
     LIVE_LATENCY_CHANGED("onLiveLatencyChange"),
     VIDEO_STATISTICS("onVideoStatistics"),
-    PROGRESS("onProgress");
+    PROGRESS("onProgress"),
+    TIME_POINT("onTimePoint");
 
     override fun toString(): String {
       return mName
@@ -61,8 +82,9 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     playerView = PlayerView(context)
     player = playerView?.player
     playerView?.controlsEnabled = false
+    eventDispatcher = getEventDispatcherForReactTag(context, id)!!
 
-    (context as ThemedReactContext).addLifecycleEventListener(this)
+    context.addLifecycleEventListener(this)
 
     playerListener = object : Player.Listener() {
       override fun onStateChanged(state: Player.State) {
@@ -108,7 +130,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     playerObserver = Timer("observerInterval", false)
     playerObserver?.schedule(timerTask {
       intervalHandler()
-    }, 0, 1000)
+    }, 0, progressInterval)
   }
 
   override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
@@ -126,8 +148,14 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
 
       finishedLoading = false
       player.load(uri)
-
-      reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.LOAD_START.toString(), Arguments.createMap())
+      eventDispatcher.dispatchEvent(
+        IVSEvent(
+          getSurfaceId(reactContext),
+          id,
+          Events.LOAD_START,
+          Arguments.createMap()
+        )
+      )
     }
   }
 
@@ -155,8 +183,8 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     player?.playbackRate = playbackRate.toFloat()
   }
 
-  fun setLogLevel(logLevel: Double) {
-    when (logLevel.toInt()) {
+  fun setLogLevel(logLevel: Int) {
+    when (logLevel) {
       0 -> player?.setLogLevel(Player.LogLevel.DEBUG)
       1 -> player?.setLogLevel(Player.LogLevel.INFO)
       2 -> player?.setLogLevel(Player.LogLevel.WARNING)
@@ -170,15 +198,15 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
   }
 
   private fun findResizeMode(mode: String?): ResizeMode = when (mode) {
-      "aspectFill" -> ResizeMode.FILL
-      "aspectFit" -> ResizeMode.FIT
-      "aspectZoom" -> ResizeMode.ZOOM
-      else -> ResizeMode.FIT
+    "aspectFill" -> ResizeMode.FILL
+    "aspectFit" -> ResizeMode.FIT
+    "aspectZoom" -> ResizeMode.ZOOM
+    else -> ResizeMode.FIT
   }
 
   private fun findQuality(quality: ReadableMap?): Quality? {
     val newQuality = player?.qualities?.firstOrNull() { x ->
-        x.name == quality?.getString("name") &&
+      x.name == quality?.getString("name") &&
         x.codecs == quality.getString("codecs") &&
         x.bitrate == quality.getInt("bitrate") &&
         x.framerate == quality.getDouble("framerate").toFloat() &&
@@ -228,11 +256,18 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     val data = Arguments.createMap()
     data.putMap("textCue", textCue)
 
-    reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.CUE.toString(), data)
+    eventDispatcher.dispatchEvent(
+      IVSEvent(
+        getSurfaceId(reactContext),
+        id,
+        Events.CUE,
+        data
+      )
+    )
   }
 
-  fun setMaxBitrate(bitrate: Double) {
-    player?.setAutoMaxBitrate(bitrate.toInt())
+  fun setMaxBitrate(bitrate: Int) {
+    player?.setAutoMaxBitrate(bitrate)
   }
 
   fun setInitialBufferDuration(duration: Double) {
@@ -252,7 +287,14 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     val data = Arguments.createMap()
     data.putMap("textMetadataCue", textMetadataCue)
 
-    reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.METADATA_CUE.toString(), data)
+    eventDispatcher.dispatchEvent(
+      IVSEvent(
+        getSurfaceId(reactContext),
+        id,
+        Events.METADATA_CUE,
+        data
+      )
+    )
   }
 
   fun onDurationChange(duration: Long) {
@@ -261,7 +303,14 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     val parsedDuration = getDuration(duration);
     data.putDouble("duration", parsedDuration)
 
-    reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.DURATION_CHANGED.toString(), data)
+    eventDispatcher.dispatchEvent(
+      IVSEvent(
+        getSurfaceId(reactContext),
+        id,
+        Events.DURATION_CHANGED,
+        data
+      )
+    )
   }
 
   fun onError(error: String) {
@@ -269,39 +318,70 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     val data = Arguments.createMap()
     data.putString("error", error)
 
-    reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.ERROR.toString(), data)
+    eventDispatcher.dispatchEvent(
+      IVSEvent(
+        getSurfaceId(reactContext),
+        id,
+        Events.ERROR,
+        data
+      )
+    )
   }
 
   fun onSeek(position: Long) {
     val reactContext = context as ReactContext
     val data = Arguments.createMap()
     data.putDouble("position", convertMilliSecondsToSeconds(position))
-    reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.SEEK.toString(), data)
+
+    eventDispatcher.dispatchEvent(
+      IVSEvent(
+        getSurfaceId(reactContext),
+        id,
+        Events.SEEK,
+        data
+      )
+    )
   }
 
   fun onProgress(position: Long) {
     val reactContext = context as ReactContext
     val data = Arguments.createMap()
     data.putDouble("position", convertMilliSecondsToSeconds(position))
-    reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.PROGRESS.toString(), data)
+
+    eventDispatcher.dispatchEvent(
+      IVSEvent(
+        getSurfaceId(reactContext),
+        id,
+        Events.PROGRESS,
+        data
+      )
+    )
   }
 
   fun onPipChange(active: Boolean) {
-      val reactContext = context as ReactContext
-      val data = Arguments.createMap()
-      data.putString("active", if (active) "true" else "false")
+    val reactContext = context as ReactContext
+    val data = Arguments.createMap()
+    data.putBoolean("active", active)
 
-      reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.PIP_CHANGED.toString(), data)
+    eventDispatcher.dispatchEvent(
+      IVSEvent(
+        getSurfaceId(reactContext),
+        id,
+        Events.PIP_CHANGED,
+        data
+      )
+    )
   }
 
-  private fun convertMilliSecondsToSeconds (milliSeconds: Long): Double {
+  private fun convertMilliSecondsToSeconds(milliSeconds: Long): Double {
     return milliSeconds / 1000.0
   }
 
   private val mLayoutRunnable = Runnable {
     measure(
       MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
-      MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY))
+      MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY)
+    )
     layout(left, top, right, bottom)
   }
 
@@ -323,16 +403,21 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
   }
 
   fun preload(id: Int, url: String) {
-    // Beta API
     val mplayer = player as? MediaPlayer
-    val source = mplayer?.preload(Uri.parse(url))
-    source?.let {
-      preloadSourceMap.put(id, source)
-    }
+    val uri = Uri.parse(url)
+
+    mplayer?.preload(uri, object : Source.Listener {
+      override fun onLoad(source: Source) {
+        preloadSourceMap.put(id, source)
+      }
+
+      override fun onError(error: Source.LoadError) {
+        Log.e("Preload", "Failed to preload source for id $id: ${error.message}")
+      }
+    })
   }
 
   fun loadSource(id: Int) {
-    // Beta API
     val source = preloadSourceMap.get(id)
     source?.let {
       val mplayer = player as? MediaPlayer
@@ -341,7 +426,6 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
   }
 
   fun releaseSource(id: Int) {
-    // Beta API
     val source = preloadSourceMap.remove(id)
     source?.let {
       source.release()
@@ -354,15 +438,22 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     when (state) {
       Player.State.PLAYING -> {
         if (!finishedLoading) {
-          val onLoadData = Arguments.createMap()
+          val data = Arguments.createMap()
           val parsedDuration = getDuration(player!!.duration);
-          onLoadData.putDouble("duration", parsedDuration)
-
+          data.putDouble("duration", parsedDuration)
           finishedLoading = true
 
-          reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.LOAD.toString(), onLoadData)
+          eventDispatcher.dispatchEvent(
+            IVSEvent(
+              getSurfaceId(reactContext),
+              id,
+              Events.LOAD,
+              data
+            )
+          )
         }
       }
+
       Player.State.READY -> {
         val data = Arguments.createMap()
         val playerData = Arguments.createMap()
@@ -380,17 +471,34 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
           parsedQuality.putInt("height", quality.height)
           qualities.pushMap(parsedQuality)
         }
+
         playerData.putArray("qualities", qualities)
         data.putMap("playerData", playerData)
 
-        reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.DATA.toString(), data)
+        eventDispatcher.dispatchEvent(
+          IVSEvent(
+            getSurfaceId(reactContext),
+            id,
+            Events.DATA,
+            data
+          )
+        )
       }
+
       else -> {}
     }
 
     val onStateChangeData = Arguments.createMap()
     onStateChangeData.putString("state", mapPlayerState(state))
-    reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.STATE_CHANGED.toString(), onStateChangeData)
+
+    eventDispatcher.dispatchEvent(
+      IVSEvent(
+        getSurfaceId(reactContext),
+        id,
+        Events.STATE_CHANGED,
+        onStateChangeData
+      )
+    )
   }
 
   fun onQualityChange(quality: Quality) {
@@ -407,26 +515,39 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     val data = Arguments.createMap()
     data.putMap("quality", newQuality)
 
-    reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.QUALITY_CHANGED.toString(), data)
+    eventDispatcher.dispatchEvent(
+      IVSEvent(
+        getSurfaceId(reactContext),
+        id,
+        Events.QUALITY_CHANGED,
+        data
+      )
+    )
   }
 
   fun onPlayerRebuffering() {
     val reactContext = context as ReactContext
-    reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.REBUFFERING.toString(), Arguments.createMap())
+
+    eventDispatcher.dispatchEvent(
+      IVSEvent(
+        getSurfaceId(reactContext),
+        id,
+        Events.REBUFFERING,
+        Arguments.createMap()
+      )
+    )
   }
 
   private fun intervalHandler() {
     val reactContext = context as ReactContext
 
-    if (pipEnabled)
-    {
-        val activity: Activity? = reactContext.currentActivity
-        val isPipActive = activity!!.isInPictureInPictureMode
-        if(lastPipState !== isPipActive)
-        {
-          lastPipState = isPipActive
-          onPipChange(isPipActive === true)
-        }
+    if (pipEnabled) {
+      val activity: Activity? = reactContext.currentActivity
+      val isPipActive = activity!!.isInPictureInPictureMode
+      if (lastPipState !== isPipActive) {
+        lastPipState = isPipActive
+        onPipChange(isPipActive === true)
+      }
     }
 
     if (lastLiveLatency != player?.liveLatency) {
@@ -437,7 +558,15 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
       } ?: run {
         liveLatencyData.putNull("liveLatency")
       }
-      reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.LIVE_LATENCY_CHANGED.toString(), liveLatencyData)
+
+      eventDispatcher.dispatchEvent(
+        IVSEvent(
+          getSurfaceId(reactContext),
+          id,
+          Events.LIVE_LATENCY_CHANGED,
+          liveLatencyData
+        )
+      )
 
       lastLiveLatency = player?.liveLatency
     }
@@ -461,7 +590,15 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
       }
 
       onVideoData.putMap("videoData", videoData)
-      reactContext.getJSModule(RCTEventEmitter::class.java).receiveEvent(id, Events.VIDEO_STATISTICS.toString(), onVideoData)
+
+      eventDispatcher.dispatchEvent(
+        IVSEvent(
+          getSurfaceId(reactContext),
+          id,
+          Events.VIDEO_STATISTICS,
+          onVideoData
+        )
+      )
 
       lastBitrate = player?.averageBitrate
       lastDuration = player?.duration
@@ -470,6 +607,16 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
       if (position > 0 && player?.state === Player.State.PLAYING) {
         onProgress(position)
       }
+
+      val crossedBreakpoints = breakpoints.filter {
+        it > lastPosition && it <= position
+      }
+
+      crossedBreakpoints.forEach { breakpointMs ->
+        onTimePoint(breakpointMs)
+      }
+
+      lastPosition = position
     }
   }
 
@@ -478,7 +625,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
   }
 
   private fun mapPlayerState(state: Player.State): String {
-    return when(state) {
+    return when (state) {
       Player.State.PLAYING -> "Playing"
       Player.State.BUFFERING -> "Buffering"
       Player.State.READY -> "Ready"
@@ -489,7 +636,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
 
   fun togglePip() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N &&
-            context.packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
+      context.packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
     ) {
       val activity: Activity? = context.currentActivity
       val hasToBuild = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
@@ -497,8 +644,8 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
       if (!pipEnabled) {
 
         val isInPip =
-            if (hasToBuild) activity!!.isInPictureInPictureMode
-            else activity!!.isInPictureInPictureMode
+          if (hasToBuild) activity!!.isInPictureInPictureMode
+          else activity!!.isInPictureInPictureMode
         if (isInPip) {
           activity?.moveTaskToBack(false)
         }
@@ -512,6 +659,44 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
         activity?.enterPictureInPictureMode()
       }
     }
+  }
+
+  fun setBreakpoints(value: ReadableArray?) {
+    val breakpoints: List<Double>? = value?.let { readableArray ->
+      List(readableArray.size()) { index ->
+        readableArray.getDouble(index)
+      }
+    }
+    this.breakpoints = breakpoints?.map { (it * 1000.0).toLong() } ?: emptyList()
+    this.lastPosition = 0
+  }
+
+  fun onTimePoint(position: Long) {
+    val reactContext = context as ReactContext
+    val data = Arguments.createMap()
+    data.putDouble("position", convertMilliSecondsToSeconds(position))
+
+    eventDispatcher.dispatchEvent(
+      IVSEvent(
+        getSurfaceId(reactContext),
+        id,
+        Events.TIME_POINT,
+        data
+      )
+    )
+  }
+
+  fun setProgressInterval(progressInterval: Int) {
+    playerObserver?.cancel()
+    playerObserver?.purge()
+    playerObserver = Timer("observerInterval", false)
+
+    val updatedProgressInterval = (progressInterval * 1000).toLong()
+    this.progressInterval = updatedProgressInterval
+
+    playerObserver?.schedule(timerTask {
+      intervalHandler()
+    }, 0, updatedProgressInterval)
   }
 
   override fun onHostResume() {

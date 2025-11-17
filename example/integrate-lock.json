@@ -1,0 +1,129 @@
+{
+  "lockfileVersion": 1,
+  "packages": {
+    "@babel/core": {
+      "version": "^7.25.2",
+      "integrated": false
+    },
+    "@babel/preset-env": {
+      "version": "^7.25.3",
+      "integrated": false
+    },
+    "@babel/runtime": {
+      "version": "^7.25.0",
+      "integrated": false
+    },
+    "@react-native-community/cli": {
+      "version": "20.0.0",
+      "integrated": false
+    },
+    "@react-native-community/cli-platform-android": {
+      "version": "20.0.0",
+      "integrated": false
+    },
+    "@react-native-community/cli-platform-ios": {
+      "version": "20.0.0",
+      "integrated": false
+    },
+    "@react-native-community/slider": {
+      "version": "^5.1.0",
+      "integrated": false
+    },
+    "@react-native-vector-icons/material-design-icons": {
+      "version": "^12.4.0",
+      "integrated": false
+    },
+    "@react-native/babel-preset": {
+      "version": "0.82.1",
+      "integrated": false
+    },
+    "@react-native/eslint-config": {
+      "version": "0.82.1",
+      "integrated": false
+    },
+    "@react-native/metro-config": {
+      "version": "0.82.1",
+      "integrated": false
+    },
+    "@react-native/typescript-config": {
+      "version": "0.82.1",
+      "integrated": false
+    },
+    "@react-navigation/native": {
+      "version": "^6.1.9",
+      "integrated": false
+    },
+    "@react-navigation/stack": {
+      "version": "^6.3.20",
+      "integrated": false
+    },
+    "@types/react": {
+      "version": "^19.1.1",
+      "integrated": false
+    },
+    "@types/react-native-dotenv": {
+      "version": "^0.2.0",
+      "integrated": false
+    },
+    "@types/react-native-vector-icons": {
+      "version": "^6.4.6",
+      "integrated": false
+    },
+    "detox": {
+      "version": "^20.45.0",
+      "integrated": false
+    },
+    "react": {
+      "version": "19.1.1",
+      "integrated": false
+    },
+    "react-native": {
+      "version": "0.82.1",
+      "integrated": false
+    },
+    "react-native-builder-bob": {
+      "version": "^0.40.13",
+      "integrated": false
+    },
+    "react-native-config": {
+      "version": "^1.6.0",
+      "integrated": true
+    },
+    "react-native-dotenv": {
+      "version": "^3.4.9",
+      "integrated": false
+    },
+    "react-native-gesture-handler": {
+      "version": "2.28.0",
+      "integrated": false
+    },
+    "react-native-monorepo-config": {
+      "version": "^0.1.9",
+      "integrated": false
+    },
+    "react-native-orientation-locker": {
+      "version": "^1.6.0",
+      "integrated": false
+    },
+    "react-native-paper": {
+      "version": "^5.12.3",
+      "integrated": false
+    },
+    "react-native-reanimated": {
+      "version": "4.1.5",
+      "integrated": false
+    },
+    "react-native-safe-area-context": {
+      "version": "5.6.1",
+      "integrated": false
+    },
+    "react-native-screens": {
+      "version": "4.17.1",
+      "integrated": false
+    },
+    "react-native-worklets": {
+      "version": "^0.6.1",
+      "integrated": false
+    }
+  }
+}

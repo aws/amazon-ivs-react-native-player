@@ -2,8 +2,6 @@ apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
 
-import org.apache.tools.ant.taskdefs.condition.Os
-import com.android.build.OutputFile
 import groovy.json.JsonSlurper
 
 /**
@@ -138,6 +136,5 @@ dependencies {
     } else {
         implementation jscFlavor
     }
-
-    implementation project(':amazonivsreactnativeplayer')
 }
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
