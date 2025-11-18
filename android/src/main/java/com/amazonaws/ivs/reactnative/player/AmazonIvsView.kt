@@ -251,7 +251,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     textCue.putDouble("size", cue.size.toDouble())
     textCue.putDouble("position", cue.position.toDouble())
     textCue.putString("text", cue.text)
-    textCue.putInt("textAlignment", cue.textAlign.ordinal)
+    textCue.putString("textAlignment", cue.textAlign.toStringValue())
 
     val data = Arguments.createMap()
     data.putMap("textCue", textCue)
@@ -728,4 +728,13 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     playerObserver?.cancel()
     playerObserver = null
   }
+
+  fun TextCue.TextAlignment.toStringValue(): String {
+    return when (this) {
+      TextCue.TextAlignment.START -> "start"
+      TextCue.TextAlignment.MIDDLE -> "center"
+      TextCue.TextAlignment.END -> "end"
+    }
+  }
+
 }

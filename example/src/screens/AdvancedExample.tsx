@@ -87,6 +87,7 @@ export default function AdvancedExample() {
         ) : null}
         <IVSPlayer
           ref={mediaPlayerRef}
+          pipEnabled={true}
           autoplay={false}
           loop
           paused={paused}

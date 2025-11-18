@@ -26,8 +26,10 @@ export type TextCue = {
   size: number;
   position: number;
   text: string;
-  textAlignment: string;
+  textAlignment: CueTextAlignment;
 };
+
+export type CueTextAlignment = 'start' | 'center' | 'end';
 
 export type TextMetadataCue = {
   type: string;

@@ -1,6 +1,6 @@
 import { fireEvent, render } from '@testing-library/react-native';
 import React from 'react';
-import { Platform, UIManager } from 'react-native';
+import { UIManager } from 'react-native';
 import type { IVSPlayerRef } from '../types';
 
 import IVSPlayer from '../IVSPlayer';
@@ -21,6 +21,17 @@ jest.mocked(UIManager.getViewManagerConfig).mockImplementation((name) => {
     };
   }
   return { Commands: {} };
+});
+
+let mockCommandFn: jest.SpyInstance;
+
+beforeEach(() => {
+  mockCommandFn = jest.spyOn(UIManager, 'dispatchViewManagerCommand');
+  mockCommandFn.mockImplementation(() => {});
+});
+
+afterEach(() => {
+  mockCommandFn.mockRestore();
 });
 
 const testCallbackPassing = async (
@@ -139,11 +150,6 @@ test('Passing onTimePoint down works correctly', () => {
 });
 
 test('Player will autoplay without any props', () => {
-  const mockCommandFn = jest.fn();
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-expect-error
-  UIManager.dispatchViewManagerCommand = mockCommandFn;
-
   render(<IVSPlayer streamUrl={URL} />);
 
   expect(mockCommandFn).toHaveBeenCalled();
@@ -153,11 +159,6 @@ test('Player will autoplay without any props', () => {
 });
 
 test('Paused set to false wont play the video', () => {
-  const mockCommandFn = jest.fn();
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-expect-error
-  UIManager.dispatchViewManagerCommand = mockCommandFn;
-
   render(<IVSPlayer streamUrl={URL} paused />);
 
   expect(mockCommandFn).toHaveBeenCalled();
@@ -167,49 +168,36 @@ test('Paused set to false wont play the video', () => {
 });
 
 test('Using pause on ref calls pause on native component', () => {
-  const mockCommandFn = jest.fn();
   const ref = React.createRef<IVSPlayerRef>();
 
   render(<IVSPlayer streamUrl={URL} ref={ref} />);
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-expect-error
-  UIManager.dispatchViewManagerCommand = mockCommandFn;
   ref.current?.pause();
-
   expect(mockCommandFn).toHaveBeenCalled();
 
   // Checking if the second argument of the function is the "pause" command
-  expect(mockCommandFn.mock.calls[0][1]).toEqual('pause');
+  expect(mockCommandFn.mock.calls[1][1]).toEqual('pause');
 });
 
 test('Using play on ref calls play on native component', () => {
-  const mockCommandFn = jest.fn();
   const ref = React.createRef<IVSPlayerRef>();
 
   render(<IVSPlayer streamUrl={URL} ref={ref} />);
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-expect-error
-  UIManager.dispatchViewManagerCommand = mockCommandFn;
   ref.current?.pause();
   ref.current?.play();
 
-  expect(mockCommandFn).toHaveBeenCalledTimes(2);
-
-  // Checking if the second argument of the function is the "play" command
-  expect(mockCommandFn.mock.calls[1][1]).toEqual('play');
+  expect(mockCommandFn).toHaveBeenCalledTimes(3);
+  // Checking if the third argument of the function is the "play" command
+  // autoplay -> pause -> play
+  expect(mockCommandFn.mock.calls[2][1]).toEqual('play');
 });
 
 test('Using seekTo on ref calls seekTo on native component', () => {
-  const mockCommandFn = jest.fn();
   const ref = React.createRef<IVSPlayerRef>();
 
-  render(<IVSPlayer streamUrl={URL} ref={ref} />);
+  render(<IVSPlayer streamUrl={URL} ref={ref} autoplay={false} />);
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-expect-error
-  UIManager.dispatchViewManagerCommand = mockCommandFn;
   ref.current?.seekTo(10);
 
   expect(mockCommandFn).toHaveBeenCalled();
@@ -222,14 +210,10 @@ test('Using seekTo on ref calls seekTo on native component', () => {
 });
 
 test('Using togglePip on ref calls togglePip on native component', async () => {
-  const mockCommandFn = jest.fn();
   const ref = React.createRef<IVSPlayerRef>();
 
-  render(<IVSPlayer streamUrl={URL} ref={ref} />);
+  render(<IVSPlayer streamUrl={URL} ref={ref} autoplay={false} />);
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-expect-error
-  UIManager.dispatchViewManagerCommand = mockCommandFn;
   ref.current?.togglePip();
 
   expect(mockCommandFn).toHaveBeenCalled();
@@ -238,29 +222,17 @@ test('Using togglePip on ref calls togglePip on native component', async () => {
 });
 
 test('Using setOrigin on ref calls setOrigin on native component', () => {
-  const mockCommandFn = jest.fn();
   const ref = React.createRef<IVSPlayerRef>();
 
-  render(<IVSPlayer streamUrl={URL} ref={ref} />);
+  render(<IVSPlayer streamUrl={URL} ref={ref} autoplay={false} />);
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-expect-error
-  UIManager.dispatchViewManagerCommand = mockCommandFn;
   ref.current?.setOrigin('Access-Control-Allow-Origin');
+  expect(mockCommandFn).toHaveBeenCalled();
 });
 
 test('Autoplay when onLoad', async () => {
-  const mockCommandFn = jest.fn();
-  Platform.OS = 'android';
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-expect-error
-  UIManager.dispatchViewManagerCommand = mockCommandFn;
-
   const { findByTestId } = render(<IVSPlayer streamUrl={URL} />);
   const nativePlayer = await findByTestId('IVSPlayer');
-
-  // Clear any previous calls to the mock function
-  mockCommandFn.mockClear();
 
   // Now fire the event
   fireEvent(nativePlayer, 'onLoad', { nativeEvent: { duration: 10 } });
