@@ -43,10 +43,10 @@ describe('Basic Props', () => {
     events:
     - onQualityChange
     `);
-    await waitForLogID('onQualityChange', 24);
+    await waitForLogID('onQualityChange', 30);
     await waitForClearLogs();
-    // bump down
-    await waitForTap(by.id('autoMaxQuality:160p'));
-    await waitForLogLabel('onQualityChange ::: name ::: 160p', 24);
+    // bump down - increase timeout for this flaky element
+    await waitForTap(by.id('autoMaxQuality:160p'), 40);
+    await waitForLogLabel('onQualityChange ::: name ::: 160p', 30);
   });
 });

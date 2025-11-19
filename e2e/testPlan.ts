@@ -44,8 +44,13 @@ export const waitToBeVisible = async (
 };
 
 export const waitForTap = async (match: NativeMatcher, seconds?: number) => {
-  await waitToBeVisible(match, seconds);
-  await element(match).tap();
+  try {
+    await waitToBeVisible(match, seconds);
+    await element(match).tap();
+  } catch (error) {
+    console.log(`Failed to find element for tap: ${JSON.stringify(match)}`);
+    throw error;
+  }
 };
 
 export const waitForReplaceText = async (

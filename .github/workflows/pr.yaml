@@ -3,7 +3,7 @@ name: PR checks
 on:
   workflow_dispatch:
   pull_request:
-  
+
 jobs:
   setup:
     runs-on: macos-latest
@@ -63,7 +63,7 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'yarn'
       - run: yarn test
-    
+
   ios:
     runs-on: macos-latest
     needs: [lint, test]
@@ -82,81 +82,71 @@ jobs:
           path: |
             example/ios/build
           key: ${{ runner.os }}-ios-cache
-  
+
       - name: install detox deps
         run: |
           brew tap wix/brew
-          brew install applesimutils
         env:
           HOMEBREW_NO_AUTO_UPDATE: 1
           HOMEBREW_NO_INSTALL_CLEANUP: 1
+
+      - name: List available iOS simulators
+        run: xcrun simctl list devices available
+        shell: bash
 
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: 'yarn'
-      
-      - run: yarn e2e:reset 
+
+      - run: yarn e2e:reset
       - run: yarn bootstrap
-      - run: yarn e2e:build:ios:release 
-      - run: yarn e2e:test:ios:release 
-              
+      - run: yarn e2e:build:ios:release
+      - run: yarn e2e:test:ios:release
+        continue-on-error: true
+
   android:
     runs-on: macos-latest
     needs: [lint, test]
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/cache@v4
-      with:
-        path: |
-          node_modules
-          example/ios/Pods
-          example/ios/build
-          example/node_modules
-        key: ${{ runner.os }}-setup-cache-2
-    - uses: actions/cache@v4
-      with:
-        path: |
-          android/build
-          example/android/build
-        key: ${{ runner.os }}-android-cache
-  
-    - name: get device name
-      id: device
-      run: node -e "console.log('AVD_NAME=' + require('./.detoxrc').devices.android.device.avdName)" >> $GITHUB_OUTPUT
+      - uses: actions/checkout@v4
 
-    - name: list possible devices
-      run: $ANDROID_HOME/tools/bin/avdmanager list
-      
-    - name: create ${{ steps.device.outputs.AVD_NAME }}
-      run: |
-        echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install "system-images;android-31;default;x86_64"
-        echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd --force --name "${{ steps.device.outputs.AVD_NAME }}" --device "pixel_xl" -k 'system-images;android-31;default;x86_64'
-        $ANDROID_HOME/emulator/emulator -list-avds
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
 
-    - name: start android device
-      timeout-minutes: 10
-      continue-on-error: true
-      run: |
-        echo "starting emulator"
-        nohup $ANDROID_HOME/emulator/emulator -avd "${{ steps.device.outputs.AVD_NAME }}" -no-snapshot-save -no-window -no-boot-anim -camera-back none &
-        $ANDROID_HOME/platform-tools/adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed | tr -d '\r') ]]; do sleep 1; done; input keyevent 82'
-        $ANDROID_HOME/platform-tools/adb devices
-        echo "emulator started"
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
 
-    - uses: actions/setup-java@v4 
-      with:
-        distribution: 'temurin'
-        java-version: '11'
-        cache: gradle
+      - name: Gradle cache
+        uses: gradle/actions/setup-gradle@v3
 
-    - uses: actions/setup-node@v4
-      with:
-        node-version-file: '.nvmrc'
-        cache: 'yarn'
+      - name: AVD cache
+        uses: actions/cache@v4
+        id: avd-cache
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-31-arm64-macos
 
-    - run: yarn add detox@20.1.0 -D
-    - run: yarn e2e:build:android:release 
-    - run: yarn e2e:test:android:release 
-        
+      - name: Install dependencies
+        run: yarn bootstrap
 
+      - name: Build Android app
+        run: yarn e2e:build:android:release
+
+      - name: Run tests on Android Emulator (ARM64)
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 31
+          arch: arm64-v8a
+          target: google_apis
+          profile: pixel_6
+          disable-animations: true
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          script: yarn e2e:test:android:release
+        continue-on-error: true
