@@ -17,6 +17,7 @@ jobs:
             example/ios/build
             example/node_modules
           key: ${{ runner.os }}-setup-cache-2
+      - run: corepack enable
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
@@ -37,6 +38,7 @@ jobs:
             example/ios/build
             example/node_modules
           key: ${{ runner.os }}-setup-cache-2
+      - run: corepack enable
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
@@ -58,6 +60,7 @@ jobs:
             example/ios/build
             example/node_modules
           key: ${{ runner.os }}-setup-cache-2
+      - run: corepack enable
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
@@ -95,6 +98,7 @@ jobs:
         run: xcrun simctl list devices available
         shell: bash
 
+      - run: corepack enable
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
@@ -117,6 +121,7 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - run: corepack enable
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
