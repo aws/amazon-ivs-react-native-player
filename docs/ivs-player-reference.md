@@ -259,6 +259,13 @@ Callback that returns new quality that is used in video/stream playback.
 
 type: [`(quality: Quality) => void`](./types.md#Quality)
 
+### pipEnabled _(optional)_
+
+Value that enables picture in picture mode.
+
+default: `undefined`
+type: `boolean`
+
 ### onPipChange _(optional)_
 
 Callback that returns changes to the picture in picture state.

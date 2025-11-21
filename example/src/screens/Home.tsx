@@ -1,11 +1,11 @@
-import * as React from 'react';
-import { StyleSheet, View, ScrollView } from 'react-native';
-import { Card, Paragraph } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
+import * as React from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import Config from 'react-native-config';
+import { Card, Paragraph } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
-// @ts-expect-error these values come from .env file
-import { GIT_BRANCH, GIT_COMMIT } from '@env';
+
 import type { RootStackParamList } from '../App';
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
@@ -91,7 +91,7 @@ function Home() {
           <Card.Title title="Version" />
           <Card.Content>
             <Paragraph>
-              {GIT_BRANCH} @ {GIT_COMMIT}
+              {Config?.GIT_BRANCH} @ {Config?.GIT_COMMIT}
             </Paragraph>
           </Card.Content>
         </Card>

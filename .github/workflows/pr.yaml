@@ -17,10 +17,13 @@ jobs:
             example/ios/build
             example/node_modules
           key: ${{ runner.os }}-setup-cache-2
+      - run: corepack enable
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: 'yarn'
+
+      - run: yarn install --immutable
 
       - run: yarn bootstrap
 
@@ -37,11 +40,13 @@ jobs:
             example/ios/build
             example/node_modules
           key: ${{ runner.os }}-setup-cache-2
+      - run: corepack enable
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: 'yarn'
 
+      - run: yarn install --immutable
       - run: yarn lint
       - run: yarn typescript
 
@@ -58,10 +63,13 @@ jobs:
             example/ios/build
             example/node_modules
           key: ${{ runner.os }}-setup-cache-2
+      - run: corepack enable
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: 'yarn'
+
+      - run: yarn install --immutable
       - run: yarn test
 
   ios:
@@ -95,11 +103,13 @@ jobs:
         run: xcrun simctl list devices available
         shell: bash
 
+      - run: corepack enable
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: 'yarn'
 
+      - run: yarn install --immutable
       - run: yarn e2e:reset
       - run: yarn bootstrap
       - run: yarn e2e:build:ios:release
@@ -117,6 +127,7 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - run: corepack enable
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
@@ -135,6 +146,9 @@ jobs:
           key: avd-31-arm64-macos
 
       - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Bootstrap
         run: yarn bootstrap
 
       - name: Build Android app

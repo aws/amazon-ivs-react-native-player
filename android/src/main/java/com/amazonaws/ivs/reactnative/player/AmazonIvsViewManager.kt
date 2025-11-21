@@ -1,14 +1,19 @@
 package com.amazonaws.ivs.reactnative.player
 
-import android.util.Log
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.common.MapBuilder
+import com.facebook.react.module.annotations.ReactModule
 import com.facebook.react.uimanager.SimpleViewManager
 import com.facebook.react.uimanager.ThemedReactContext
-import com.facebook.react.uimanager.annotations.ReactProp
+import com.facebook.react.uimanager.ViewManagerDelegate
+import com.facebook.react.viewmanagers.AmazonIvsManagerDelegate
+import com.facebook.react.viewmanagers.AmazonIvsManagerInterface
 
-class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>() {
+@ReactModule(name = AmazonIvsViewManager.NAME)
+class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>(),
+  AmazonIvsManagerInterface<AmazonIvsView> {
+
   private enum class Commands {
     PRELOAD,
     LOAD_SOURCE,
@@ -20,11 +25,12 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>() {
     TOGGLE_PIP
   }
 
-  override fun getName() = "AmazonIvs"
+  private val mDelegate: ViewManagerDelegate<AmazonIvsView> = AmazonIvsManagerDelegate(this)
 
-  override fun getExportedCustomDirectEventTypeConstants(): MutableMap<String, Map<String, String>>? {
-    val builder: MapBuilder.Builder<String, Map<String, String>> = MapBuilder.builder<String, Map<String, String>>()
-    for (event in AmazonIvsView.Events.values()) {
+  override fun getExportedCustomDirectEventTypeConstants(): Map<String, Map<String, String>> {
+    val builder: MapBuilder.Builder<String, Map<String, String>> =
+      MapBuilder.builder<String, Map<String, String>>()
+    for (event in AmazonIvsView.Events.entries) {
       builder.put(event.toString(), MapBuilder.of("registrationName", event.toString()))
     }
     return builder.build().toMutableMap()
@@ -43,129 +49,198 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>() {
     )
   }
 
-  override fun receiveCommand(view: AmazonIvsView, commandType: Int, args: ReadableArray?) {
-    when (commandType) {
-      Commands.PRELOAD.ordinal -> {
-        val id = args?.getInt(0)
-        val url = args?.getString(1)
-        id?.let {
-          url?.let {
-            view.preload(id, url)
-          }
-        }
-      }
-      Commands.LOAD_SOURCE.ordinal -> {
-        val id = args?.getInt(0)
-        id?.let {
-          view.loadSource(id)
-        }
-      }
-      Commands.RELEASE_SOURCE.ordinal -> {
-        val id = args?.getInt(0)
-        id?.let {
-          view.releaseSource(id)
-        }
-      }
-      Commands.PLAY.ordinal -> view.play()
-      Commands.PAUSE.ordinal -> view.pause()
-      Commands.TOGGLE_PIP.ordinal -> view.togglePip()
-      Commands.SET_ORIGIN.ordinal -> {
-        args?.getString(0)?.let {
-          origin ->
-            view.setOrigin(origin)
-        }
-      }
-      Commands.SEEK_TO.ordinal -> {
-        args?.getDouble(0)?.let { position ->
-          view.seekTo(position)
-        }
-      }
-      else -> {
-      }
+  override fun receiveCommand(
+    view: AmazonIvsView,
+    commandId: String,
+    args: ReadableArray
+  ) {
+    mDelegate.receiveCommand(view, commandId, args)
+  }
+
+
+  override fun getDelegate(): ViewManagerDelegate<AmazonIvsView>? {
+    return mDelegate
+  }
+
+  override fun getName(): String {
+    return NAME
+  }
+
+  public override fun createViewInstance(context: ThemedReactContext): AmazonIvsView {
+    return AmazonIvsView(context)
+  }
+
+
+  override fun setMuted(
+    view: AmazonIvsView?,
+    value: Boolean
+  ) {
+    view?.setMuted(value)
+  }
+
+  override fun setLoop(
+    view: AmazonIvsView?,
+    value: Boolean
+  ) {
+    view?.setLooping(value)
+  }
+
+  override fun setStreamUrl(view: AmazonIvsView?, streamUrl: String?) {
+    if (streamUrl != null) {
+      view?.setStreamUrl(streamUrl);
     }
   }
 
-  @ReactProp(name = "streamUrl")
-  fun setStreamUrl(view: AmazonIvsView, streamUrl: String) {
-    view.setStreamUrl(streamUrl);
+  override fun setLiveLowLatency(
+    view: AmazonIvsView?,
+    value: Boolean
+  ) {
+    view?.setLiveLowLatency(value)
   }
 
-  @ReactProp(name = "loop")
-  fun setLooping(view: AmazonIvsView, shouldLoop: Boolean){
-    view.setLooping(shouldLoop);
+  override fun setRebufferToLive(
+    view: AmazonIvsView?,
+    value: Boolean
+  ) {
+    view?.setRebufferToLive(value)
   }
 
-  @ReactProp(name = "resizeMode")
-  fun setResizeMode(view: AmazonIvsView, mode: String) {
-    view.setResizeMode(mode);
+  override fun setPlaybackRate(
+    view: AmazonIvsView?,
+    value: Double
+  ) {
+    view?.setPlaybackRate(value)
   }
 
-  @ReactProp(name = "muted")
-  fun setMuted(view: AmazonIvsView, muted: Boolean) {
-    view.setMuted(muted)
+  override fun setLogLevel(
+    view: AmazonIvsView?,
+    value: Int
+  ) {
+    view?.setLogLevel(value)
   }
 
-  @ReactProp(name = "volume")
-  fun setVolume(view: AmazonIvsView, volume: Double) {
-    view.setVolume(volume)
+  override fun setResizeMode(
+    view: AmazonIvsView?,
+    value: String?
+  ) {
+    view?.setResizeMode(value)
   }
 
-  @ReactProp(name = "liveLowLatency")
-  fun setLiveLowLatency(view: AmazonIvsView, liveLowLatency: Boolean) {
-    view.setLiveLowLatency(liveLowLatency)
+  override fun setVolume(
+    view: AmazonIvsView?,
+    value: Double
+  ) {
+    view?.setVolume(value)
   }
 
-  @ReactProp(name = "rebufferToLive")
-  fun setRebufferToLive(view: AmazonIvsView, rebufferToLive: Boolean) {
-    view.setRebufferToLive(rebufferToLive)
+  override fun setQuality(
+    view: AmazonIvsView?,
+    value: ReadableMap?
+  ) {
+    view?.setQuality(value)
   }
 
-  @ReactProp(name = "playbackRate")
-  fun setPlaybackRate(view: AmazonIvsView, playbackRate: Double) {
-    view.setPlaybackRate(playbackRate)
+  override fun setAutoMaxQuality(
+    view: AmazonIvsView?,
+    value: ReadableMap?
+  ) {
+    view?.setAutoMaxQuality(value)
   }
 
-  @ReactProp(name = "logLevel")
-  fun setLogLevel(view: AmazonIvsView, logLevel: Double) {
-    view.setLogLevel(logLevel)
+  override fun setAutoQualityMode(
+    view: AmazonIvsView?,
+    value: Boolean
+  ) {
+    view?.setAutoQualityMode(value)
   }
 
-  @ReactProp(name = "quality")
-  fun setQuality(view: AmazonIvsView, quality: ReadableMap?) {
-    view.setQuality(quality)
+  override fun setBreakpoints(
+    view: AmazonIvsView?,
+    value: ReadableArray?
+  ) {
+    view?.setBreakpoints(value)
   }
 
-  @ReactProp(name = "autoMaxQuality")
-  fun setAutoMaxQuality(view: AmazonIvsView, quality: ReadableMap?) {
-    view.setAutoMaxQuality(quality)
+  override fun setMaxBitrate(
+    view: AmazonIvsView?,
+    value: Int
+  ) {
+    view?.setMaxBitrate(value)
   }
 
-  @ReactProp(name = "autoQualityMode")
-  fun setAutoQualityMode(view: AmazonIvsView, autoQualityMode: Boolean) {
-    view.setAutoQualityMode(autoQualityMode)
+  override fun setInitialBufferDuration(
+    view: AmazonIvsView?,
+    value: Double
+  ) {
+    view?.setInitialBufferDuration(value)
   }
 
-  @ReactProp(name = "pipEnabled")
-  fun setPipEnabled(view: AmazonIvsView, pipEnabled: Boolean) {
-    view.setPipEnabled(pipEnabled)
+  override fun setPipEnabled(
+    view: AmazonIvsView?,
+    value: Boolean
+  ) {
+    view?.setPipEnabled(value)
   }
 
-  @ReactProp(name = "maxBitrate")
-  fun setMaxBitrate(view: AmazonIvsView, bitrate: Double) {
-    view.setMaxBitrate(bitrate)
+  override fun setProgressInterval(
+    view: AmazonIvsView?,
+    value: Int
+  ) {
+    view?.setProgressInterval(value)
   }
 
-  @ReactProp(name = "initialBufferDuration")
-  fun setInitialBufferDuration(view: AmazonIvsView, duration: Double) {
-    view.setInitialBufferDuration(duration)
+  override fun preload(
+    view: AmazonIvsView?,
+    url: String,
+    sourceId: Int
+  ) {
+    view?.preload(sourceId, url)
   }
 
-  override fun createViewInstance(reactContext: ThemedReactContext): AmazonIvsView {
-    return AmazonIvsView(reactContext)
+  override fun loadSource(
+    view: AmazonIvsView?,
+    sourceId: Int
+  ) {
+    view?.loadSource(sourceId)
   }
 
-  override fun onDropViewInstance(view: AmazonIvsView) {
-    super.onDropViewInstance(view)
-    view.cleanup()
+  override fun releaseSource(
+    view: AmazonIvsView?,
+    sourceId: Int
+  ) {
+    view?.releaseSource(sourceId)
+  }
+
+
+  override fun play(view: AmazonIvsView?) {
+    view?.play()
+  }
+
+  override fun pause(view: AmazonIvsView?) {
+    view?.pause()
+  }
+
+  override fun seekTo(
+    view: AmazonIvsView?,
+    value: Double
+  ) {
+    view?.seekTo(value)
+  }
+
+  override fun setOrigin(
+    view: AmazonIvsView?,
+    value: String?
+  ) {
+    if (value != null) {
+      view?.setOrigin(value)
+    }
+  }
+
+  override fun togglePip(view: AmazonIvsView?) {
+    view?.togglePip()
+  }
+
+  companion object {
+    const val NAME = "AmazonIvs"
   }
 }

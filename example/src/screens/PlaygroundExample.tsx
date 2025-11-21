@@ -15,6 +15,7 @@ import {
   Text,
   Portal,
   Title,
+  Chip,
 } from 'react-native-paper';
 import { Platform } from 'react-native';
 import Slider from '@react-native-community/slider';
@@ -450,9 +451,16 @@ export default function PlaygroundExample() {
                     />
                   </SettingsItem>
                   <SettingsItem label="Breakpoints">
-                    <Button onPress={() => setBreakpoints(UPDATED_BREAKPOINTS)}>
-                      Add
-                    </Button>
+                    <View style={styles.breakPointContainer}>
+                      {breakpoints.map((breakpoint) => (
+                        <Chip key={breakpoint}>{breakpoint}</Chip>
+                      ))}
+                      <Button
+                        onPress={() => setBreakpoints(UPDATED_BREAKPOINTS)}
+                      >
+                        Add
+                      </Button>
+                    </View>
                   </SettingsItem>
                   <SettingsInputItem
                     label="origin"
@@ -513,9 +521,12 @@ const styles = StyleSheet.create({
   },
   settings: {
     padding: 15,
+  },
+  breakPointContainer: {
     flexDirection: 'row',
+    gap: 4,
     flexWrap: 'wrap',
-    alignItems: 'flex-start',
+    flex: 1,
   },
   settingsHeader: {
     backgroundColor: '#fff',

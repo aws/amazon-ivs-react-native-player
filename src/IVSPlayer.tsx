@@ -1,84 +1,26 @@
-import React, {
-  useCallback,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-} from 'react';
+import React, { useEffect, useImperativeHandle, useRef } from 'react';
 import {
-  requireNativeComponent,
-  ViewStyle,
-  StyleSheet,
-  UIManager,
-  findNodeHandle,
-  View,
-  NativeSyntheticEvent,
   Platform,
+  StyleSheet,
+  View,
+  type NativeSyntheticEvent,
+  type ViewStyle,
 } from 'react-native';
+import AmazonIvsViewNativeComponent, {
+  Commands,
+} from './AmazonIvsViewNativeComponent';
 import type { LogLevel, PlayerState } from './enums';
+import { createSourceWrapper } from './source';
 import type {
-  Quality,
+  IVSPlayerRef,
   PlayerData,
+  Quality,
+  ResizeMode,
+  Source,
   TextCue,
   TextMetadataCue,
   VideoData,
-  IVSPlayerRef,
-  ResizeMode,
-  Source,
 } from './types';
-import { createSourceWrapper } from './source';
-
-type IVSPlayerProps = {
-  style?: ViewStyle;
-  testID?: string;
-  ref?: React.RefObject<any>;
-  muted?: boolean;
-  loop?: boolean;
-  liveLowLatency?: boolean;
-  rebufferToLive?: boolean;
-  playbackRate?: number;
-  streamUrl?: string;
-  resizeMode?: ResizeMode;
-  logLevel?: LogLevel;
-  progressInterval?: number;
-  pipEnabled?: boolean;
-  volume?: number;
-  quality?: Quality | null;
-  autoMaxQuality?: Quality | null;
-  autoQualityMode?: boolean;
-  breakpoints?: number[];
-  maxBitrate?: number;
-  initialBufferDuration?: number;
-  onSeek?(event: NativeSyntheticEvent<{ position: number }>): void;
-  onData?(event: NativeSyntheticEvent<{ playerData: PlayerData }>): void;
-  onVideoStatistics?(
-    event: NativeSyntheticEvent<{ videoData: VideoData }>
-  ): void;
-  onPlayerStateChange?(
-    event: NativeSyntheticEvent<{ state: PlayerState }>
-  ): void;
-  onDurationChange?(
-    event: NativeSyntheticEvent<{ duration: number | null }>
-  ): void;
-  onQualityChange?(event: NativeSyntheticEvent<{ quality: Quality }>): void;
-  onPipChange?(event: NativeSyntheticEvent<{ active: boolean | string }>): void;
-  onRebuffering?(): void;
-  onLoadStart?(): void;
-  onLoad?(event: NativeSyntheticEvent<{ duration: number | null }>): void;
-  onLiveLatencyChange?(
-    event: NativeSyntheticEvent<{ liveLatency: number }>
-  ): void;
-  onTextCue?(event: NativeSyntheticEvent<{ textCue: TextCue }>): void;
-  onTextMetadataCue?(
-    event: NativeSyntheticEvent<{ textMetadataCue: TextMetadataCue }>
-  ): void;
-  onProgress?(event: NativeSyntheticEvent<{ position: number }>): void;
-  onError?(event: NativeSyntheticEvent<{ error: string }>): void;
-  onTimePoint?(event: NativeSyntheticEvent<{ position: number }>): void;
-};
-
-const VIEW_NAME = 'AmazonIvs';
-
-const IVSPlayer = requireNativeComponent<IVSPlayerProps>(VIEW_NAME);
 
 export type Props = {
   style?: ViewStyle;
@@ -174,79 +116,53 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
     const mediaPlayerRef = useRef(null);
     const initialized = useRef(false);
 
-    const preload = useCallback((url: string) => {
+    const preload = (url: string) => {
+      if (!mediaPlayerRef.current || !url) return null;
       const sourceWrapper = createSourceWrapper(url);
 
-      UIManager.dispatchViewManagerCommand(
-        findNodeHandle(mediaPlayerRef.current),
-
-        UIManager.getViewManagerConfig(VIEW_NAME).Commands.preload,
-        [sourceWrapper.getId(), sourceWrapper.getUri()]
+      Commands.preload(
+        mediaPlayerRef.current,
+        sourceWrapper.getUri(),
+        sourceWrapper.getId()
       );
 
       return sourceWrapper;
-    }, []);
+    };
 
-    const loadSource = useCallback((source: Source) => {
-      UIManager.dispatchViewManagerCommand(
-        findNodeHandle(mediaPlayerRef.current),
+    const loadSource = (source: Source) => {
+      if (!mediaPlayerRef.current || !source) return;
+      Commands.loadSource(mediaPlayerRef.current, source.getId());
+    };
 
-        UIManager.getViewManagerConfig(VIEW_NAME).Commands.loadSource,
-        [source?.getId()]
-      );
-    }, []);
+    const releaseSource = (source: Source) => {
+      if (!mediaPlayerRef.current || !source) return;
+      Commands.releaseSource(mediaPlayerRef.current, source.getId());
+    };
 
-    const releaseSource = useCallback((source: Source) => {
-      UIManager.dispatchViewManagerCommand(
-        findNodeHandle(mediaPlayerRef.current),
+    const play = () => {
+      if (!mediaPlayerRef.current) return;
+      Commands.play(mediaPlayerRef.current);
+    };
 
-        UIManager.getViewManagerConfig(VIEW_NAME).Commands.releaseSource,
-        [source?.getId()]
-      );
-    }, []);
+    const pause = () => {
+      if (!mediaPlayerRef.current) return;
+      Commands.pause(mediaPlayerRef.current);
+    };
 
-    const play = useCallback(() => {
-      UIManager.dispatchViewManagerCommand(
-        findNodeHandle(mediaPlayerRef.current),
-        UIManager.getViewManagerConfig(VIEW_NAME).Commands.play,
-        []
-      );
-    }, []);
+    const seekTo = (value: number) => {
+      if (!mediaPlayerRef.current) return;
+      Commands.seekTo(mediaPlayerRef.current, value);
+    };
 
-    const pause = useCallback(() => {
-      UIManager.dispatchViewManagerCommand(
-        findNodeHandle(mediaPlayerRef.current),
-        UIManager.getViewManagerConfig(VIEW_NAME).Commands.pause,
-        []
-      );
-    }, []);
+    const setOrigin = (value: string) => {
+      if (!mediaPlayerRef.current) return;
+      Commands.setOrigin(mediaPlayerRef.current, value);
+    };
 
-    const seekTo = useCallback((value: number) => {
-      UIManager.dispatchViewManagerCommand(
-        findNodeHandle(mediaPlayerRef.current),
-
-        UIManager.getViewManagerConfig(VIEW_NAME).Commands.seekTo,
-        [value]
-      );
-    }, []);
-
-    const setOrigin = useCallback((value: string) => {
-      UIManager.dispatchViewManagerCommand(
-        findNodeHandle(mediaPlayerRef.current),
-
-        UIManager.getViewManagerConfig(VIEW_NAME).Commands.setOrigin,
-        [value]
-      );
-    }, []);
-
-    const togglePip = useCallback(() => {
-      UIManager.dispatchViewManagerCommand(
-        findNodeHandle(mediaPlayerRef.current),
-
-        UIManager.getViewManagerConfig(VIEW_NAME).Commands.togglePip,
-        []
-      );
-    }, []);
+    const togglePip = () => {
+      if (!mediaPlayerRef.current) return;
+      Commands.togglePip(mediaPlayerRef.current);
+    };
 
     useEffect(() => {
       if (initialized.current || autoplay) {
@@ -308,15 +224,15 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
     const onQualityChangeHandler = (
       event: NativeSyntheticEvent<{ quality: Quality }>
     ) => {
-      const { quality: newQuality } = event.nativeEvent;
-      onQualityChange?.(newQuality);
+      const { quality } = event.nativeEvent;
+      onQualityChange?.(quality);
     };
 
     const onPipChangeHandler = (
-      event: NativeSyntheticEvent<{ active: string | boolean }>
+      event: NativeSyntheticEvent<{ active: boolean }>
     ) => {
       const { active } = event.nativeEvent;
-      onPipChange?.(active === true || active === 'true');
+      onPipChange?.(active);
     };
 
     const onLoadHandler = (
@@ -394,7 +310,7 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
 
     return (
       <View style={[styles.container, style]}>
-        <IVSPlayer
+        <AmazonIvsViewNativeComponent
           testID="IVSPlayer"
           muted={muted}
           loop={loop}
@@ -415,9 +331,7 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
           breakpoints={breakpoints}
           maxBitrate={maxBitrate}
           pipEnabled={pipEnabled}
-          onVideoStatistics={
-            onVideoStatistics ? onVideoStatisticsHandler : undefined
-          }
+          onVideoStatistics={onVideoStatisticsHandler}
           onData={onDataHandler}
           onSeek={onSeekHandler}
           onQualityChange={onQualityChangeHandler}

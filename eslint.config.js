@@ -73,6 +73,7 @@ module.exports = [
       '@typescript-eslint': tseslint,
     },
     rules: {
+      'react/react-in-jsx-scope': 'off',
       'import/no-unresolved': 'off',
       'import/no-extraneous-dependencies': 'off',
       'no-undef': 'off', // Turn off no-undef as TypeScript handles this
@@ -117,6 +118,7 @@ module.exports = [
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-unused-vars': 'off',
       '@typescript-eslint/no-unused-expressions': 'off',
+      '@typescript-eslint/no-empty-object-type': 'off',
     },
   },
 ];

@@ -9,19 +9,20 @@
     "start": "react-native start"
   },
   "dependencies": {
-    "@react-native-community/slider": "^4.4.3",
+    "@react-native-community/slider": "^5.1.0",
+    "@react-native-vector-icons/material-design-icons": "^12.4.0",
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/stack": "^6.3.20",
-    "react": "19.1.0",
-    "react-native": "0.81.5",
-    "react-native-config": "^1.5.1",
+    "react": "19.1.1",
+    "react-native": "0.82.1",
+    "react-native-config": "^1.6.0",
     "react-native-gesture-handler": "2.28.0",
     "react-native-orientation-locker": "^1.6.0",
     "react-native-paper": "^5.12.3",
-    "react-native-reanimated": "3.19.1",
+    "react-native-reanimated": "4.1.5",
     "react-native-safe-area-context": "5.6.1",
     "react-native-screens": "4.17.1",
-    "react-native-vector-icons": "^9.1.0"
+    "react-native-worklets": "^0.6.1"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
@@ -30,27 +31,17 @@
     "@react-native-community/cli": "20.0.0",
     "@react-native-community/cli-platform-android": "20.0.0",
     "@react-native-community/cli-platform-ios": "20.0.0",
-    "@react-native/babel-preset": "0.81.5",
-    "@react-native/eslint-config": "0.81.5",
-    "@react-native/metro-config": "0.81.5",
-    "@react-native/typescript-config": "0.81.5",
-    "@types/jest": "^29.5.13",
-    "@types/react": "^19.1.0",
-    "eslint": "^8.19.0",
-    "prettier": "2.8.8",
-    "typescript": "^5.8.3",
+    "@react-native/babel-preset": "0.82.1",
+    "@react-native/eslint-config": "0.82.1",
+    "@react-native/metro-config": "0.82.1",
+    "@react-native/typescript-config": "0.82.1",
+    "@types/react": "^19.1.1",
     "@types/react-native-dotenv": "^0.2.0",
     "@types/react-native-vector-icons": "^6.4.6",
-    "babel-plugin-module-resolver": "^5.0.0",
     "detox": "^20.45.0",
-    "react-native-dotenv": "^3.4.9"
-  },
-  "resolutions": {
-    "cross-spawn": "^7.0.3",
-    "ws": "^7.5.10",
-    "braces": "^3.0.3",
-    "esbuild": "^0.25.0",
-    "nanoid": "^3.3.8"
+    "react-native-builder-bob": "^0.40.13",
+    "react-native-dotenv": "^3.4.9",
+    "react-native-monorepo-config": "^0.1.9"
   },
   "engines": {
     "node": ">=20"

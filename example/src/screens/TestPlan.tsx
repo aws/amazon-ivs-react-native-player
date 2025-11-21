@@ -592,6 +592,8 @@ export function TestPlan() {
           spellCheck={false}
           autoCorrect={false}
           autoCapitalize="none"
+          returnKeyType="done"
+          submitBehavior={'blurAndSubmit'}
           onChangeText={setTestPlan}
         />
       </View>
