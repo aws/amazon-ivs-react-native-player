@@ -1,3 +1,5 @@
 
 # react-native-config codegen
 ios/tmp.xcconfig
+
+android/.kotlin/sessions

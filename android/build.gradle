@@ -1,7 +1,7 @@
 import groovy.json.JsonSlurper
 
 buildscript {
-  ext.getExtOrDefault = {name ->
+  ext.getExtOrDefault = { name ->
     return rootProject.ext.has(name) ? rootProject.ext.get(name) : project.properties['AmazonIvs_' + name]
   }
 
@@ -40,7 +40,14 @@ android {
     minSdkVersion getExtOrIntegerDefault("minSdkVersion")
     targetSdkVersion getExtOrIntegerDefault("targetSdkVersion")
     versionName sdk_version
-    manifestPlaceholders = [sdkVersion:sdk_version]
+    manifestPlaceholders = [sdkVersion: sdk_version]
+  }
+
+  packaging {
+    resources {
+      it.pickFirsts.add("**/libfbjni.so")
+      it.pickFirsts.add("**/libc++_shared.so")
+    }
   }
 
   buildFeatures {
