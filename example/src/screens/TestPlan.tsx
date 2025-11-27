@@ -1,5 +1,3 @@
-import * as React from 'react';
-import { parse } from 'yaml';
 import IVSPlayer, {
   IVSPlayerProps,
   IVSPlayerRef,
@@ -7,18 +5,20 @@ import IVSPlayer, {
   Quality,
   Source,
 } from 'amazon-ivs-react-native-player';
+import * as React from 'react';
 import { StyleSheet, View } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import {
   Button,
-  TextInput,
   Chip,
+  IconButton,
   Subheading,
   Text,
+  TextInput,
   ToggleButton,
-  IconButton,
 } from 'react-native-paper';
-import { ScrollView } from 'react-native-gesture-handler';
 import { proxy, useSnapshot } from 'valtio';
+import { parse } from 'yaml';
 
 type PlanProps = Record<string, any>;
 
@@ -279,6 +279,8 @@ export function TestPlan() {
 
   function runplan() {
     const plandata = parse(testPlan);
+    if (!plandata) return;
+
     Object.keys(plandata).forEach((name) => {
       const lname = name.toLowerCase();
       const value = plandata[name];

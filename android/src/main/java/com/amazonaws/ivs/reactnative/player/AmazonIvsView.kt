@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.util.Log
+import android.view.View
 import android.widget.FrameLayout
 import com.amazonaws.ivs.player.Cue
 import com.amazonaws.ivs.player.MediaPlayer
@@ -51,6 +52,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
   private var lastPosition: Long = 0
 
   private var progressInterval: Long = 1000
+  private var wasPlayingBeforeBackground: Boolean = false
 
 
   private val eventDispatcher: EventDispatcher
@@ -85,6 +87,15 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     eventDispatcher = getEventDispatcherForReactTag(context, id)!!
 
     context.addLifecycleEventListener(this)
+
+    playerView?.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+      override fun onViewAttachedToWindow(v: View) {
+      }
+
+      override fun onViewDetachedFromWindow(v: View) {
+        playerView?.player?.pause()
+      }
+    })
 
     playerListener = object : Player.Listener() {
       override fun onStateChanged(state: Player.State) {
@@ -434,6 +445,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
 
   fun onPlayerStateChange(state: Player.State) {
     val reactContext = context as ReactContext
+    this.keepScreenOn = (state == Player.State.PLAYING || state == Player.State.BUFFERING)
 
     when (state) {
       Player.State.PLAYING -> {
@@ -701,12 +713,24 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
 
   override fun onHostResume() {
     isInBackground = false
+
+    if (wasPlayingBeforeBackground) {
+      player?.play()
+      wasPlayingBeforeBackground = false
+    }
   }
 
   override fun onHostPause() {
     if (pipEnabled) {
       isInBackground = true
       togglePip()
+    } else {
+      if (player?.state == Player.State.PLAYING || player?.state == Player.State.BUFFERING) {
+        wasPlayingBeforeBackground = true
+        player?.pause()
+      } else {
+        wasPlayingBeforeBackground = false
+      }
     }
   }
 
