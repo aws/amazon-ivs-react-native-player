@@ -38,6 +38,7 @@ import UIKit
 
   private var _pipController: Any? = nil
   private var isPipActive: Bool = false
+  private var wasPlayingBeforeBackground: Bool = false
 
   @available(iOS 15, *)
   private var pipController: AVPictureInPictureController? {
@@ -77,6 +78,35 @@ import UIKit
     player.delegate = self
     self.playerView.player = player
     preparePictureInPicture()
+    addApplicationLifecycleObservers()
+  }
+
+  private func addApplicationLifecycleObservers() {
+    NotificationCenter.default.addObserver(
+      self,
+      selector: #selector(applicationDidEnterBackground(notification:)),
+      name: UIApplication.didEnterBackgroundNotification,
+      object: nil
+    )
+    NotificationCenter.default.addObserver(
+      self,
+      selector: #selector(applicationDidBecomeActive(notification:)),
+      name: UIApplication.didBecomeActiveNotification,
+      object: nil
+    )
+  }
+
+  private func removeApplicationLifecycleObservers() {
+    NotificationCenter.default.removeObserver(
+      self,
+      name: UIApplication.didEnterBackgroundNotification,
+      object: nil
+    )
+    NotificationCenter.default.removeObserver(
+      self,
+      name: UIApplication.didBecomeActiveNotification,
+      object: nil
+    )
   }
 
   deinit {
@@ -84,6 +114,14 @@ import UIKit
     self.removeProgressObserver()
     self.removePlayerObserver()
     self.removeTimePointObserver()
+    self.removeApplicationLifecycleObservers()
+  }
+
+  override public func didMoveToWindow() {
+    super.didMoveToWindow()
+    if self.window == nil {
+      self.player.pause()
+    }
   }
 
   func load(urlString: String) {
@@ -268,6 +306,9 @@ import UIKit
   }
 
   public func play() {
+    if UIApplication.shared.applicationState == .background && pipEnabled == false {
+      return
+    }
     player.play()
   }
 
@@ -561,7 +602,32 @@ import UIKit
     self.pipController = pipController
     pipController.canStartPictureInPictureAutomaticallyFromInline =
       self.pipEnabled
+  }
 
+  func applicationDidEnterBackground(notification: Notification) {
+    if isPipActive {
+      wasPlayingBeforeBackground = false
+      return
+    }
+
+    if player.state == .playing || player.state == .buffering {
+      wasPlayingBeforeBackground = true
+      pause()
+    } else {
+      wasPlayingBeforeBackground = false
+    }
+  }
+
+  func applicationDidBecomeActive(notification: Notification) {
+    if isPipActive {
+      return
+    }
+
+    if wasPlayingBeforeBackground {
+      play()
+    }
+
+    wasPlayingBeforeBackground = false
   }
 }
 @available(iOS 15, *)

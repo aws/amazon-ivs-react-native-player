@@ -211,6 +211,8 @@ Value that specifies how often `onProgress` callback should be called in seconds
 
 default: `1`
 type: `number`
+min: `1`
+max: `99999999`
 
 ### onTimePoint _(optional)_
 

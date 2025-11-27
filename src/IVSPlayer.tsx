@@ -1,4 +1,4 @@
-import React, { useEffect, useImperativeHandle, useRef } from 'react';
+import React, { useEffect, useImperativeHandle, useMemo, useRef } from 'react';
 import {
   Platform,
   StyleSheet,
@@ -21,6 +21,8 @@ import type {
   TextMetadataCue,
   VideoData,
 } from './types';
+
+const MAX_PROGRESS_INTERVAL = 99_999_999;
 
 export type Props = {
   style?: ViewStyle;
@@ -308,6 +310,14 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
       onTimePoint?.(position);
     };
 
+    const constrainedProgressInterval = useMemo(() => {
+      if (!progressInterval || progressInterval < 1) {
+        return 1;
+      }
+
+      return Math.min(progressInterval, MAX_PROGRESS_INTERVAL);
+    }, [progressInterval]);
+
     return (
       <View style={[styles.container, style]}>
         <AmazonIvsViewNativeComponent
@@ -322,7 +332,7 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
           streamUrl={streamUrl}
           logLevel={logLevel}
           resizeMode={resizeMode}
-          progressInterval={progressInterval}
+          progressInterval={constrainedProgressInterval}
           volume={volume}
           quality={quality}
           initialBufferDuration={initialBufferDuration}
