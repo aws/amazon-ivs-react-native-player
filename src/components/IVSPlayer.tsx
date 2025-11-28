@@ -1,4 +1,10 @@
-import React, { useEffect, useImperativeHandle, useMemo, useRef } from 'react';
+import React, {
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   Platform,
   StyleSheet,
@@ -6,11 +12,6 @@ import {
   type NativeSyntheticEvent,
   type ViewStyle,
 } from 'react-native';
-import AmazonIvsViewNativeComponent, {
-  Commands,
-} from './AmazonIvsViewNativeComponent';
-import type { LogLevel, PlayerState } from './enums';
-import { createSourceWrapper } from './source';
 import type {
   IVSPlayerRef,
   PlayerData,
@@ -20,7 +21,13 @@ import type {
   TextCue,
   TextMetadataCue,
   VideoData,
-} from './types';
+} from '../types';
+import type { LogLevel, PlayerState } from '../types/enums';
+import { createSourceWrapper } from '../types/source';
+import AmazonIvsViewNativeComponent, {
+  Commands,
+} from './AmazonIvsViewNativeComponent';
+import { ErrorNotification } from './ErrorNotification';
 
 const MAX_PROGRESS_INTERVAL = 99_999_999;
 
@@ -46,6 +53,7 @@ export type Props = {
   maxBitrate?: number;
   initialBufferDuration?: number;
   pipEnabled?: boolean;
+  showErrorMessage?: boolean;
   onSeek?(position: number): void;
   onData?(data: PlayerData): void;
   onVideoStatistics?(data: VideoData): void;
@@ -95,6 +103,7 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
       breakpoints = [],
       maxBitrate,
       initialBufferDuration,
+      showErrorMessage,
       onSeek,
       onData,
       onVideoStatistics,
@@ -117,6 +126,7 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
   ) => {
     const mediaPlayerRef = useRef(null);
     const initialized = useRef(false);
+    const [errorMessage, setErrorMessage] = useState<string>();
 
     const preload = (url: string) => {
       if (!mediaPlayerRef.current || !url) return null;
@@ -300,6 +310,13 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
 
     const onErrorHandler = (event: NativeSyntheticEvent<{ error: string }>) => {
       const { error } = event.nativeEvent;
+
+      if (showErrorMessage) {
+        setErrorMessage(error);
+        setTimeout(() => {
+          setErrorMessage(null);
+        }, 5000);
+      }
       onError?.(error);
     };
 
@@ -320,6 +337,7 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
 
     return (
       <View style={[styles.container, style]}>
+        <ErrorNotification message={errorMessage} />
         <AmazonIvsViewNativeComponent
           testID="IVSPlayer"
           muted={muted}

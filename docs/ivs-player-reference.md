@@ -268,6 +268,13 @@ Value that enables picture in picture mode.
 default: `undefined`
 type: `boolean`
 
+### showErrorMessage _(optional)_
+
+Show banner on error
+
+default: `undefined`
+type: `boolean`
+
 ### onPipChange _(optional)_
 
 Callback that returns changes to the picture in picture state.

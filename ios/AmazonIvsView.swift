@@ -117,14 +117,11 @@ import UIKit
     self.removeApplicationLifecycleObservers()
   }
 
-  override public func didMoveToWindow() {
-    super.didMoveToWindow()
-    if self.window == nil {
-      self.player.pause()
-    }
-  }
-
   func load(urlString: String) {
+    if self.playerView.player == nil {
+      self.playerView.player = self.player
+    }
+
     finishedLoading = false
     let url = URL(string: urlString)
     self.onLoadStart?()
@@ -306,7 +303,9 @@ import UIKit
   }
 
   public func play() {
-    if UIApplication.shared.applicationState == .background && pipEnabled == false {
+    if UIApplication.shared.applicationState == .background
+      && pipEnabled == false
+    {
       return
     }
     player.play()
@@ -572,6 +571,9 @@ import UIKit
 
   public func player(_ player: IVSPlayer, didFailWithError error: Error) {
     onError?(["error": error.localizedDescription])
+
+    player.pause()
+    self.playerView.player = nil
   }
 
   private func preparePictureInPicture() {

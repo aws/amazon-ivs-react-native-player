@@ -1,6 +1,6 @@
-import * as React from 'react';
-import { useState, useCallback, useEffect } from 'react';
-import { Dimensions, StyleSheet, View, ScrollView } from 'react-native';
+import Slider from '@react-native-community/slider';
+import { useNavigation } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import IVSPlayer, {
   IVSPlayerRef,
   LogLevel,
@@ -8,28 +8,33 @@ import IVSPlayer, {
   Quality,
   ResizeMode,
 } from 'amazon-ivs-react-native-player';
+import * as React from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
-  IconButton,
+  Dimensions,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
+import {
   ActivityIndicator,
   Button,
-  Text,
-  Portal,
-  Title,
   Chip,
+  IconButton,
+  Portal,
+  Text,
+  Title,
 } from 'react-native-paper';
-import { Platform } from 'react-native';
-import Slider from '@react-native-community/slider';
-import type { StackNavigationProp } from '@react-navigation/stack';
-import { useNavigation } from '@react-navigation/native';
-import { parseSecondsToString } from '../helpers';
+import type { RootStackParamList } from '../App';
+import LogLevelPicker from '../components/LogLevelPicker';
+import OptionPicker from '../components/OptionPicker';
+import SettingsInputItem from '../components/SettingsInputItem';
 import SettingsItem from '../components/SettingsItem';
 import SettingsSliderItem from '../components/SettingsSliderItem';
-import LogLevelPicker from '../components/LogLevelPicker';
-import { Position, URL } from '../constants';
-import SettingsInputItem from '../components/SettingsInputItem';
 import SettingsSwitchItem from '../components/SettingsSwitchItem';
-import type { RootStackParamList } from '../App';
-import OptionPicker from '../components/OptionPicker';
+import { Position, URL } from '../constants';
+import { parseSecondsToString } from '../helpers';
 import useAppState from '../useAppState';
 
 const INITIAL_PLAYBACK_RATE = 1;
@@ -95,6 +100,7 @@ export default function PlaygroundExample() {
   const [resizeMode, setResizeMode] = useState<ResizeModeOption | null>(
     RESIZE_MODES[1]
   );
+  const [showErrorMessage, setShowErrorMessage] = useState(false);
 
   useAppState({
     onBackground: () => {
@@ -233,6 +239,7 @@ export default function PlaygroundExample() {
           onVideoStatistics={(video) => console.log('onVideoStatistics', video)}
           onError={(error) => console.log('error', error)}
           onTimePoint={(timePoint) => console.log('time point', timePoint)}
+          showErrorMessage={showErrorMessage}
         >
           {orientation === Position.PORTRAIT ? (
             <>
@@ -421,6 +428,12 @@ export default function PlaygroundExample() {
                     value={pauseInBackground}
                     onValueChange={setPauseInBackground}
                     testID="pauseInBackground"
+                  />
+                  <SettingsSwitchItem
+                    label="Show error message"
+                    value={showErrorMessage}
+                    onValueChange={setShowErrorMessage}
+                    testID="showErrorMessage"
                   />
                   <SettingsItem label="Log Level" testID="logLevelPicker">
                     <LogLevelPicker

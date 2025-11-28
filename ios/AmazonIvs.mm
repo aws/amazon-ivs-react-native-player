@@ -28,6 +28,12 @@ using namespace facebook::react;
   return concreteComponentDescriptorProvider<AmazonIvsComponentDescriptor>();
 }
 
+// disable view recycling otherwise AV resourses fail to load on recycled view
++ (BOOL)shouldBeRecycled
+{
+  return NO;
+}
+
 - (instancetype)initWithFrame:(CGRect)frame {
   if (self = [super initWithFrame:frame]) {
     static const auto defaultProps = std::make_shared<const AmazonIvsProps>();
