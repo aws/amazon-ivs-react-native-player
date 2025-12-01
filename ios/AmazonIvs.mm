@@ -202,6 +202,10 @@ using namespace facebook::react;
   if (oldViewProps.progressInterval != newViewProps.progressInterval) {
     _ivsView.progressInterval = @(newViewProps.progressInterval);
   }
+  
+  if (oldViewProps.playInBackground != newViewProps.playInBackground) {
+    _ivsView.playInBackground = newViewProps.playInBackground;
+  }
 
   [super updateProps:props oldProps:oldProps];
 }

@@ -179,6 +179,18 @@ import UIKit
     }
   }
 
+  public var playInBackground: Bool = false {
+    didSet {
+      if playInBackground {
+        try? AVAudioSession.sharedInstance().setCategory(
+          .playback,
+          mode: .moviePlayback
+        )
+        try? AVAudioSession.sharedInstance().setActive(true)
+      }
+    }
+  }
+
   public var pipEnabled: Bool {
     didSet {
       guard #available(iOS 15, *),
@@ -609,6 +621,10 @@ import UIKit
   func applicationDidEnterBackground(notification: Notification) {
     if isPipActive {
       wasPlayingBeforeBackground = false
+      return
+    }
+
+    if playInBackground {
       return
     }
 

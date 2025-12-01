@@ -268,6 +268,44 @@ Value that enables picture in picture mode.
 default: `undefined`
 type: `boolean`
 
+> **Note:** To support Picture-in-Picture on iOS, you must enable **Background Modes** in your Xcode project settings.
+
+### playInBackground _(optional)_
+
+Value that enables stream playing in background.
+
+> **Note:** To support background play on iOS, you must enable **Background Modes** in your Xcode project settings.
+
+> **Note:** To enable background play on Android, you must add the following permissions to your `AndroidManifest.xml`:
+>
+> ```xml
+> <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+> <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+> <uses-permission android:name="android.permission.WAKE_LOCK" />
+> <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+> ```
+
+default: `false`
+type: `boolean`
+
+### notificationTitle _(optional)_
+
+The main title displayed in the system notification tray when the app is running in the background.
+
+Android only
+
+default: `Player`
+type: `string`
+
+### notificationText _(optional)_
+
+The description text displayed in the system notification tray.
+
+Android only
+
+default: Dynamically changes based on state ("Playing" when active, "Paused" when inactive)
+type: `string`
+
 ### showErrorMessage _(optional)_
 
 Show banner on error
