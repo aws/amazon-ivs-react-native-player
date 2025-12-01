@@ -37,6 +37,9 @@ export interface NativeProps extends ViewProps {
   initialBufferDuration?: Double;
   pipEnabled?: boolean;
   progressInterval?: Int32;
+  playInBackground?: boolean;
+  notificationTitle?: string;
+  notificationText?: string;
   onLoadStart?: DirectEventHandler<{}>;
   onVideoStatistics?: DirectEventHandler<{
     videoData: {

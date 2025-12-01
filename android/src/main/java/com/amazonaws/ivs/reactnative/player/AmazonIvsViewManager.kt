@@ -189,6 +189,27 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>(),
     view?.setProgressInterval(value)
   }
 
+  override fun setPlayInBackground(
+    view: AmazonIvsView?,
+    value: Boolean
+  ) {
+    view?.setPlayInBackground(value)
+  }
+
+  override fun setNotificationTitle(
+    view: AmazonIvsView?,
+    value: String?
+  ) {
+    view?.setNotificationTitle(value)
+  }
+
+  override fun setNotificationText(
+    view: AmazonIvsView?,
+    value: String?
+  ) {
+    view?.setNotificationText(value)
+  }
+
   override fun preload(
     view: AmazonIvsView?,
     url: String,

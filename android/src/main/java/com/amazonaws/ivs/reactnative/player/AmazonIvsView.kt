@@ -1,13 +1,20 @@
 package com.amazonaws.ivs.reactnative.player
 
+import android.Manifest
 import android.app.Activity
 import android.app.PictureInPictureParams
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.amazonaws.ivs.player.Cue
 import com.amazonaws.ivs.player.MediaPlayer
 import com.amazonaws.ivs.player.Player
@@ -37,6 +44,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
   private var player: Player? = null
   private var streamUri: Uri? = null
   private val playerListener: Player.Listener?
+  private var controlReceiver: BroadcastReceiver? = null
 
   var playerObserver: Timer? = null
   private var lastLiveLatency: Long? = null
@@ -53,6 +61,9 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
 
   private var progressInterval: Long = 1000
   private var wasPlayingBeforeBackground: Boolean = false
+  private var playInBackground: Boolean = false
+  private var notificationTitle: String = ""
+  private var notificationText: String = ""
 
 
   private val eventDispatcher: EventDispatcher
@@ -93,7 +104,9 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
       }
 
       override fun onViewDetachedFromWindow(v: View) {
-        playerView?.player?.pause()
+        if (!playInBackground) {
+          playerView?.player?.pause()
+        }
       }
     })
 
@@ -135,6 +148,26 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
       }
     }
 
+    controlReceiver = object : BroadcastReceiver() {
+      override fun onReceive(context: Context?, intent: Intent?) {
+        val action = intent?.getStringExtra("action")
+        if (action == "pause") {
+          player?.pause()
+          if (playInBackground) startBackgroundService(false)
+        } else if (action == "play") {
+          player?.play()
+          if (playInBackground) startBackgroundService(true)
+        }
+      }
+    }
+
+    val filter = IntentFilter("IVS_PLAYER_CONTROL")
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      context.registerReceiver(controlReceiver, filter, Context.RECEIVER_EXPORTED)
+    } else {
+      context.registerReceiver(controlReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
+    }
+
     player?.addListener(playerListener);
     addView(playerView)
 
@@ -151,11 +184,29 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     }
   }
 
+  private fun startBackgroundService(isPlaying: Boolean) {
+    val context = context.applicationContext
+    val serviceIntent = Intent(context, IVSBackgroundService::class.java)
+    serviceIntent.putExtra(IVSBackgroundService.EXTRA_IS_PLAYING, isPlaying)
+    serviceIntent.putExtra(IVSBackgroundService.NOTIFICATION_TITLE, this.notificationTitle)
+    serviceIntent.putExtra(IVSBackgroundService.NOTIFICATION_TEXT, this.notificationText)
+
+    ContextCompat.startForegroundService(context, serviceIntent)
+  }
+
+  private fun stopBackgroundService() {
+    val context = context.applicationContext
+    val serviceIntent = Intent(context, IVSBackgroundService::class.java)
+    context.stopService(serviceIntent)
+  }
+
   fun setStreamUrl(streamUrl: String) {
     player?.let { player ->
       val reactContext = context as ReactContext
       val uri = Uri.parse(streamUrl);
       this.streamUri = uri;
+      checkAndRequestNotificationPermission()
+      playInBackground = true
 
       finishedLoading = false
       player.load(uri)
@@ -172,6 +223,29 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
 
   fun setMuted(muted: Boolean) {
     player?.isMuted = muted
+  }
+
+  fun setPlayInBackground(playInBackground: Boolean) {
+    if(playInBackground){
+      checkAndRequestNotificationPermission()
+    }
+    this.playInBackground = playInBackground
+  }
+
+  fun setNotificationTitle(notificationTitle: String?) {
+    this.notificationTitle = notificationTitle ?: ""
+
+    if (isInBackground && playInBackground) {
+      startBackgroundService(player?.state == Player.State.PLAYING)
+    }
+  }
+
+  fun setNotificationText(notificationText: String?) {
+    this.notificationText = notificationText ?: ""
+
+    if (isInBackground && playInBackground) {
+      startBackgroundService(player?.state == Player.State.PLAYING)
+    }
   }
 
   fun setLooping(shouldLoop: Boolean) {
@@ -713,6 +787,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
 
   override fun onHostResume() {
     isInBackground = false
+    stopBackgroundService()
 
     if (wasPlayingBeforeBackground) {
       player?.play()
@@ -725,6 +800,11 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
       isInBackground = true
       togglePip()
     } else {
+      if (playInBackground && player?.state == Player.State.PLAYING) {
+        startBackgroundService(true)
+        return
+      }
+
       if (player?.state == Player.State.PLAYING || player?.state == Player.State.BUFFERING) {
         wasPlayingBeforeBackground = true
         player?.pause()
@@ -739,6 +819,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
   }
 
   fun cleanup() {
+    stopBackgroundService()
     // Cleanup any remaining sources
     for (source in preloadSourceMap.values) {
       source.release()
@@ -751,6 +832,11 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
 
     playerObserver?.cancel()
     playerObserver = null
+
+    if (controlReceiver != null) {
+      context.unregisterReceiver(controlReceiver)
+      controlReceiver = null
+    }
   }
 
   fun TextCue.TextAlignment.toStringValue(): String {
@@ -758,6 +844,27 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
       TextCue.TextAlignment.START -> "start"
       TextCue.TextAlignment.MIDDLE -> "center"
       TextCue.TextAlignment.END -> "end"
+    }
+  }
+
+  private fun checkAndRequestNotificationPermission() {
+    if (Build.VERSION.SDK_INT >= 33) {
+      val reactContext = context as ReactContext
+      val activity = reactContext.currentActivity
+
+      if (ContextCompat.checkSelfPermission(
+          reactContext,
+          Manifest.permission.POST_NOTIFICATIONS
+        ) != PackageManager.PERMISSION_GRANTED
+      ) {
+        activity?.let {
+          ActivityCompat.requestPermissions(
+            it,
+            arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+            101
+          )
+        }
+      }
     }
   }
 

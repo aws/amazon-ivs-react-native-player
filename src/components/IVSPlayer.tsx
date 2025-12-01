@@ -54,6 +54,9 @@ export type Props = {
   initialBufferDuration?: number;
   pipEnabled?: boolean;
   showErrorMessage?: boolean;
+  playInBackground?: boolean;
+  notificationTitle?: string;
+  notificationText?: string;
   onSeek?(position: number): void;
   onData?(data: PlayerData): void;
   onVideoStatistics?(data: VideoData): void;
@@ -104,6 +107,9 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
       maxBitrate,
       initialBufferDuration,
       showErrorMessage,
+      playInBackground = false,
+      notificationTitle,
+      notificationText,
       onSeek,
       onData,
       onVideoStatistics,
@@ -359,6 +365,9 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
           breakpoints={breakpoints}
           maxBitrate={maxBitrate}
           pipEnabled={pipEnabled}
+          playInBackground={playInBackground}
+          notificationTitle={notificationTitle}
+          notificationText={notificationText}
           onVideoStatistics={onVideoStatisticsHandler}
           onData={onDataHandler}
           onSeek={onSeekHandler}

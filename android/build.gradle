@@ -92,4 +92,5 @@ dependencies {
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
   implementation "com.amazonaws:ivs-player:$ivs_version"
   implementation("com.squareup.okhttp3:okhttp:5.2.1")
+  implementation "androidx.media:media:1.6.0"
 }

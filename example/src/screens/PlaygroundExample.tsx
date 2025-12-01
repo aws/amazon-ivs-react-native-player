@@ -35,7 +35,6 @@ import SettingsSliderItem from '../components/SettingsSliderItem';
 import SettingsSwitchItem from '../components/SettingsSwitchItem';
 import { Position, URL } from '../constants';
 import { parseSecondsToString } from '../helpers';
-import useAppState from '../useAppState';
 
 const INITIAL_PLAYBACK_RATE = 1;
 const INITIAL_PROGRESS_INTERVAL = 1;
@@ -76,7 +75,7 @@ export default function PlaygroundExample() {
   const [url, setUrl] = useState(URL);
   const [origin, setOrigin] = useState('');
   const [muted, setMuted] = useState(false);
-  const [pauseInBackground, setPauseInBackground] = useState(false);
+  const [playInBackground, setPlayInBackground] = useState(false);
   const [manualQuality, setManualQuality] = useState<Quality | null>(null);
   const [detectedQuality, setDetectedQuality] = useState<Quality | null>(null);
   const [initialBufferDuration, setInitialBufferDuration] = useState(0.1);
@@ -101,15 +100,6 @@ export default function PlaygroundExample() {
     RESIZE_MODES[1]
   );
   const [showErrorMessage, setShowErrorMessage] = useState(false);
-
-  useAppState({
-    onBackground: () => {
-      pauseInBackground && setPaused(true);
-    },
-    onForeground: () => {
-      pauseInBackground && setPaused(false);
-    },
-  });
 
   const log = useCallback(
     (text: string) => {
@@ -188,6 +178,8 @@ export default function PlaygroundExample() {
           autoMaxQuality={autoMaxQuality}
           breakpoints={breakpoints}
           onSeek={(newPosition) => console.log('new position', newPosition)}
+          playInBackground={playInBackground}
+          notificationTitle="Playing in background"
           onPlayerStateChange={(state) => {
             if (state === PlayerState.Buffering) {
               log(`buffering at ${detectedQuality?.name}`);
@@ -424,9 +416,9 @@ export default function PlaygroundExample() {
                     testID="rebufferToLive"
                   />
                   <SettingsSwitchItem
-                    label="Pause in background"
-                    value={pauseInBackground}
-                    onValueChange={setPauseInBackground}
+                    label="Play in background"
+                    value={playInBackground}
+                    onValueChange={setPlayInBackground}
                     testID="pauseInBackground"
                   />
                   <SettingsSwitchItem
