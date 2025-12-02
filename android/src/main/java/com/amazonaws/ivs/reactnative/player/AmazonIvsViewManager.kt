@@ -184,7 +184,7 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>(),
 
   override fun setProgressInterval(
     view: AmazonIvsView?,
-    value: Int
+    value: Double
   ) {
     view?.setProgressInterval(value)
   }
