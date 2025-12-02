@@ -36,7 +36,7 @@ export interface NativeProps extends ViewProps {
   maxBitrate?: Int32;
   initialBufferDuration?: Double;
   pipEnabled?: boolean;
-  progressInterval?: Int32;
+  progressInterval?: Double;
   playInBackground?: boolean;
   notificationTitle?: string;
   notificationText?: string;

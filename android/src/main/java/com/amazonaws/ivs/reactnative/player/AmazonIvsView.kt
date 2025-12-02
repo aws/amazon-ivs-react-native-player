@@ -205,7 +205,6 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
       val reactContext = context as ReactContext
       val uri = Uri.parse(streamUrl);
       this.streamUri = uri;
-      checkAndRequestNotificationPermission()
       playInBackground = true
 
       finishedLoading = false
@@ -226,7 +225,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
   }
 
   fun setPlayInBackground(playInBackground: Boolean) {
-    if(playInBackground){
+    if (playInBackground) {
       checkAndRequestNotificationPermission()
     }
     this.playInBackground = playInBackground
@@ -772,7 +771,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     )
   }
 
-  fun setProgressInterval(progressInterval: Int) {
+  fun setProgressInterval(progressInterval: Double) {
     playerObserver?.cancel()
     playerObserver?.purge()
     playerObserver = Timer("observerInterval", false)

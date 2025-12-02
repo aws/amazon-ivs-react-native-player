@@ -29,7 +29,7 @@ import AmazonIvsViewNativeComponent, {
 } from './AmazonIvsViewNativeComponent';
 import { ErrorNotification } from './ErrorNotification';
 
-const MAX_PROGRESS_INTERVAL = 99_999_999;
+const MAX_PROGRESS_INTERVAL = 5;
 
 export type Props = {
   style?: ViewStyle;
@@ -98,7 +98,7 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
       playbackRate,
       pipEnabled,
       logLevel,
-      progressInterval,
+      progressInterval = 1,
       volume,
       quality,
       autoMaxQuality,
@@ -334,8 +334,8 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
     };
 
     const constrainedProgressInterval = useMemo(() => {
-      if (!progressInterval || progressInterval < 1) {
-        return 1;
+      if (!progressInterval || progressInterval <= 0.1) {
+        return 0.1;
       }
 
       return Math.min(progressInterval, MAX_PROGRESS_INTERVAL);
