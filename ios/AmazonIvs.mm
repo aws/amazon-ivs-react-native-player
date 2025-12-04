@@ -29,8 +29,7 @@ using namespace facebook::react;
 }
 
 // disable view recycling otherwise AV resourses fail to load on recycled view
-+ (BOOL)shouldBeRecycled
-{
++ (BOOL)shouldBeRecycled {
   return NO;
 }
 
@@ -111,6 +110,14 @@ using namespace facebook::react;
 
       _ivsView.onTimePoint = ^(NSDictionary *onTimePointPayload) {
         [weakSelf onTimePoint:onTimePointPayload];
+      };
+
+      _ivsView.onVideoSizeChange = ^(NSDictionary *onVideoSizeChangePayload) {
+        [weakSelf onVideoSizeChange:onVideoSizeChangePayload];
+      };
+
+      _ivsView.onSeekComplete = ^(NSDictionary *onSeekCompletePayload) {
+        [weakSelf onSeekComplete:onSeekCompletePayload];
       };
     }
 
@@ -205,6 +212,20 @@ using namespace facebook::react;
   
   if (oldViewProps.playInBackground != newViewProps.playInBackground) {
     _ivsView.playInBackground = newViewProps.playInBackground;
+  }
+
+  if (oldViewProps.networkRecoveryMode != newViewProps.networkRecoveryMode) {
+    _ivsView.networkRecoveryMode = @(newViewProps.networkRecoveryMode.c_str());
+  }
+
+  if (oldViewProps.maxVideoSize.size.width !=
+          newViewProps.maxVideoSize.size.width ||
+      oldViewProps.maxVideoSize.size.height !=
+          newViewProps.maxVideoSize.size.height) {
+    _ivsView.maxVideoSize = @{
+      @"width" : @(newViewProps.maxVideoSize.size.width),
+      @"height" : @(newViewProps.maxVideoSize.size.height)
+    };
   }
 
   [super updateProps:props oldProps:oldProps];
@@ -457,7 +478,6 @@ Class<RCTComponentViewProtocol> AmazonIvsViewCls(void) {
   const auto eventEmitter = [self getEventEmitter];
 
   double position = [onTimePointPayload[@"position"] doubleValue];
-  ;
 
   AmazonIvsEventEmitter::OnTimePoint eventData;
   eventData.position = position;
@@ -536,45 +556,51 @@ Class<RCTComponentViewProtocol> AmazonIvsViewCls(void) {
 
 - (void)onQualityChange:(NSDictionary *)onQualityChangePayload {
   const auto eventEmitter = [self getEventEmitter];
-  id qualityObj = onQualityChangePayload[@"quality"];
-
-  if (qualityObj == nil || qualityObj == [NSNull null]) {
-    return;
-  }
-
   AmazonIvsEventEmitter::OnQualityChange eventData;
-  NSDictionary *qualityData = (NSDictionary *)qualityObj;
 
-  AmazonIvsEventEmitter::OnQualityChangeQuality qualityStruct;
+  NSDictionary *qualityData = onQualityChangePayload[@"quality"];
 
-  id nameObj = qualityData[@"name"];
-  qualityStruct.name = (nameObj != [NSNull null]) ? [nameObj UTF8String] : "";
+  std::string name = [qualityData[@"name"] UTF8String] ?: "";
+  std::string codecs = [qualityData[@"codecs"] UTF8String] ?: "";
+  int bitrate = [qualityData[@"bitrate"] intValue];
+  double framerate = [qualityData[@"framerate"] doubleValue];
+  int width = [qualityData[@"width"] intValue];
+  int height = [qualityData[@"height"] intValue];
 
-  id codecsObj = qualityData[@"codecs"];
-  qualityStruct.codecs =
-      (codecsObj != [NSNull null]) ? [codecsObj UTF8String] : "";
-
-  id bitrateObj = qualityData[@"bitrate"];
-  qualityStruct.bitrate =
-      (bitrateObj != [NSNull null]) ? [bitrateObj intValue] : 0;
-
-  id framerateObj = qualityData[@"framerate"];
-  qualityStruct.framerate =
-      (framerateObj != [NSNull null]) ? [framerateObj doubleValue] : 0.0;
-
-  id widthObj = qualityData[@"width"];
-  qualityStruct.width = (widthObj != [NSNull null]) ? [widthObj intValue] : 0;
-
-  id heightObj = qualityData[@"height"];
-  qualityStruct.height =
-      (heightObj != [NSNull null]) ? [heightObj intValue] : 0;
-
-  eventData.quality = qualityStruct;
+  eventData.quality = {name, codecs, bitrate, framerate, width, height};
 
   if (eventEmitter != nullptr) {
     eventEmitter->onQualityChange(eventData);
   }
 }
+
+- (void)onSeekComplete:(NSDictionary *)onSeekCompletePayload {
+  const auto eventEmitter = [self getEventEmitter];
+  AmazonIvsEventEmitter::OnSeekComplete eventData;
+
+  BOOL success = [onSeekCompletePayload[@"success"] boolValue];
+  eventData.success = success;
+  
+  if (eventEmitter != nullptr) {
+    eventEmitter->onSeekComplete(eventData);
+  }
+}
+
+- (void)onVideoSizeChange:(NSDictionary *)onVideoSizeChangePayload {
+  const auto eventEmitter = [self getEventEmitter];
+  AmazonIvsEventEmitter::OnVideoSizeChange eventData;
+
+  NSDictionary *videoSize = onVideoSizeChangePayload[@"size"];
+
+  int width = [videoSize[@"width"] intValue];
+  int height = [videoSize[@"height"] intValue];
+  eventData.size = {width, height};
+
+  if (eventEmitter != nullptr) {
+    eventEmitter->onVideoSizeChange(eventData);
+  }
+}
+
 - (void)onLoad:(NSDictionary *)durationDict {
   const auto eventEmitter = [self getEventEmitter];
 

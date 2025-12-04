@@ -37,6 +37,8 @@ export interface NativeProps extends ViewProps {
   initialBufferDuration?: Double;
   pipEnabled?: boolean;
   progressInterval?: Double;
+  maxVideoSize?: { size: { width: Int32; height: Int32 } };
+  networkRecoveryMode?: string;
   playInBackground?: boolean;
   notificationTitle?: string;
   notificationText?: string;
@@ -102,6 +104,10 @@ export interface NativeProps extends ViewProps {
   onLoad?: DirectEventHandler<{ duration?: Double }>;
   onRebuffering?: DirectEventHandler<{}>;
   onTimePoint?: DirectEventHandler<{ position?: Double }>;
+  onVideoSizeChange?: DirectEventHandler<{
+    size: { width: Int32; height: Int32 };
+  }>;
+  onSeekComplete?: DirectEventHandler<{ success: boolean }>;
 }
 
 interface NativeCommands {

@@ -3,7 +3,7 @@
 This package implements native binding for Amazon IVS Player for iOS and Android Mobile Only. 
 | Android Mobile | iOS | Android TV | tvOS |
 | :-----: | :-: | :---: | :-: |
-|   SDK >= 21    | >= 13  |  **X**   | **X**   |
+|   SDK >= 24    | >= 15.1  |  **X**   | **X**   |
 
 ## Installation
 
