@@ -174,7 +174,9 @@ export default function PlaygroundExample() {
           progressInterval={progressInterval}
           volume={volume}
           autoQualityMode={autoQualityMode}
-          quality={manualQuality}
+          quality={{
+            target: manualQuality,
+          }}
           autoMaxQuality={autoMaxQuality}
           breakpoints={breakpoints}
           onSeek={(newPosition) => console.log('new position', newPosition)}

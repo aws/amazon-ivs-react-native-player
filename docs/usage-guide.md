@@ -46,6 +46,13 @@ You can also set the video volume or its quality using component props. The whol
 
 In order to set video quality, you need to get the list of available qualities that come from the `onData` callback.
 
+Optional `adaptive` flag:
+
+- `adaptive: false`: Hard-locks the player to the specific resolution. It disables auto-quality (ABR). Use this when a user explicitly selects a resolution (e.g., "1080p").
+
+- `adaptive: true`: Switches to the target resolution immediately but keeps auto-quality (ABR) enabled. The player may switch away from this resolution later if network conditions change.
+
+
 ```tsx
 import IVSPlayer, { Quality } from 'amazon-ivs-react-native';
 
@@ -56,7 +63,31 @@ export default function App() {
     <IVSPlayer
       streamUrl="https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8"
       onData={(data) => setQualities(data.qualities)}
-      quality={qualities[0]}
+      quality={{
+        target: qualities[0],
+        adaptive: true // Optional: defaults to true. Set to false to force manual mode.
+      }}
+    />
+  );
+}
+```
+
+## LIMITING MAXIMUM VIDEO SIZE
+
+You can limit the maximum video resolution chosen by the auto-quality algorithm using the `maxVideoSize` prop. This is useful for saving bandwidth or restricting quality on specific devices.
+
+```tsx
+import IVSPlayer, { Quality } from 'amazon-ivs-react-native';
+
+export default function App() {
+  const [qualities, setQualities] = useState<Quality[]>();
+
+  return (
+    <IVSPlayer
+      streamUrl="https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8"
+      maxVideoSize={{
+        size: { width: 1280, height: 720 },
+      }}
     />
   );
 }
@@ -129,6 +160,10 @@ You can find the full list of events in the [api-reference](./ivs-player-referen
   onTimePoint={(timePoint) => {
     console.log('time point', timePoint)
   }}
+  onVideoSizeChange={(videoSize) => {
+    console.log('video width', videoSize.size.width)
+    console.log('video height', videoSize.size.height)
+  }}
 />
 ```
 
@@ -153,7 +188,13 @@ export default function App() {
   };
 
   const handleSeekToPress = () => {
+    // Basic usage
     mediaPlayerRef?.current?.seekTo(15);
+
+    // OR usage with completion callback
+    mediaPlayerRef?.current?.seekTo(15, (success) => {
+      console.log('Seek finished, success:', success);
+    });
   };
 
     const handleTogglePipToPress = () => {

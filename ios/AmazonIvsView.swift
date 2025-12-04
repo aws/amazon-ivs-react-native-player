@@ -170,10 +170,13 @@ import UIKit
 
   public var quality: NSDictionary? {
     didSet {
-      guard let newQuality = findQuality(quality: quality) else {
+      let isAdaptive = quality?["adaptive"] as? Bool ?? true
+      let target = quality?["target"] as? NSDictionary
+      
+      guard let selectedQuality = findQuality(quality: target) else {
         return
       }
-      player.quality = newQuality
+      player.setQuality(selectedQuality, adaptive: isAdaptive)
     }
   }
 

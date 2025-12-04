@@ -174,8 +174,12 @@ using namespace facebook::react;
     _ivsView.volume = newViewProps.volume;
   }
 
-  if (oldViewProps.quality.name != newViewProps.quality.name) {
-    _ivsView.quality = DictionaryFromQuality(newViewProps.quality);
+  if (oldViewProps.quality.target.name != newViewProps.quality.target.name ||
+      oldViewProps.quality.adaptive != newViewProps.quality.adaptive) {
+    NSDictionary *target = DictionaryFromQuality(newViewProps.quality.target);
+
+    _ivsView.quality =
+        @{@"adaptive" : @(newViewProps.quality.adaptive), @"target" : target};
   }
 
   if (oldViewProps.autoMaxQuality.name != newViewProps.autoMaxQuality.name) {
@@ -209,7 +213,7 @@ using namespace facebook::react;
   if (oldViewProps.progressInterval != newViewProps.progressInterval) {
     _ivsView.progressInterval = @(newViewProps.progressInterval);
   }
-  
+
   if (oldViewProps.playInBackground != newViewProps.playInBackground) {
     _ivsView.playInBackground = newViewProps.playInBackground;
   }
@@ -558,19 +562,22 @@ Class<RCTComponentViewProtocol> AmazonIvsViewCls(void) {
   const auto eventEmitter = [self getEventEmitter];
   AmazonIvsEventEmitter::OnQualityChange eventData;
 
-  NSDictionary *qualityData = onQualityChangePayload[@"quality"];
+  id qualityObj = onQualityChangePayload[@"quality"];
 
-  std::string name = [qualityData[@"name"] UTF8String] ?: "";
-  std::string codecs = [qualityData[@"codecs"] UTF8String] ?: "";
-  int bitrate = [qualityData[@"bitrate"] intValue];
-  double framerate = [qualityData[@"framerate"] doubleValue];
-  int width = [qualityData[@"width"] intValue];
-  int height = [qualityData[@"height"] intValue];
+  if ([qualityObj isKindOfClass:[NSDictionary class]]) {
+    NSDictionary *qualityData = (NSDictionary *)qualityObj;
 
-  eventData.quality = {name, codecs, bitrate, framerate, width, height};
+    std::string name = [qualityData[@"name"] UTF8String] ?: "";
+    std::string codecs = [qualityData[@"codecs"] UTF8String] ?: "";
+    int bitrate = [qualityData[@"bitrate"] intValue];
+    double framerate = [qualityData[@"framerate"] doubleValue];
+    int width = [qualityData[@"width"] intValue];
+    int height = [qualityData[@"height"] intValue];
 
-  if (eventEmitter != nullptr) {
-    eventEmitter->onQualityChange(eventData);
+    eventData.quality = {name, codecs, bitrate, framerate, width, height};
+    if (eventEmitter != nullptr) {
+      eventEmitter->onQualityChange(eventData);
+    }
   }
 }
 
@@ -580,7 +587,7 @@ Class<RCTComponentViewProtocol> AmazonIvsViewCls(void) {
 
   BOOL success = [onSeekCompletePayload[@"success"] boolValue];
   eventData.success = success;
-  
+
   if (eventEmitter != nullptr) {
     eventEmitter->onSeekComplete(eventData);
   }

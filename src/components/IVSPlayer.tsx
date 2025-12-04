@@ -47,7 +47,10 @@ export type Props = {
   resizeMode?: ResizeMode;
   progressInterval?: number;
   volume?: number;
-  quality?: Quality | null;
+  quality?: {
+    target: Quality | null;
+    adaptive?: boolean;
+  };
   autoMaxQuality?: Quality | null;
   autoQualityMode?: boolean;
   breakpoints?: number[];
