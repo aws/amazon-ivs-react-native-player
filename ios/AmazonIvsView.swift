@@ -5,6 +5,7 @@ import UIKit
 
 @objcMembers public class AmazonIvsView: UIView, IVSPlayer.Delegate {
   public var onSeek: ((NSDictionary) -> Void)?
+  public var onSeekComplete: ((NSDictionary) -> Void)?
   public var onData: ((NSDictionary) -> Void)?
   public var onVideoStatistics: ((NSDictionary) -> Void)?
   public var onPlayerStateChange: ((NSDictionary) -> Void)?
@@ -20,6 +21,7 @@ import UIKit
   public var onProgress: ((NSDictionary) -> Void)?
   public var onTimePoint: ((NSDictionary?) -> Void)?
   public var onError: ((NSDictionary) -> Void)?
+  public var onVideoSizeChange: ((NSDictionary) -> Void)?
 
   private let player = IVSPlayer()
   private let playerView = IVSPlayerView()
@@ -168,7 +170,9 @@ import UIKit
 
   public var quality: NSDictionary? {
     didSet {
-      let newQuality = findQuality(quality: quality)
+      guard let newQuality = findQuality(quality: quality) else {
+        return
+      }
       player.quality = newQuality
     }
   }
@@ -294,6 +298,14 @@ import UIKit
     }
   }
 
+  public var networkRecoveryMode: String? {
+    didSet {
+      player.setNetworkRecoveryMode(
+        findNetworkRecoveryMode(mode: networkRecoveryMode)
+      )
+    }
+  }
+
   private func findResizeMode(mode: String?) -> AVLayerVideoGravity {
     switch mode {
     case "aspectFill":
@@ -304,6 +316,15 @@ import UIKit
       return AVLayerVideoGravity.resize
     default:
       return AVLayerVideoGravity.resizeAspect
+    }
+  }
+
+  public var maxVideoSize: NSDictionary? {
+    didSet {
+      guard let size = findSize(size: maxVideoSize) else {
+        return
+      }
+      player.setMaxVideoSize(size)
     }
   }
 
@@ -332,7 +353,9 @@ import UIKit
       position,
       preferredTimescale: 1_000_000
     )
-    player.seek(to: parsedTime)
+    player.seek(to: parsedTime) { [weak self] finished in
+      self?.onSeekComplete?(["success": finished])
+    }
   }
 
   public func setOrigin(origin: NSString) {
@@ -348,7 +371,7 @@ import UIKit
     }
   }
 
-  @objc public func loadSource(id: Int) {
+  public func loadSource(id: Int) {
     if let source = preloadSourceMap[id] {
       player.load(source.uri)
     }
@@ -423,6 +446,29 @@ import UIKit
     case IVSPlayer.State.idle: return "Idle"
     case IVSPlayer.State.ended: return "Ended"
     }
+  }
+
+  private func findNetworkRecoveryMode(mode: String?)
+    -> IVSPlayer.NetworkRecoveryMode
+  {
+    switch mode {
+    case "none":
+      return IVSPlayer.NetworkRecoveryMode.none
+    case "resume":
+      return IVSPlayer.NetworkRecoveryMode.resume
+    default:
+      return IVSPlayer.NetworkRecoveryMode.none
+    }
+  }
+
+  private func findSize(size: NSDictionary?) -> CGSize? {
+    guard let width = (size?["width"] as? NSNumber)?.doubleValue,
+      let height = (size?["height"] as? NSNumber)?.doubleValue
+    else {
+      return nil
+    }
+
+    return CGSize(width: width, height: height)
   }
 
   func addProgressObserver() {
@@ -570,11 +616,19 @@ import UIKit
         "type": cue.type.rawValue,
         "text": cue.text,
         "textDescription": cue.textDescription,
-
       ]
 
       onTextMetadataCue?(["textMetadataCue": textMetadataCue])
     }
+  }
+
+  public func player(_ player: IVSPlayer, didChangeVideoSize videoSize: CGSize)
+  {
+    let size = [
+      "width": Int(videoSize.width),
+      "height": Int(videoSize.height),
+    ]
+    onVideoSizeChange?(["size": size])
   }
 
   public func playerWillRebuffer(_ player: IVSPlayer) {

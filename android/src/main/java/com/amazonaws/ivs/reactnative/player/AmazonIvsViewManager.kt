@@ -189,6 +189,20 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>(),
     view?.setProgressInterval(value)
   }
 
+  override fun setMaxVideoSize(
+    view: AmazonIvsView?,
+    value: ReadableMap?
+  ) {
+    view?.setMaxVideoSize(value)
+  }
+
+  override fun setNetworkRecoveryMode(
+    view: AmazonIvsView?,
+    value: String?
+  ) {
+    view?.setNetworkRecoveryMode(value)
+  }
+
   override fun setPlayInBackground(
     view: AmazonIvsView?,
     value: Boolean
