@@ -307,9 +307,13 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
   }
 
   fun setQuality(quality: ReadableMap?) {
-    if (quality != null) {
-      findQuality(quality)?.let {
-        player?.quality = it
+    if (quality == null) return
+    val target = if (quality.hasKey("target")) quality.getMap("target") else null
+    val isAdaptive = if (quality.hasKey("adaptive")) quality.getBoolean("adaptive") else true
+
+    if (target != null) {
+      findQuality(target)?.let { selectedQuality->
+        player?.setQuality(selectedQuality, isAdaptive)
       }
     }
   }

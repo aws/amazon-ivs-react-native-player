@@ -29,7 +29,10 @@ export interface NativeProps extends ViewProps {
   logLevel?: Int32;
   resizeMode?: string;
   volume?: Double;
-  quality?: Quality | null;
+  quality?: {
+    target: Quality | null;
+    adaptive?: boolean;
+  };
   autoMaxQuality?: Quality | null;
   autoQualityMode?: boolean;
   breakpoints?: Int32[];
