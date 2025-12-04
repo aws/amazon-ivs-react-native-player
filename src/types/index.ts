@@ -48,9 +48,12 @@ export type IVSPlayerRef = {
   releaseSource: (source: Source) => void;
   play: () => void;
   pause: () => void;
-  seekTo: (position: number) => void;
+  seekTo: (value: number, callback?: (success: boolean) => void) => void;
   setOrigin: (origin: string) => void;
   togglePip: () => void;
+  getLiveLatency: () => number;
 };
 
 export type ResizeMode = 'aspectFill' | 'aspectFit' | 'aspectZoom';
+
+export type NetworkRecoveryMode = 'none' | 'resume';

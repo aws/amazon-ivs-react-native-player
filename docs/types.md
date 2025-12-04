@@ -75,6 +75,12 @@ export type TextMetadataCue = {
 export type ResizeMode = 'aspectFill' | 'aspectFit' | 'aspectZoom';
 ```
 
+## NetworkRecoveryMode
+
+```ts
+export type NetworkRecoveryMode = 'none' | 'resume';
+```
+
 ## Source
 
 ```ts

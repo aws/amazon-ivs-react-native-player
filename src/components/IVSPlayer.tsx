@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import type {
   IVSPlayerRef,
+  NetworkRecoveryMode,
   PlayerData,
   Quality,
   ResizeMode,
@@ -46,13 +47,18 @@ export type Props = {
   resizeMode?: ResizeMode;
   progressInterval?: number;
   volume?: number;
-  quality?: Quality | null;
+  quality?: {
+    target: Quality | null;
+    adaptive?: boolean;
+  };
   autoMaxQuality?: Quality | null;
   autoQualityMode?: boolean;
   breakpoints?: number[];
   maxBitrate?: number;
   initialBufferDuration?: number;
   pipEnabled?: boolean;
+  networkRecoveryMode?: NetworkRecoveryMode;
+  maxVideoSize?: { size: { width: number; height: number } };
   showErrorMessage?: boolean;
   playInBackground?: boolean;
   notificationTitle?: string;
@@ -73,6 +79,7 @@ export type Props = {
   onProgress?(progress: number): void;
   onError?(error: string): void;
   onTimePoint?(position: number): void;
+  onVideoSizeChange?(size: { width: number; height: number }): void;
   children?: React.ReactNode;
 };
 
@@ -106,6 +113,8 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
       breakpoints = [],
       maxBitrate,
       initialBufferDuration,
+      networkRecoveryMode,
+      maxVideoSize,
       showErrorMessage,
       playInBackground = false,
       notificationTitle,
@@ -126,12 +135,15 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
       onProgress,
       onError,
       onTimePoint,
+      onVideoSizeChange,
       children,
     },
     ref
   ) => {
     const mediaPlayerRef = useRef(null);
     const initialized = useRef(false);
+    const liveLatencyRef = useRef<number>(null);
+    const seekCallbackRef = useRef<((success: boolean) => void) | null>(null);
     const [errorMessage, setErrorMessage] = useState<string>();
 
     const preload = (url: string) => {
@@ -167,8 +179,11 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
       Commands.pause(mediaPlayerRef.current);
     };
 
-    const seekTo = (value: number) => {
+    const seekTo = (value: number, callback?: (success: boolean) => void) => {
       if (!mediaPlayerRef.current) return;
+      if (callback) {
+        seekCallbackRef.current = callback;
+      }
       Commands.seekTo(mediaPlayerRef.current, value);
     };
 
@@ -180,6 +195,10 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
     const togglePip = () => {
       if (!mediaPlayerRef.current) return;
       Commands.togglePip(mediaPlayerRef.current);
+    };
+
+    const getLiveLatency = () => {
+      return liveLatencyRef.current;
     };
 
     useEffect(() => {
@@ -204,6 +223,7 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
         seekTo,
         setOrigin,
         togglePip,
+        getLiveLatency,
       }),
       [
         preload,
@@ -214,6 +234,7 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
         seekTo,
         setOrigin,
         togglePip,
+        getLiveLatency,
       ]
     );
 
@@ -272,6 +293,7 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
       event: NativeSyntheticEvent<{ liveLatency: number }>
     ) => {
       const { liveLatency } = event.nativeEvent;
+      liveLatencyRef.current = liveLatency;
       onLiveLatencyChange?.(liveLatency);
     };
 
@@ -333,6 +355,24 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
       onTimePoint?.(position);
     };
 
+    const onVideoSizeChangeHandler = (
+      event: NativeSyntheticEvent<{ size: { width: number; height: number } }>
+    ) => {
+      const { size } = event.nativeEvent;
+      onVideoSizeChange?.(size);
+    };
+
+    const onSeekCompleteHandler = (
+      event: NativeSyntheticEvent<{ success: boolean }>
+    ) => {
+      const { success } = event.nativeEvent;
+
+      if (seekCallbackRef.current) {
+        seekCallbackRef.current(success);
+        seekCallbackRef.current = null;
+      }
+    };
+
     const constrainedProgressInterval = useMemo(() => {
       if (!progressInterval || progressInterval <= 0.1) {
         return 0.1;
@@ -368,6 +408,8 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
           playInBackground={playInBackground}
           notificationTitle={notificationTitle}
           notificationText={notificationText}
+          networkRecoveryMode={networkRecoveryMode}
+          maxVideoSize={maxVideoSize}
           onVideoStatistics={onVideoStatisticsHandler}
           onData={onDataHandler}
           onSeek={onSeekHandler}
@@ -381,11 +423,11 @@ const IVSPlayerContainer = React.forwardRef<IVSPlayerRef, Props>(
           onTextCue={onTextCueHandler}
           onTextMetadataCue={onTextMetadataCueHandler}
           onProgress={onProgressHandler}
-          onLiveLatencyChange={
-            onLiveLatencyChange ? onLiveLatencyChangeHandler : undefined
-          }
+          onLiveLatencyChange={onLiveLatencyChangeHandler}
           onError={onErrorHandler}
           onTimePoint={onTimePointHandler}
+          onVideoSizeChange={onVideoSizeChangeHandler}
+          onSeekComplete={onSeekCompleteHandler}
         />
         <View style={styles.children}>{children}</View>
       </View>

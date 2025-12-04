@@ -80,11 +80,13 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     LOAD_START("onLoadStart"),
     REBUFFERING("onRebuffering"),
     SEEK("onSeek"),
+    SEEK_COMPLETE("onSeekComplete"),
     DATA("onData"),
     LIVE_LATENCY_CHANGED("onLiveLatencyChange"),
     VIDEO_STATISTICS("onVideoStatistics"),
     PROGRESS("onProgress"),
-    TIME_POINT("onTimePoint");
+    TIME_POINT("onTimePoint"),
+    VIDEO_SIZE_CHANGE("onVideoSizeChange");
 
     override fun toString(): String {
       return mName
@@ -125,6 +127,7 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
 
       override fun onSeekCompleted(position: Long) {
         onSeek(position)
+        onSeekComplete(true)
       }
 
       override fun onQualityChanged(quality: Quality) {
@@ -132,6 +135,8 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
       }
 
       override fun onVideoSizeChanged(p0: Int, p1: Int) {
+        onVideoSizeChange(p0, p1)
+
         post(mLayoutRunnable)
       }
 
@@ -302,9 +307,13 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
   }
 
   fun setQuality(quality: ReadableMap?) {
-    if (quality != null) {
-      findQuality(quality)?.let {
-        player?.quality = it
+    if (quality == null) return
+    val target = if (quality.hasKey("target")) quality.getMap("target") else null
+    val isAdaptive = if (quality.hasKey("adaptive")) quality.getBoolean("adaptive") else true
+
+    if (target != null) {
+      findQuality(target)?.let { selectedQuality->
+        player?.setQuality(selectedQuality, isAdaptive)
       }
     }
   }
@@ -610,6 +619,40 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     )
   }
 
+  fun onVideoSizeChange(p0: Int, p1: Int) {
+    val reactContext = context as ReactContext
+    val size = Arguments.createMap()
+    size.putInt("height", p0)
+    size.putInt("width", p1)
+
+    val data = Arguments.createMap()
+    data.putMap("size", size)
+
+    eventDispatcher.dispatchEvent(
+      IVSEvent(
+        getSurfaceId(reactContext),
+        id,
+        Events.VIDEO_SIZE_CHANGE,
+        data
+      )
+    )
+  }
+
+  fun onSeekComplete(success: Boolean) {
+    val reactContext = context as ReactContext
+    val data = Arguments.createMap()
+    data.putBoolean("success", success)
+
+    eventDispatcher.dispatchEvent(
+      IVSEvent(
+        getSurfaceId(reactContext),
+        id,
+        Events.SEEK_COMPLETE,
+        data
+      )
+    )
+  }
+
   fun onPlayerRebuffering() {
     val reactContext = context as ReactContext
 
@@ -784,6 +827,19 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     }, 0, updatedProgressInterval)
   }
 
+  fun setMaxVideoSize(maxSize: ReadableMap?) {
+    val width = maxSize?.getInt("width")
+    val height = maxSize?.getInt("height")
+
+    if (width != null && height != null) {
+      player?.setAutoMaxVideoSize(width, height)
+    }
+  }
+
+  fun setNetworkRecoveryMode(mode: String?) {
+    player?.setNetworkRecoveryMode(findNetworkRecoveryMode((mode)))
+  }
+
   override fun onHostResume() {
     isInBackground = false
     stopBackgroundService()
@@ -864,6 +920,14 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
           )
         }
       }
+    }
+  }
+
+  private fun findNetworkRecoveryMode(mode: String?): Player.NetworkRecoveryMode {
+    return when (mode) {
+      "none" -> Player.NetworkRecoveryMode.NONE
+      "resume" -> Player.NetworkRecoveryMode.RESUME
+      else -> Player.NetworkRecoveryMode.NONE
     }
   }
 
