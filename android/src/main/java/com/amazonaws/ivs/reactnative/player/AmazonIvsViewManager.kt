@@ -70,6 +70,10 @@ class AmazonIvsViewManager : SimpleViewManager<AmazonIvsView>(),
     return AmazonIvsView(context)
   }
 
+  override fun onDropViewInstance(view: AmazonIvsView) {
+    view.cleanup()
+    super.onDropViewInstance(view)
+  }
 
   override fun setMuted(
     view: AmazonIvsView?,
