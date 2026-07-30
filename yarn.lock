@@ -3921,6 +3921,7 @@ __metadata:
     "@types/react-test-renderer": ^19.1.0
     chalk: ^5.3.0
     commitlint: ^19.8.1
+    cross-spawn: ^7.0.6
     detox: ^20.45.1
     eslint: ^9.35.0
     eslint-config-prettier: ^10.1.8
@@ -3931,6 +3932,7 @@ __metadata:
     husky: ^9.1.7
     inquirer: ^9.2.7
     jest: ^29.7.0
+    pinst: ^3.0.0
     pod-install: ^1.0.7
     prettier: ^3.6.2
     react: 19.1.1
@@ -9714,6 +9716,15 @@ __metadata:
   version: 4.0.3
   resolution: "picomatch@npm:4.0.3"
   checksum: 6817fb74eb745a71445debe1029768de55fd59a42b75606f478ee1d0dc1aa6e78b711d041a7c9d5550e042642029b7f373dc1a43b224c4b7f12d23436735dba0
+  languageName: node
+  linkType: hard
+
+"pinst@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "pinst@npm:3.0.0"
+  bin:
+    pinst: bin.js
+  checksum: 4ae48a6a60f79c37071233af51b4d91bfc85cfa3c12b66ccda60cdb642b4d14a4ab0cb3587afc55b1f6192cea1772a5e4822026a0d0d3528296edef00cc2d61f
   languageName: node
   linkType: hard
 
