@@ -167,11 +167,13 @@ class AmazonIvsView(private val context: ThemedReactContext) : FrameLayout(conte
     }
 
     val filter = IntentFilter("IVS_PLAYER_CONTROL")
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-      context.registerReceiver(controlReceiver, filter, Context.RECEIVER_EXPORTED)
-    } else {
-      context.registerReceiver(controlReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
-    }
+    ContextCompat.registerReceiver(
+      context,
+      controlReceiver,
+      filter,
+      ContextCompat.RECEIVER_NOT_EXPORTED
+    )
+
 
     player?.addListener(playerListener);
     addView(playerView)
